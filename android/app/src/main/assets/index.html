@@ -826,6 +826,110 @@ html, body {
   fill: currentColor;
 }
 
+/* Web Search Grounding Toggle Button */
+.btn-search {
+  background: none;
+  border: 0;
+  padding: calc(var(--u) * 0.8) calc(var(--u) * 1.4);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.8);
+  cursor: pointer;
+  border-radius: 99px;
+  min-height: 40px;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+  font-size: 0.74rem;
+  font-weight: 500;
+}
+.btn-search:hover { color: var(--text-primary); background: var(--hairline); }
+.btn-search.always {
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.16);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+}
+.btn-search.off {
+  opacity: 0.45;
+  filter: grayscale(1);
+}
+.btn-search svg {
+  width: calc(var(--u) * 4);
+  height: calc(var(--u) * 4);
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+}
+.btn-search .search-badge {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 0.9;
+}
+
+/* Grounding Sources Box & Chips */
+.grounding-box {
+  margin-top: calc(var(--u) * 2);
+  padding-top: calc(var(--u) * 1.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.09);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 1.2);
+}
+.grounding-header {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #38bdf8;
+  letter-spacing: 0.02em;
+}
+.grounding-header svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+.grounding-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--u) * 1);
+}
+.grounding-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 0.8);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 99px;
+  padding: calc(var(--u) * 0.6) calc(var(--u) * 1.8);
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.74rem;
+  transition: all 0.2s ease;
+  max-width: 100%;
+}
+.grounding-chip:hover {
+  background: rgba(56, 189, 248, 0.16);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  transform: translateY(-1px);
+}
+.grounding-chip .chip-source {
+  color: #38bdf8;
+  font-weight: 600;
+}
+.grounding-chip svg {
+  width: 11px;
+  height: 11px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  flex-shrink: 0;
+}
+
 /* Syntax Badged Code Blocks & 1-Click Copy (§8.3) */
 .code-container {
   margin: calc(var(--u) * 2) 0;
@@ -1642,6 +1746,20 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
       </div>
       <div class="setting-row">
         <div>
+          <div class="setting-label">Live Web Search Grounding</div>
+          <div class="setting-desc">Fetch real-time verified news, scores, and facts from the web</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-web-search" checked /><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Continuous Duplex Voice</div>
+          <div class="setting-desc">Keep listening automatically after speaking for natural back-and-forth conversation</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-continuous-voice" checked /><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div>
           <div class="setting-label">Read-aloud Speed</div>
           <div class="setting-desc" id="tts-rate-label">1.0x normal speed</div>
         </div>
@@ -1825,6 +1943,10 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
   <div class="input-dock" id="input-dock" role="region" aria-label="Chat input dock">
     <button class="btn-plus" id="attach-btn" title="Add context or attachment" aria-label="Add context">
       <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <button class="btn-search" id="btn-web-search" title="Live Web Search: Auto (Click to switch Always / Off)" aria-label="Toggle web search">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span class="search-badge" id="search-badge">Auto</span>
     </button>
     <textarea class="chat-input" id="chat-input" placeholder="Ask Aura" aria-label="Message Aura" rows="1" autocomplete="off"></textarea>
     <div class="voice-wave" id="voice-wave" aria-hidden="true">
@@ -2090,6 +2212,220 @@ function renderMarkdown(str) {
 }
 
 /* -------------------------------------------------------------
+   Live Web Search Grounding Engine
+   ------------------------------------------------------------- */
+const WebSearchEngine = {
+  mode: (function(){
+    try { return localStorage.getItem('aura_web_search_mode') || 'auto'; } catch(e) { return 'auto'; }
+  })(),
+
+  setMode(newMode) {
+    this.mode = newMode;
+    try { localStorage.setItem('aura_web_search_mode', newMode); } catch(e) {}
+    this.updateUI();
+  },
+
+  updateUI() {
+    const btn = document.getElementById('btn-web-search');
+    const badge = document.getElementById('search-badge');
+    if (!btn || !badge) return;
+    btn.classList.remove('always', 'off');
+    if (this.mode === 'always') {
+      btn.classList.add('always');
+      badge.textContent = 'Always';
+      btn.title = 'Web Search: Always ON (Click to turn OFF)';
+    } else if (this.mode === 'off') {
+      btn.classList.add('off');
+      badge.textContent = 'Off';
+      btn.title = 'Web Search: OFF (Click to turn Auto)';
+    } else {
+      badge.textContent = 'Auto';
+      btn.title = 'Web Search: Auto-Detect (Click to turn Always ON)';
+    }
+    const setCheck = document.getElementById('set-web-search');
+    if (setCheck) setCheck.checked = this.mode !== 'off';
+  },
+
+  isSearchNeeded(query) {
+    if (this.mode === 'off') return false;
+    if (state && state.settings && state.settings.webSearch === false) return false;
+    if (this.mode === 'always') return true;
+
+    // Smart regex detecting queries needing live / current facts
+    const timePattern = /\b(today|tonight|tomorrow|yesterday|now|current|currently|live|latest|recent|recently|breaking|news|price|cost|worth|weather|forecast|score|match|game|standing|fixtures|election|stock|shares|crypto|bitcoin|ethereum|rate|currency|convert|exchange|who is the current|who is the president|who won|what happened|update|schedule)\b/i;
+    return timePattern.test(query);
+  },
+
+  async search(query) {
+    const results = [];
+    const cleanQuery = query.replace(/[?.,!]/g, '').trim();
+
+    // 1. Wikipedia API (universal CORS origin=* support)
+    try {
+      const wikiUrl = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(cleanQuery)}&format=json&origin=*&srlimit=4`;
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 3200);
+      const res = await fetch(wikiUrl, { signal: controller.signal });
+      clearTimeout(timer);
+      if (res.ok) {
+        const data = await res.json();
+        const items = data.query?.search || [];
+        for (const it of items) {
+          results.push({
+            title: it.title,
+            snippet: (it.snippet || '').replace(/<[^>]+>/g, ''),
+            url: `https://en.wikipedia.org/wiki/${encodeURIComponent(it.title.replace(/ /g, '_'))}`,
+            source: 'Wikipedia'
+          });
+        }
+      }
+    } catch (e) {
+      console.warn('[WebSearchEngine] Wikipedia fetch error:', e);
+    }
+
+    // 2. DuckDuckGo Instant Answer API fallback
+    if (results.length < 2) {
+      try {
+        const ddgUrl = `https://api.duckduckgo.com/?q=${encodeURIComponent(cleanQuery)}&format=json&no_html=1&skip_disambig=1`;
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 2800);
+        const res = await fetch(ddgUrl, { signal: controller.signal });
+        clearTimeout(timer);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.Abstract && data.AbstractURL) {
+            results.unshift({
+              title: data.Heading || cleanQuery,
+              snippet: data.Abstract,
+              url: data.AbstractURL,
+              source: data.Entity || 'DuckDuckGo'
+            });
+          }
+        }
+      } catch (e) {}
+    }
+
+    return results;
+  }
+};
+
+/* -------------------------------------------------------------
+   Continuous Duplex Hands-Free Voice Conversation Engine
+   ------------------------------------------------------------- */
+const DuplexVoiceEngine = {
+  isActive: false,
+  silenceTimer: null,
+
+  toggle() {
+    if (this.isActive) this.stop(true);
+    else this.start();
+  },
+
+  start() {
+    this.isActive = true;
+    isLiveMode = true;
+    const btn = document.getElementById('live-btn');
+    if (btn) btn.classList.add('active');
+
+    // Chime ascending harmonic
+    tone(659, 0.1, 0.08, 'sine');
+    setTimeout(() => tone(880, 0.18, 0.1, 'triangle'), 80);
+    buzz([30, 40]);
+
+    if (typeof AudioEngine !== 'undefined') AudioEngine.startMic();
+    if (typeof VoiceWakeEngine !== 'undefined') VoiceWakeEngine.pause();
+
+    chatInput.placeholder = 'Continuous Voice · Listening...';
+    document.getElementById('voice-wave')?.classList.add('active');
+
+    this.startListening();
+  },
+
+  stop(announce = true) {
+    this.isActive = false;
+    isLiveMode = false;
+    clearTimeout(this.silenceTimer);
+
+    const btn = document.getElementById('live-btn');
+    if (btn) btn.classList.remove('active');
+
+    document.getElementById('voice-wave')?.classList.remove('active');
+    chatInput.placeholder = 'Ask Aura';
+
+    if (typeof AudioEngine !== 'undefined') AudioEngine.stopMic();
+    if (recognition) {
+      try { recognition.abort(); } catch (e) {}
+    }
+
+    if (announce) {
+      tone(440, 0.15, 0.08, 'triangle');
+      buzz(20);
+    }
+
+    if (typeof VoiceWakeEngine !== 'undefined' && state.settings && state.settings.voiceWake) {
+      setTimeout(() => VoiceWakeEngine.resume(), 600);
+    }
+  },
+
+  startListening() {
+    if (!this.isActive || isSpeaking || isStreaming) return;
+    if (!recognition) return;
+
+    this.resetSilenceTimer();
+    try {
+      recognition.start();
+    } catch (e) {
+      setTimeout(() => {
+        if (this.isActive && !isSpeaking && !isStreaming) {
+          try { recognition.start(); } catch (err) {}
+        }
+      }, 300);
+    }
+  },
+
+  resetSilenceTimer() {
+    clearTimeout(this.silenceTimer);
+    // 8.5s silence timer: if no speech occurs within 8.5 seconds, enter standby
+    this.silenceTimer = setTimeout(() => {
+      if (this.isActive && !isSpeaking && !isStreaming) {
+        console.log('[DuplexVoiceEngine] Silence timeout - switching to standby');
+        this.stop(true);
+      }
+    }, 8500);
+  },
+
+  onSpeechResult(transcript) {
+    if (!this.isActive) return;
+    clearTimeout(this.silenceTimer);
+
+    const clean = transcript.toLowerCase().trim().replace(/[.,!?;:]/g, '');
+    const exitPhrases = ['stop', 'exit', 'goodbye', 'bye', 'bye aura', 'cancel', 'that is all', "that's all", 'quit', 'shut down'];
+    if (exitPhrases.includes(clean)) {
+      tone(523, 0.15, 0.08, 'triangle');
+      this.stop(false);
+      AuraAI.onSpeakText("Talk soon! Just say Hey Aura when you need me.");
+      return;
+    }
+
+    submitPrompt(transcript);
+  },
+
+  onAuraSpeechEnd() {
+    if (!this.isActive) return;
+    // When Aura finishes speaking, re-arm microphone after a 350ms breather
+    setTimeout(() => {
+      if (this.isActive && !isSpeaking && !isStreaming) {
+        tone(740, 0.08, 0.05, 'sine');
+        buzz(10);
+        chatInput.placeholder = 'Listening for your response...';
+        document.getElementById('voice-wave')?.classList.add('active');
+        this.startListening();
+      }
+    }, 350);
+  }
+};
+
+/* -------------------------------------------------------------
    10. Decoupled AI Adapter (window.AuraAI) (§10)
    ------------------------------------------------------------- */
 window.AuraAI = {
@@ -2182,7 +2518,26 @@ window.AuraAI = {
           contents.push({ role: 'model', parts: [{ text: msg.content }] });
         }
       }
-      contents.push({ role: 'user', parts: [{ text: prompt }] });
+
+      // Live Web Search Grounding
+      let groundingSources = [];
+      if (typeof WebSearchEngine !== 'undefined' && WebSearchEngine.isSearchNeeded(prompt)) {
+        try {
+          if (typeof ui.onSearching === 'function') ui.onSearching();
+          groundingSources = await WebSearchEngine.search(prompt);
+        } catch(e) {
+          console.warn('[WebSearchEngine] Error:', e);
+        }
+      }
+
+      let userPartText = prompt;
+      if (groundingSources && groundingSources.length > 0) {
+        const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+        const contextStr = groundingSources.map((s, i) => `[Source ${i+1}: ${s.title} (${s.source || 'Web'})]\n${s.snippet}\nURL: ${s.url}`).join('\n\n');
+        userPartText = `[REAL-TIME LIVE WEB CONTEXT (${dateStr})]:\n${contextStr}\n\nInstructions: Answer the user's question accurately using the live information above. Be direct, natural, and helpful.\n\nUser Question: ${prompt}`;
+      }
+
+      contents.push({ role: 'user', parts: [{ text: userPartText }] });
 
       // Candidate models in speed & availability priority (prioritizing ultra-fast flash-lite)
       const candidateList = Array.from(new Set([
@@ -2273,8 +2628,8 @@ window.AuraAI = {
           accumulated += (i === 0 ? '' : ' ') + w;
           ui.onStreamWord(accumulated);
           if (i === words.length - 1) {
-            ui.onComplete(fullText);
-            if (state.settings && state.settings.autoSpeak) {
+            ui.onComplete(fullText, groundingSources);
+            if (state.settings && (state.settings.autoSpeak || (typeof DuplexVoiceEngine !== 'undefined' && DuplexVoiceEngine.isActive))) {
               AuraAI.onSpeakText(fullText);
             }
           }
@@ -2295,12 +2650,9 @@ window.AuraAI = {
   },
   onToggleLiveMode(isLive) {
     console.log('[AuraAI] onToggleLiveMode:', isLive);
-    isLiveMode = isLive;
-    const btn = document.getElementById('live-btn');
-    if (btn) btn.classList.toggle('active', isLive);
-    if (typeof AudioEngine !== 'undefined') {
-      if (isLive) AudioEngine.startMic();
-      else AudioEngine.stopMic();
+    if (typeof DuplexVoiceEngine !== 'undefined') {
+      if (isLive) DuplexVoiceEngine.start();
+      else DuplexVoiceEngine.stop(true);
     }
   },
   onSpeakText(text) {
@@ -2337,7 +2689,9 @@ window.AuraAI = {
       isSpeaking = false;
       if (typeof AudioEngine !== 'undefined') AudioEngine.setSpeaking(false);
       if (speakBtn) speakBtn.classList.remove('on');
-      if (typeof VoiceWakeEngine !== 'undefined' && state.settings && state.settings.voiceWake) {
+      if (typeof DuplexVoiceEngine !== 'undefined' && DuplexVoiceEngine.isActive) {
+        DuplexVoiceEngine.onAuraSpeechEnd();
+      } else if (typeof VoiceWakeEngine !== 'undefined' && state.settings && state.settings.voiceWake) {
         setTimeout(() => VoiceWakeEngine.resume(), 600);
       }
     };
@@ -2659,6 +3013,9 @@ window.toDock = toDock;
 window.toIsland = toDock;
 
 function minimise() {
+  if (typeof DuplexVoiceEngine !== 'undefined' && DuplexVoiceEngine.isActive) {
+    DuplexVoiceEngine.stop(false);
+  }
   sheet.classList.remove('open');
   fullWs.classList.remove('open');
   inputDock.classList.remove('visible');
@@ -2892,8 +3249,29 @@ function renderFullChatThread() {
     } else {
       const aEl = document.createElement('div');
       aEl.className = 'msg-assistant';
+      let sourcesHtml = '';
+      if (msg.sources && msg.sources.length > 0) {
+        sourcesHtml = `
+          <div class="grounding-box">
+            <div class="grounding-header">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+              <span>Live Grounded Sources</span>
+            </div>
+            <div class="grounding-chips">
+              ${msg.sources.map(s => `
+                <a href="${s.url}" target="_blank" rel="noopener" class="grounding-chip" title="${s.title}">
+                  <span class="chip-source">${s.source || 'Web'}</span>
+                  <span>${s.title.slice(0, 32)}${s.title.length > 32 ? '...' : ''}</span>
+                  <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3"/></svg>
+                </a>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
       aEl.innerHTML = `
         <div class="card-bubble">${renderMarkdown(msg.content)}</div>
+        ${sourcesHtml}
         <div class="msg-utils">
           <button class="btn-copy-msg" data-idx="${idx}">
             <svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M5 16V6a2 2 0 012-2h8"/></svg>
@@ -3054,6 +3432,15 @@ function submitPrompt(promptText) {
       glow = 1.3;
       tone(587, 0.2, 0.08, 'triangle');
     },
+    onSearching() {
+      const searchingMsg = '<span class="sp"></span> <span style="color:#38bdf8">🌐 Searching the web for live facts...</span>';
+      if (mode === 'full') {
+        const lastCard = chatThread.querySelector('.msg-assistant:last-child .card-bubble');
+        if (lastCard) lastCard.innerHTML = searchingMsg;
+      } else {
+        txt.innerHTML = searchingMsg;
+      }
+    },
     onStreamWord(chunk) {
       assistantMsg.content = chunk;
       if (mode === 'full') {
@@ -3067,8 +3454,11 @@ function submitPrompt(promptText) {
         txt.scrollTop = txt.scrollHeight;
       }
     },
-    onComplete(fullText) {
+    onComplete(fullText, sources) {
       assistantMsg.content = fullText;
+      if (sources && sources.length > 0) {
+        assistantMsg.sources = sources;
+      }
       isStreaming = false;
       chatInput.disabled = false;
       chatInput.focus();
@@ -3077,7 +3467,20 @@ function submitPrompt(promptText) {
       buzz(12);
       saveState();
       if (mode === 'full') renderFullChatThread();
-      else txt.innerHTML = renderMarkdown(fullText);
+      else {
+        let sheetContent = renderMarkdown(fullText);
+        if (sources && sources.length > 0) {
+          sheetContent += `
+            <div class="grounding-box" style="margin-top:12px">
+              <div class="grounding-header"><svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg> Live Sources</div>
+              <div class="grounding-chips">
+                ${sources.map(s => `<a href="${s.url}" target="_blank" rel="noopener" class="grounding-chip"><span class="chip-source">${s.source || 'Web'}:</span> ${s.title.slice(0, 28)}... ↗</a>`).join('')}
+              </div>
+            </div>
+          `;
+        }
+        txt.innerHTML = sheetContent;
+      }
       renderHistory();
 
       // Auto-generate conversation title with Gemini if new conversation
@@ -3411,6 +3814,13 @@ const VoiceWakeEngine = {
     const match = transcript.match(/(?:hey|hi|ok|okay|yo)?\s*\baura\b[,:\s]*(.*)/i);
     const command = match && match[1] ? match[1].trim() : '';
 
+    if (command && /^(let'?s talk|start (live|continuous)|continuous mode|talk to me)\b/i.test(command)) {
+      if (typeof DuplexVoiceEngine !== 'undefined') {
+        DuplexVoiceEngine.start();
+        return;
+      }
+    }
+
     if (command && command.length > 2 && isFinal) {
       chatInput.value = command;
       submitPrompt(command);
@@ -3457,11 +3867,20 @@ if (SpeechRecognition) {
   recognition.onresult = e => {
     const transcript = e.results[0][0].transcript;
     chatInput.value = transcript;
-    submitPrompt(transcript);
+    if (typeof DuplexVoiceEngine !== 'undefined' && DuplexVoiceEngine.isActive) {
+      DuplexVoiceEngine.onSpeechResult(transcript);
+    } else {
+      submitPrompt(transcript);
+    }
   };
   recognition.onerror = e => {
     console.warn('Speech recognition error', e);
     micBtn.classList.remove('listening');
+    if (typeof DuplexVoiceEngine !== 'undefined' && DuplexVoiceEngine.isActive) {
+      if (e.error === 'no-speech') {
+        return;
+      }
+    }
     document.getElementById('voice-wave')?.classList.remove('active');
     chatInput.placeholder = 'Ask Aura';
     AuraAI.onToggleMic(false);
@@ -3471,6 +3890,12 @@ if (SpeechRecognition) {
   };
   recognition.onend = () => {
     micBtn.classList.remove('listening');
+    if (typeof DuplexVoiceEngine !== 'undefined' && DuplexVoiceEngine.isActive) {
+      if (!isSpeaking && !isStreaming) {
+        DuplexVoiceEngine.startListening();
+      }
+      return;
+    }
     document.getElementById('voice-wave')?.classList.remove('active');
     chatInput.placeholder = 'Ask Aura';
     AuraAI.onToggleMic(false);
@@ -3491,11 +3916,28 @@ if (SpeechRecognition) {
 }
 
 liveBtn.addEventListener('click', () => {
-  const willBeLive = !isLiveMode;
-  AuraAI.onToggleLiveMode(willBeLive);
-  tone(willBeLive ? 880 : 440, 0.2, 0.08, 'triangle');
-  buzz(willBeLive ? 25 : 15);
+  if (typeof DuplexVoiceEngine !== 'undefined') {
+    DuplexVoiceEngine.toggle();
+  } else {
+    const willBeLive = !isLiveMode;
+    AuraAI.onToggleLiveMode(willBeLive);
+    tone(willBeLive ? 880 : 440, 0.2, 0.08, 'triangle');
+    buzz(willBeLive ? 25 : 15);
+  }
 });
+
+const btnWebSearch = $('btn-web-search');
+if (btnWebSearch) {
+  btnWebSearch.addEventListener('click', () => {
+    const nextMode = WebSearchEngine.mode === 'auto' ? 'always' : (WebSearchEngine.mode === 'always' ? 'off' : 'auto');
+    WebSearchEngine.setMode(nextMode);
+    tone(nextMode === 'off' ? 440 : (nextMode === 'always' ? 880 : 660), 0.15, 0.08, 'triangle');
+    buzz(15);
+    chatInput.placeholder = nextMode === 'always' ? 'Web Search Always ON · Ask Aura' : (nextMode === 'off' ? 'Web Search OFF · Ask Aura' : 'Ask Aura');
+    setTimeout(() => { if (!isLiveMode) chatInput.placeholder = 'Ask Aura'; }, 2200);
+  });
+  WebSearchEngine.updateUI();
+}
 
 /* -------------------------------------------------------------
    History Screen & Drawer Management (§9.2)
@@ -3953,6 +4395,25 @@ if (setAudioReactive) {
   setAudioReactive.checked = state.settings.audioReactive !== false;
   setAudioReactive.addEventListener('change', e => {
     state.settings.audioReactive = e.target.checked;
+    saveState();
+  });
+}
+
+const setWebSearch = $('set-web-search');
+if (setWebSearch) {
+  setWebSearch.checked = state.settings.webSearch !== false && WebSearchEngine.mode !== 'off';
+  setWebSearch.addEventListener('change', e => {
+    state.settings.webSearch = e.target.checked;
+    WebSearchEngine.setMode(e.target.checked ? 'auto' : 'off');
+    saveState();
+  });
+}
+
+const setContinuousVoice = $('set-continuous-voice');
+if (setContinuousVoice) {
+  setContinuousVoice.checked = state.settings.continuousVoice !== false;
+  setContinuousVoice.addEventListener('change', e => {
+    state.settings.continuousVoice = e.target.checked;
     saveState();
   });
 }
