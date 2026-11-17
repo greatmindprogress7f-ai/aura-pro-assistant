@@ -137,10 +137,25 @@ html[data-host="desktop"] .stage {
 [data-host="overlay"] .nav,
 [data-host="desktop"] .rows,
 [data-host="desktop"] .hint,
-[data-host="desktop"] .theme-pill,
-[data-host="desktop"] .screen-container,
-[data-host="desktop"] .nav {
+[data-host="desktop"] .theme-pill {
   display: none !important;
+}
+[data-host="desktop"] .screen-container:not(.active) {
+  display: none !important;
+}
+[data-host="desktop"] .screen-container.active {
+  display: flex !important;
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  background: var(--surface) !important;
+  -webkit-backdrop-filter: var(--surface-blur);
+  backdrop-filter: var(--surface-blur);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: calc(var(--u) * 4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  overflow-y: auto;
+  padding: calc(var(--u) * 6) calc(var(--u) * 5) calc(var(--u) * 16);
 }
 [data-host="desktop"] .stage {
   transition: none !important;
@@ -1017,6 +1032,7 @@ html, body {
   pointer-events: none;
   transform: translateY(20px);
   transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+  overflow: hidden;
 }
 .full-workspace.open {
   opacity: 1;
@@ -1026,7 +1042,12 @@ html, body {
 
 /* Header (#full-header) (§8.2) */
 .full-header {
+  position: sticky;
+  top: 0;
+  left: 0;
+  right: 0;
   height: calc(var(--u) * 15);
+  min-height: 54px;
   padding: 0 calc(var(--u) * 4);
   display: flex;
   align-items: center;
@@ -1035,8 +1056,56 @@ html, body {
   background: var(--surface);
   -webkit-backdrop-filter: var(--surface-blur);
   backdrop-filter: var(--surface-blur);
-  z-index: 10;
+  z-index: 100;
   flex-shrink: 0;
+}
+.screen-hdr-actions {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+}
+.empty-nav-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 2.5);
+  margin-bottom: calc(var(--u) * 5);
+  flex-wrap: wrap;
+}
+.btn-empty-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+  padding: calc(var(--u) * 1.8) calc(var(--u) * 3.5);
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  color: var(--text-primary);
+  border-radius: 99px;
+  font: inherit;
+  font-size: calc(var(--u) * 2.8);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.btn-empty-nav svg {
+  width: calc(var(--u) * 3.8);
+  height: calc(var(--u) * 3.8);
+  stroke: currentColor;
+  stroke-width: 2.2;
+  fill: none;
+}
+.btn-empty-nav:hover {
+  background: var(--user-bubble);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px var(--accent-glow);
+}
+.btn-empty-nav:active {
+  transform: scale(0.96);
 }
 .hdr-left {
   display: flex;
@@ -1129,6 +1198,7 @@ html, body {
 /* Thread (#chat-thread) (§8.3) */
 .chat-thread {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: calc(var(--u) * 4) calc(var(--u) * 4) calc(var(--u) * 28);
   display: flex;
@@ -1603,6 +1673,16 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
   <div class="screen-container active" id="screen-history" role="region" aria-label="Conversation History">
     <div class="screen-header">
       <div class="screen-title">History</div>
+      <div class="screen-hdr-actions">
+        <button class="btn-pill-hdr" id="btn-history-to-chat" title="Open Chat Workspace" aria-label="Open Chat">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Chat</span>
+        </button>
+        <button class="btn-pill-hdr" id="btn-history-to-settings" title="Go to Settings" aria-label="Go to Settings">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </button>
+      </div>
     </div>
     <div class="search-bar">
       <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -1615,6 +1695,16 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
   <div class="screen-container" id="screen-settings" role="region" aria-label="App Settings">
     <div class="screen-header">
       <div class="screen-title">Settings</div>
+      <div class="screen-hdr-actions">
+        <button class="btn-pill-hdr" id="btn-settings-to-history" title="Go to History" aria-label="Go to History">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px;"><polyline points="15 18 9 12 15 6"/></svg>
+          <span>History</span>
+        </button>
+        <button class="btn-pill-hdr" id="btn-settings-back-chat" title="Open Chat Workspace" aria-label="Open Chat">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          <span>Chat</span>
+        </button>
+      </div>
     </div>
 
     <!-- AI Brain: Google Gemini (§10) -->
@@ -1830,9 +1920,9 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
   <div class="full-workspace" id="full-workspace" role="region" aria-label="Chat Workspace">
     <header class="full-header" id="full-header">
       <div class="hdr-left">
-        <button class="btn-back" id="btn-chat-back" aria-label="Back to Home" title="Back to Home">
+        <button class="btn-back" id="btn-chat-back" aria-label="Back to History" title="Back to History">
           <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          <span>Back</span>
+          <span>History</span>
         </button>
         <button class="btn-menu" id="btn-drawer-open" aria-label="Open conversation history" title="Conversations">
           <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -1840,8 +1930,13 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
         <div class="hdr-title">Aura Pro 2.0</div>
       </div>
       <div class="hdr-right">
-        <button class="btn-pill-hdr" id="btn-compact-view">Compact View</button>
-        <button class="btn-pill-hdr" id="btn-min-orb">Minimize to Orb</button>
+        <button class="btn-pill-hdr" id="btn-chat-settings" title="Settings" aria-label="Settings">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </button>
+        <button class="btn-pill-hdr" id="btn-chat-new" title="New Chat" aria-label="New Chat">+ New</button>
+        <button class="btn-pill-hdr" id="btn-compact-view" title="Compact View">Compact</button>
+        <button class="btn-pill-hdr" id="btn-min-orb" title="Minimize to Orb">Orb</button>
       </div>
     </header>
 
@@ -3115,10 +3210,10 @@ function toHomeScreen() {
   saveState();
 
   if (window.AuraDesktop) {
-    try { AuraDesktop.setMode('orb'); } catch (e) {}
+    try { AuraDesktop.setMode('full'); } catch (e) {}
   }
   if (window.AuraHost && urlParams.get('host') === 'overlay') {
-    try { AuraHost.setOverlayMode('orb'); } catch (e) {}
+    try { AuraHost.setOverlayMode('full'); } catch (e) {}
   }
 
   // Close full workspace and compact sheet
@@ -3129,6 +3224,7 @@ function toHomeScreen() {
   // Restore navigation and show history home screen
   nav.classList.remove('hidden');
   restoreCurrentScreen();
+  if (typeof renderHistory === 'function') renderHistory();
 
   // Restore orb to floating position and full visibility
   orb.style.opacity = '1';
@@ -3140,10 +3236,70 @@ function toHomeScreen() {
 }
 window.toHomeScreen = toHomeScreen;
 
-const btnChatBack = $('btn-chat-back');
-if (btnChatBack) {
-  btnChatBack.addEventListener('click', toHomeScreen);
+function toSettingsScreen() {
+  tone(587, 0.25, 0.08, 'triangle');
+  buzz(10);
+
+  mode = 'float';
+  state.mode = 'float';
+  state.screen = 'settings';
+  saveState();
+
+  if (window.AuraDesktop) {
+    try { AuraDesktop.setMode('full'); } catch (e) {}
+  }
+  if (window.AuraHost && urlParams.get('host') === 'overlay') {
+    try { AuraHost.setOverlayMode('full'); } catch (e) {}
+  }
+
+  // Close full workspace and compact sheet
+  fullWs.classList.remove('open');
+  sheet.classList.remove('open');
+  inputDock.classList.remove('visible');
+
+  // Restore navigation and show settings screen
+  nav.classList.remove('hidden');
+  restoreCurrentScreen();
+
+  orb.style.opacity = '0';
 }
+window.toSettingsScreen = toSettingsScreen;
+
+// Header & Workspace Navigation buttons
+const btnChatBack = $('btn-chat-back');
+if (btnChatBack) btnChatBack.addEventListener('click', toHomeScreen);
+
+const btnChatSettings = $('btn-chat-settings');
+if (btnChatSettings) btnChatSettings.addEventListener('click', toSettingsScreen);
+
+const btnChatNew = $('btn-chat-new');
+if (btnChatNew) {
+  btnChatNew.addEventListener('click', () => {
+    const newConv = {
+      id: 'c_' + Date.now(),
+      title: 'New Conversation',
+      updatedAt: Date.now(),
+      messages: []
+    };
+    state.conversations.unshift(newConv);
+    state.activeId = newConv.id;
+    saveState();
+    if (typeof renderHistory === 'function') renderHistory();
+    toFullChat();
+  });
+}
+
+const btnHistoryToChat = $('btn-history-to-chat');
+if (btnHistoryToChat) btnHistoryToChat.addEventListener('click', toFullChat);
+
+const btnHistoryToSettings = $('btn-history-to-settings');
+if (btnHistoryToSettings) btnHistoryToSettings.addEventListener('click', toSettingsScreen);
+
+const btnSettingsToHistory = $('btn-settings-to-history');
+if (btnSettingsToHistory) btnSettingsToHistory.addEventListener('click', toHomeScreen);
+
+const btnSettingsBackChat = $('btn-settings-back-chat');
+if (btnSettingsBackChat) btnSettingsBackChat.addEventListener('click', toFullChat);
 
 window.addEventListener('popstate', () => {
   if (mode === 'full') {
@@ -3195,6 +3351,16 @@ function renderFullChatThread() {
     // Empty state with starter prompt chips (§8.3)
     chatThread.innerHTML = `
       <div class="thread-empty">
+        <div class="empty-nav-strip">
+          <button class="btn-empty-nav" id="btn-empty-history" title="Go to Conversation History" aria-label="Go to Conversation History">
+            <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span>← Chat History</span>
+          </button>
+          <button class="btn-empty-nav" id="btn-empty-settings" title="Open App Settings" aria-label="Open App Settings">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>⚙️ Settings</span>
+          </button>
+        </div>
         <h2>What would you like to explore?</h2>
         <p>Aura Pro is ready to assist with deep analysis, creative drafting, or system architecture.</p>
         <div class="prompt-chips">
@@ -3237,6 +3403,11 @@ function renderFullChatThread() {
         </div>
       </div>
     `;
+    const empHist = $('btn-empty-history');
+    if (empHist) empHist.addEventListener('click', toHomeScreen);
+    const empSet = $('btn-empty-settings');
+    if (empSet) empSet.addEventListener('click', toSettingsScreen);
+
     chatThread.querySelectorAll('.prompt-chip').forEach(btn => {
       btn.addEventListener('click', () => {
         submitPrompt(btn.getAttribute('data-prompt'));
