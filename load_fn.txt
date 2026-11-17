@@ -1,0 +1,1 @@
+(e,...r)=>{const s=t(e,...r);if(("child_process"===e||"node:child_process"===e)&&!C.has(s)){C.add(s);overrideChildProcess(s)}return s}

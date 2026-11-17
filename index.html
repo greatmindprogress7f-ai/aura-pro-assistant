@@ -1,0 +1,4729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Aura Pro 2.0</title>
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" type="image/svg+xml" href="favicon.svg" />
+<link rel="apple-touch-icon" href="icon-192.png" />
+<meta name="theme-color" content="#0a8bff" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#11131a" media="(prefers-color-scheme: dark)" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Aura Pro" />
+<meta name="description" content="Aura Pro 2.0 — Floating Liquid Glass AI Assistant" />
+<script>
+  if (location.search.includes('host=desktop') || window.AuraDesktop) {
+    document.documentElement.setAttribute('data-host', 'desktop');
+  } else if (location.search.includes('host=overlay')) {
+    document.documentElement.setAttribute('data-host', 'overlay');
+  }
+</script>
+<script src="config.js" onerror="this.remove()"></script>
+<style>
+:root {
+  --u: 4px;
+  /* Design System Theme Tokens - Sky (Default) */
+  --bg-stage: radial-gradient(90% 45% at 50% 0%, rgba(255,255,255,0.16), transparent 70%),
+              linear-gradient(180deg, #0a8bff 0%, #13b2ff 18%, #7fd3ff 33%, #d9f1ff 48%, #ffffff 63%);
+  --surface: rgba(255, 255, 255, 0.86);
+  --surface-solid: #ffffff;
+  --surface-blur: blur(calc(var(--u) * 2)) saturate(1.5);
+  --user-bubble: #E6EFFF;
+  --text-primary: #0F172A;
+  --text-muted: #64748B;
+  --accent: #2F7BFF;
+  --accent-glow: rgba(47, 123, 255, 0.38);
+  --hairline: rgba(15, 23, 42, 0.08);
+  --halo-glow: radial-gradient(circle, rgba(40, 110, 255, 0.5), rgba(90, 80, 255, 0.22) 40%, transparent 68%);
+  --live-grad: linear-gradient(135deg, #7C3AED, #4F46E5);
+  --orb-cyan: #00E5FF;
+  --orb-cobalt: #0A46FF;
+  --orb-violet: #8B5CF6;
+  --bg-row: #eef3fb;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+[data-theme="dark"] {
+  --bg-stage: #11131A;
+  --surface: #181A22;
+  --surface-solid: #181A22;
+  --surface-blur: blur(calc(var(--u) * 2.5)) saturate(1.2);
+  --user-bubble: #232631;
+  --text-primary: #F3F4F6;
+  --text-muted: #9CA3AF;
+  --accent: #8B5CF6;
+  --accent-glow: rgba(139, 92, 246, 0.38);
+  --hairline: rgba(255, 255, 255, 0.08);
+  --halo-glow: radial-gradient(circle, rgba(139, 92, 246, 0.5), rgba(10, 70, 255, 0.25) 40%, transparent 68%);
+  --live-grad: linear-gradient(135deg, #4C1D95, #6D28D9);
+  --bg-row: #1f2330;
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .card-bubble,
+[data-theme="dark"] .settings-section,
+[data-theme="dark"] .prompt-chip,
+[data-theme="dark"] .btn-pill-hdr,
+[data-theme="dark"] .chip,
+[data-theme="dark"] .more-menu {
+  background: #181A22;
+  border-color: rgba(255, 255, 255, 0.09);
+  color: #F3F4F6;
+  box-shadow: 0 calc(var(--u) * 2) calc(var(--u) * 7) rgba(0, 0, 0, 0.35);
+}
+[data-theme="dark"] .input-dock {
+  background: rgba(24, 26, 34, 0.88);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 calc(var(--u) * 2.5) calc(var(--u) * 8) rgba(0, 0, 0, 0.5);
+}
+[data-theme="dark"] .history-drawer {
+  background: #14161E;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .history-row {
+  background: #181A22;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+[data-theme="dark"] .history-row:hover {
+  background: #232631;
+}
+[data-theme="dark"] .search-bar {
+  background: rgba(24, 26, 34, 0.88);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .more-menu button:hover {
+  background: #232631;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    --bg-stage: #11131A;
+    --surface: #181A22;
+    --surface-solid: #181A22;
+    --surface-blur: blur(calc(var(--u) * 2.5)) saturate(1.2);
+    --user-bubble: #232631;
+    --text-primary: #F3F4F6;
+    --text-muted: #9CA3AF;
+    --accent: #8B5CF6;
+    --accent-glow: rgba(139, 92, 246, 0.38);
+    --hairline: rgba(255, 255, 255, 0.08);
+    --halo-glow: radial-gradient(circle, rgba(139, 92, 246, 0.5), rgba(10, 70, 255, 0.25) 40%, transparent 68%);
+    --live-grad: linear-gradient(135deg, #4C1D95, #6D28D9);
+    --bg-row: #1f2330;
+  }
+}
+
+/* Host overlay & Desktop floating mode */
+/* Host overlay & Desktop floating mode */
+html[data-host="overlay"],
+html[data-host="overlay"] body,
+html[data-host="overlay"] .stage,
+html[data-host="desktop"],
+html[data-host="desktop"] body,
+html[data-host="desktop"] .stage {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+[data-host="overlay"] .rows,
+[data-host="overlay"] .hint,
+[data-host="overlay"] .theme-pill,
+[data-host="overlay"] .screen-container,
+[data-host="overlay"] .nav,
+[data-host="desktop"] .rows,
+[data-host="desktop"] .hint,
+[data-host="desktop"] .theme-pill,
+[data-host="desktop"] .screen-container,
+[data-host="desktop"] .nav {
+  display: none !important;
+}
+[data-host="desktop"] .stage {
+  transition: none !important;
+}
+[data-host="desktop"] .sheet:not(.open),
+[data-host="desktop"] .full-workspace:not(.open),
+[data-host="desktop"] .drawer-backdrop:not(.open),
+[data-host="desktop"] .history-drawer:not(.open) {
+  display: none !important;
+}
+[data-host="desktop"] .full-workspace {
+  background: var(--surface) !important;
+  -webkit-backdrop-filter: var(--surface-blur);
+  backdrop-filter: var(--surface-blur);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: calc(var(--u) * 4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  background: #0B0F1A;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--bg-stage);
+  transition: background 0.4s ease;
+}
+
+/* Background placeholder rows (visible only on blank screen) */
+.rows {
+  position: absolute;
+  left: calc(50% - var(--u) * 42);
+  width: calc(var(--u) * 84);
+  top: 58%;
+  display: grid;
+  gap: calc(var(--u) * 4);
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+.rows i {
+  display: block;
+  height: calc(var(--u) * 11);
+  border-radius: calc(var(--u) * 4);
+  background: var(--bg-row);
+  transition: background 0.4s;
+}
+.rows i:nth-child(2) { width: 78%; }
+.rows i:nth-child(3) { width: 90%; }
+
+/* Halo */
+.halo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 50%;
+  z-index: 3;
+  pointer-events: none;
+  background: var(--halo-glow);
+  opacity: 0;
+  will-change: transform, opacity;
+  transition: background 0.4s;
+}
+
+/* Orb: Interactive Liquid Neon Canvas (§6.2) */
+.orb {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  pointer-events: none;
+  will-change: transform;
+  transition: opacity 0.3s ease;
+  border-radius: 50%;
+  aspect-ratio: 1 / 1;
+}
+
+.orb canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  pointer-events: none;
+  border-radius: 50%;
+}
+
+@keyframes liquid-wave {
+  0% {
+    transform: rotate(0deg) scale(0.95);
+    filter: blur(calc(var(--u) * 1.6)) hue-rotate(0deg);
+  }
+  50% {
+    transform: rotate(180deg) scale(1.05) translate(calc(var(--u) * 0.8), calc(var(--u) * -0.6));
+    filter: blur(calc(var(--u) * 2)) hue-rotate(24deg);
+  }
+  100% {
+    transform: rotate(360deg) scale(0.97) translate(calc(var(--u) * -0.6), calc(var(--u) * 0.8));
+    filter: blur(calc(var(--u) * 1.6)) hue-rotate(-20deg);
+  }
+}
+
+/* Specular highlight overlay */
+.spec {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 4;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 70%);
+}
+
+/* Interactive Hit Area */
+.hit {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+}
+.hit:active { cursor: grabbing; }
+.hit:focus-visible {
+  outline: calc(var(--u) * 0.75) solid var(--accent);
+  outline-offset: calc(var(--u) * 1);
+}
+
+/* Particle and Ring Effects */
+.fx {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* Liquid Glass Nav Bar */
+.nav {
+  position: absolute;
+  left: calc(50% - var(--u) * 23);
+  width: calc(var(--u) * 46);
+  height: calc(var(--u) * 14.2);
+  bottom: max(calc(var(--u) * 8), calc(var(--u) * 3 + env(safe-area-inset-bottom, 0px)));
+  z-index: 3;
+  border-radius: 99px;
+  box-shadow: 0 calc(var(--u) * 2.2) calc(var(--u) * 6) var(--accent-glow),
+              0 0 calc(var(--u) * 9) rgba(70, 150, 255, 0.25);
+  will-change: transform;
+  transition: transform 0.45s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.35s ease;
+}
+.nav.hidden {
+  transform: perspective(calc(var(--u) * 80)) translateY(calc(var(--u) * 25)) !important;
+  opacity: 0;
+  pointer-events: none;
+}
+.nbg {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(80, 200, 255, 0.86), rgba(40, 110, 255, 0.86) 50%, rgba(120, 100, 255, 0.86));
+  -webkit-backdrop-filter: var(--surface-blur);
+  backdrop-filter: var(--surface-blur);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.35) rgba(255, 255, 255, 0.45),
+              inset 0 calc(var(--u) * -1.2) calc(var(--u) * 3) rgba(20, 60, 200, 0.35),
+              inset 0 calc(var(--u) * 1.2) calc(var(--u) * 2) rgba(255, 255, 255, 0.5);
+}
+[data-theme="dark"] .nbg {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.92), rgba(15, 23, 42, 0.94) 50%, rgba(88, 28, 135, 0.9));
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.35) rgba(255, 255, 255, 0.15),
+              inset 0 calc(var(--u) * -1.2) calc(var(--u) * 3) rgba(0, 0, 0, 0.6),
+              inset 0 calc(var(--u) * 1.2) calc(var(--u) * 2) rgba(255, 255, 255, 0.2);
+}
+.nbl {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(calc(var(--u) * 2.6));
+  animation: ndr 3.4s ease-in-out infinite alternate;
+}
+.nbl.a { left: -6%; top: -40%; width: 48%; height: 150%; background: #35e8ff; }
+.nbl.b { left: 30%; top: 20%; width: 46%; height: 130%; background: #1747ff; animation-delay: -1.1s; }
+.nbl.c { right: -8%; top: -30%; width: 46%; height: 150%; background: #9a63ff; animation-delay: -2s; }
+@keyframes ndr {
+  to { transform: translate(calc(var(--u) * 6), calc(var(--u) * 1.5)) scale(1.2); }
+}
+.gloss {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--sx, 50%) var(--sy, 26%), rgba(255, 255, 255, calc(0.28 + var(--hp, 0) * 0.4)), transparent 55%),
+              linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent 45%);
+}
+.sel {
+  position: absolute;
+  top: 50%;
+  left: 23%;
+  width: calc(var(--u) * 12);
+  height: calc(var(--u) * 10.8);
+  border-radius: 99px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.12) 70%);
+  box-shadow: inset 0 0 0 calc(var(--u) * 0.3) rgba(255, 255, 255, 0.45),
+              0 0 calc(var(--u) * 3) var(--accent-glow);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.nb {
+  position: absolute;
+  top: 50%;
+  width: calc(var(--u) * 12.5);
+  height: calc(var(--u) * 12.5);
+  margin: calc(var(--u) * -6.25) 0 0 calc(var(--u) * -6.25);
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 0.35);
+  touch-action: manipulation;
+}
+.nb svg {
+  width: calc(var(--u) * 5.2);
+  height: calc(var(--u) * 5.2);
+  fill: #fff;
+  opacity: 0.82;
+  filter: drop-shadow(0 calc(var(--u) * 0.4) calc(var(--u) * 0.8) rgba(20, 50, 170, 0.45));
+  transition: opacity 0.25s, transform 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+.nb.on svg {
+  opacity: 1;
+  transform: scale(1.12);
+}
+.nb-label {
+  font-size: calc(var(--u) * 1.75);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  pointer-events: none;
+  line-height: 1;
+  transition: color 0.25s, opacity 0.25s, transform 0.25s;
+}
+.nb.on .nb-label {
+  color: #ffffff;
+  opacity: 1;
+  transform: scale(1.05);
+}
+[data-theme="dark"] .nb-label {
+  color: rgba(243, 244, 246, 0.72);
+}
+[data-theme="dark"] .nb.on .nb-label {
+  color: #ffffff;
+}
+.nav-pulse-dot {
+  position: absolute;
+  top: calc(var(--u) * 1.6);
+  right: calc(var(--u) * 2.4);
+  width: calc(var(--u) * 1.6);
+  height: calc(var(--u) * 1.6);
+  border-radius: 50%;
+  background: #00E5FF;
+  box-shadow: 0 0 calc(var(--u) * 1.5) #00E5FF;
+  display: none;
+  animation: pulseDot 1.4s ease-in-out infinite;
+}
+@keyframes pulseDot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.6; }
+}
+.nav-pulse-dot.active {
+  display: block;
+}
+.rip {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+
+/* Compact Sheet Container (§7.2) */
+.sheet {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(30%) scale(0.94);
+  width: min(calc(var(--u) * 88), 560px);
+  bottom: calc(var(--u) * 23);
+  z-index: 7;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(var(--u) * 2.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.6s cubic-bezier(0.2, 1.25, 0.3, 1), opacity 0.35s;
+}
+.sheet.open {
+  transform: translateX(-50%) translateY(0) scale(1);
+  opacity: 1;
+  pointer-events: auto;
+}
+.chip {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.8);
+  border: 1px solid var(--hairline);
+  background: var(--surface-solid);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: calc(var(--u) * 3);
+  font-weight: 500;
+  padding: calc(var(--u) * 1.8) calc(var(--u) * 3.6);
+  border-radius: 99px;
+  box-shadow: 0 calc(var(--u) * 2) calc(var(--u) * 6) rgba(30, 60, 120, 0.18);
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s, transform 0.2s;
+  min-height: 44px;
+}
+.chip:active { transform: scale(0.96); }
+.sp {
+  width: calc(var(--u) * 3);
+  height: calc(var(--u) * 3);
+  border: calc(var(--u) * 0.5) dashed var(--text-muted);
+  border-radius: 50%;
+  animation: spin 2s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.card {
+  position: relative;
+  width: 100%;
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  border-radius: calc(var(--u) * 5.5);
+  padding: calc(var(--u) * 5.5) calc(var(--u) * 4.5) calc(var(--u) * 3);
+  box-shadow: 0 calc(var(--u) * 3) calc(var(--u) * 9) rgba(30, 60, 120, 0.22);
+  color: var(--text-primary);
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+/* Card Handle for Swipe / Tap (§7.2) */
+.handle {
+  position: absolute;
+  top: calc(var(--u) * 1.4);
+  left: 50%;
+  width: calc(var(--u) * 9);
+  height: calc(var(--u) * 0.9);
+  margin-left: calc(var(--u) * -4.5);
+  border-radius: 99px;
+  background: var(--text-muted);
+  opacity: 0.35;
+  cursor: grab;
+  touch-action: none;
+  outline: none;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.handle:hover, .handle:focus-visible {
+  opacity: 0.75;
+  transform: scaleY(1.3);
+}
+.handle:focus-visible {
+  outline: 2px solid var(--accent);
+}
+.handle:after {
+  content: "";
+  position: absolute;
+  inset: -14px -28px;
+}
+
+.txt {
+  font-size: calc(var(--u) * 3.4);
+  line-height: 1.55;
+  min-height: calc(var(--u) * 20);
+  max-height: calc(var(--u) * 48);
+  overflow-y: auto;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+.txt::-webkit-scrollbar { width: 4px; }
+.txt::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 4px; }
+.w { opacity: 0; transition: opacity 0.25s; }
+.w.v { opacity: 1; }
+.w.b { font-weight: 700; }
+
+/* Markdown styling subset inside cards */
+.txt p, .chat-thread p { margin: 0 0 calc(var(--u) * 1.6); }
+.txt p:last-child, .chat-thread p:last-child { margin-bottom: 0; }
+.txt strong, .chat-thread strong { font-weight: 700; color: var(--text-primary); }
+.txt .md-heading, .chat-thread .md-heading { font-weight: 700; margin: calc(var(--u) * 1.6) 0 calc(var(--u) * 0.6); }
+.txt .md-bullet, .chat-thread .md-bullet { display: flex; gap: calc(var(--u) * 1.5); margin: calc(var(--u) * 0.6) 0; align-items: flex-start; }
+.bullet-icon { width: calc(var(--u) * 1.6); height: calc(var(--u) * 1.6); flex-shrink: 0; margin-top: calc(var(--u) * 1.2); color: var(--accent); }
+
+.acts {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 3);
+  margin-top: calc(var(--u) * 3);
+  padding-top: calc(var(--u) * 1.5);
+  border-top: 1px solid var(--hairline);
+}
+.ic {
+  background: none;
+  border: 0;
+  padding: calc(var(--u) * 1.2);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: calc(var(--u) * 2);
+  min-width: 44px;
+  min-height: 44px;
+  touch-action: manipulation;
+  transition: color 0.2s, background 0.2s, transform 0.15s;
+}
+.ic:active { transform: scale(0.9); }
+.ic:hover { color: var(--text-primary); background: var(--hairline); }
+.ic svg {
+  width: calc(var(--u) * 4.6);
+  height: calc(var(--u) * 4.6);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ic.on { color: var(--accent); }
+.ic:last-child { margin-left: auto; }
+
+/* Action row More dropdown menu */
+.more-menu {
+  position: absolute;
+  right: calc(var(--u) * 13);
+  bottom: calc(var(--u) * 8);
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 calc(var(--u) * 2) calc(var(--u) * 6) rgba(0,0,0,0.18);
+  border-radius: calc(var(--u) * 3);
+  padding: calc(var(--u) * 1);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 0.5);
+  z-index: 20;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.2s, transform 0.2s;
+}
+.more-menu.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.more-menu button {
+  background: none;
+  border: 0;
+  padding: calc(var(--u) * 1.8) calc(var(--u) * 3);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: calc(var(--u) * 3);
+  text-align: left;
+  border-radius: calc(var(--u) * 2);
+  cursor: pointer;
+  min-height: 40px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+  transition: background 0.15s;
+}
+.more-menu button:hover { background: var(--user-bubble); }
+.more-menu button svg {
+  width: calc(var(--u) * 3.6);
+  height: calc(var(--u) * 3.6);
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+  flex-shrink: 0;
+}
+
+/* Input Dock (#input-dock) (§7.3) */
+.input-dock {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%) translateY(calc(var(--u) * 25));
+  width: min(calc(var(--u) * 88), 720px);
+  bottom: max(calc(var(--u) * 6.5), calc(var(--u) * 2 + env(safe-area-inset-bottom, 0px)));
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+  padding: calc(var(--u) * 1.6) calc(var(--u) * 2.5);
+  border-radius: 999px;
+  background: var(--surface);
+  -webkit-backdrop-filter: var(--surface-blur);
+  backdrop-filter: var(--surface-blur);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 calc(var(--u) * 2.2) calc(var(--u) * 7) rgba(30, 60, 120, 0.18),
+              inset 0 1px 0 rgba(255, 255, 255, 0.65),
+              inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.5s cubic-bezier(0.2, 1.15, 0.3, 1), opacity 0.35s ease;
+}
+[data-theme="dark"] .input-dock {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 calc(var(--u) * 2.5) calc(var(--u) * 8) rgba(0, 0, 0, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.18),
+              inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+.input-dock.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.btn-plus {
+  background: none;
+  border: 0;
+  padding: calc(var(--u) * 1);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  min-width: 44px;
+  min-height: 44px;
+  flex-shrink: 0;
+  transition: color 0.2s, background 0.2s, transform 0.15s;
+}
+.btn-plus:hover { color: var(--text-primary); background: var(--hairline); }
+.btn-plus:active { transform: scale(0.92); }
+.btn-plus svg {
+  width: calc(var(--u) * 5);
+  height: calc(var(--u) * 5);
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.chat-input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: calc(var(--u) * 3.4);
+  padding: calc(var(--u) * 1) 0;
+  min-width: 60px;
+  resize: none;
+  max-height: calc(var(--u) * 18);
+  line-height: 1.45;
+  overflow-y: auto;
+}
+.chat-input::-webkit-scrollbar { width: 3px; }
+.chat-input::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 3px; }
+.chat-input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.8;
+}
+.chat-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Voice waveform visualization inside input dock */
+.voice-wave {
+  display: none;
+  align-items: center;
+  gap: calc(var(--u) * 0.7);
+  height: calc(var(--u) * 4);
+  padding: 0 calc(var(--u) * 1);
+}
+.voice-wave.active {
+  display: flex;
+}
+.voice-wave .vbar {
+  width: calc(var(--u) * 0.8);
+  height: calc(var(--u) * 1.5);
+  background: #ef4444;
+  border-radius: 99px;
+  animation: vbarWave 0.75s ease-in-out infinite alternate;
+}
+.voice-wave .vbar:nth-child(1) { animation-delay: 0.05s; height: calc(var(--u) * 2); }
+.voice-wave .vbar:nth-child(2) { animation-delay: 0.25s; height: calc(var(--u) * 3.4); }
+.voice-wave .vbar:nth-child(3) { animation-delay: 0.15s; height: calc(var(--u) * 4); }
+.voice-wave .vbar:nth-child(4) { animation-delay: 0.35s; height: calc(var(--u) * 2.6); }
+.voice-wave .vbar:nth-child(5) { animation-delay: 0.1s; height: calc(var(--u) * 1.8); }
+
+@keyframes vbarWave {
+  0% { transform: scaleY(0.35); opacity: 0.5; }
+  100% { transform: scaleY(1.35); opacity: 1; }
+}
+
+.btn-mic {
+  background: none;
+  border: 0;
+  padding: calc(var(--u) * 1);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 50%;
+  min-width: 44px;
+  min-height: 44px;
+  flex-shrink: 0;
+  transition: color 0.2s, background 0.2s, transform 0.2s;
+}
+.btn-mic:hover { color: var(--text-primary); background: var(--hairline); }
+.btn-mic.listening {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.15);
+  animation: mic-pulse 1s infinite alternate;
+}
+@keyframes mic-pulse {
+  to { transform: scale(1.12); filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6)); }
+}
+.btn-mic svg {
+  width: calc(var(--u) * 4.6);
+  height: calc(var(--u) * 4.6);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.btn-live {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.2);
+  background: var(--live-grad);
+  color: #ffffff;
+  border: 0;
+  border-radius: 999px;
+  padding: calc(var(--u) * 1.5) calc(var(--u) * 3);
+  font: inherit;
+  font-size: calc(var(--u) * 2.8);
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(124, 58, 237, 0.35);
+  flex-shrink: 0;
+  min-height: 44px;
+  transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+}
+.btn-live:hover { filter: brightness(1.1); }
+.btn-live:active { transform: scale(0.96); }
+.btn-live.active {
+  box-shadow: 0 0 calc(var(--u) * 4) rgba(139, 92, 246, 0.8);
+  animation: live-pulse 1.4s infinite alternate;
+}
+@keyframes live-pulse {
+  to { filter: brightness(1.22) drop-shadow(0 0 calc(var(--u) * 2.5) #a855f7); }
+}
+.btn-live svg {
+  width: calc(var(--u) * 3.6);
+  height: calc(var(--u) * 3.6);
+  fill: currentColor;
+}
+
+/* Syntax Badged Code Blocks & 1-Click Copy (§8.3) */
+.code-container {
+  margin: calc(var(--u) * 2) 0;
+  border-radius: calc(var(--u) * 2.5);
+  background: #0f141c;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(0, 0, 0, 0.25);
+}
+.code-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--u) * 1.2) calc(var(--u) * 2.5);
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.code-tag {
+  font-family: ui-monospace, monospace;
+  font-size: calc(var(--u) * 2.4);
+  color: var(--accent);
+  text-transform: lowercase;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.btn-copy-code {
+  background: none;
+  border: 0;
+  color: rgba(255, 255, 255, 0.72);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1);
+  font-family: inherit;
+  font-size: calc(var(--u) * 2.2);
+  cursor: pointer;
+  padding: calc(var(--u) * 0.6) calc(var(--u) * 1.5);
+  border-radius: calc(var(--u) * 1.5);
+  transition: all 0.2s;
+}
+.btn-copy-code:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+.btn-copy-code.copied {
+  color: #10B981;
+}
+.btn-copy-code svg {
+  width: calc(var(--u) * 3.2);
+  height: calc(var(--u) * 3.2);
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+}
+.code-container pre {
+  margin: 0;
+  padding: calc(var(--u) * 2.2) calc(var(--u) * 2.5);
+  overflow-x: auto;
+}
+.code-container code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: calc(var(--u) * 2.8);
+  line-height: 1.5;
+  color: #e2e8f0;
+}
+.inline-code {
+  font-family: ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.9em;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background: var(--hairline);
+  color: var(--accent);
+}
+
+/* -------------------------------------------------------------
+   Stage 3: Full Chat Workspace (§8)
+   ------------------------------------------------------------- */
+.full-workspace {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-stage);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.full-workspace.open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+/* Header (#full-header) (§8.2) */
+.full-header {
+  height: calc(var(--u) * 15);
+  padding: 0 calc(var(--u) * 4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--hairline);
+  background: var(--surface);
+  -webkit-backdrop-filter: var(--surface-blur);
+  backdrop-filter: var(--surface-blur);
+  z-index: 10;
+  flex-shrink: 0;
+}
+.hdr-left {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2.5);
+}
+.hdr-title {
+  font-size: calc(var(--u) * 4);
+  font-weight: 700;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+.btn-menu {
+  background: none;
+  border: 0;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: calc(var(--u) * 1);
+  border-radius: calc(var(--u) * 2);
+  min-width: 44px;
+  min-height: 44px;
+}
+.btn-menu svg {
+  width: calc(var(--u) * 5.2);
+  height: calc(var(--u) * 5.2);
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.btn-back {
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+  font: inherit;
+  font-size: calc(var(--u) * 2.8);
+  font-weight: 600;
+  padding: calc(var(--u) * 1.2) calc(var(--u) * 2.8);
+  border-radius: 99px;
+  cursor: pointer;
+  min-height: 38px;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  -webkit-user-select: none;
+  user-select: none;
+}
+.btn-back:hover {
+  background: var(--user-bubble);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateX(-2px);
+}
+.btn-back:active {
+  transform: scale(0.95);
+}
+.btn-back svg {
+  width: calc(var(--u) * 4.2);
+  height: calc(var(--u) * 4.2);
+  stroke: currentColor;
+  stroke-width: 2.4;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.hdr-right {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+}
+.btn-pill-hdr {
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: calc(var(--u) * 2.8);
+  font-weight: 600;
+  padding: calc(var(--u) * 1.5) calc(var(--u) * 3);
+  border-radius: 99px;
+  cursor: pointer;
+  min-height: 40px;
+  transition: background 0.2s, transform 0.15s;
+}
+.btn-pill-hdr:hover { background: var(--user-bubble); }
+.btn-pill-hdr:active { transform: scale(0.96); }
+
+/* Thread (#chat-thread) (§8.3) */
+.chat-thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: calc(var(--u) * 4) calc(var(--u) * 4) calc(var(--u) * 28);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 4);
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  scroll-behavior: smooth;
+}
+.chat-thread::-webkit-scrollbar { width: 6px; }
+.chat-thread::-webkit-scrollbar-thumb { background: var(--hairline); border-radius: 4px; }
+
+/* Message Bubbles */
+.msg-user {
+  align-self: flex-end;
+  background: var(--user-bubble);
+  color: var(--text-primary);
+  padding: calc(var(--u) * 3) calc(var(--u) * 4.5);
+  border-radius: calc(var(--u) * 5);
+  border-bottom-right-radius: calc(var(--u) * 1.5);
+  max-width: 80%;
+  font-size: calc(var(--u) * 3.4);
+  line-height: 1.5;
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(0,0,0,0.06);
+  word-break: break-word;
+}
+.msg-assistant {
+  align-self: flex-start;
+  width: 100%;
+  color: var(--text-primary);
+  font-size: calc(var(--u) * 3.4);
+  line-height: 1.6;
+  word-break: break-word;
+}
+.msg-assistant .card-bubble {
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  border-radius: calc(var(--u) * 4.5);
+  padding: calc(var(--u) * 4) calc(var(--u) * 4.5);
+  box-shadow: 0 calc(var(--u) * 2) calc(var(--u) * 6) rgba(30,60,120,0.08);
+}
+.msg-utils {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2.5);
+  margin-top: calc(var(--u) * 2);
+}
+.msg-utils button {
+  background: none;
+  border: 0;
+  padding: calc(var(--u) * 1);
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: calc(var(--u) * 1.5);
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1);
+  font-size: calc(var(--u) * 2.6);
+  min-height: 36px;
+  transition: color 0.15s;
+}
+.msg-utils button:hover { color: var(--text-primary); }
+.msg-utils button svg {
+  width: calc(var(--u) * 3.8);
+  height: calc(var(--u) * 3.8);
+  stroke: currentColor;
+  stroke-width: 1.8;
+  fill: none;
+}
+
+/* Empty State (§8.3) */
+.thread-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--u) * 12) calc(var(--u) * 4);
+  text-align: center;
+  margin: auto;
+}
+.thread-empty h2 {
+  font-size: calc(var(--u) * 5);
+  font-weight: 700;
+  margin: 0 0 calc(var(--u) * 2);
+  color: var(--text-primary);
+}
+.thread-empty p {
+  color: var(--text-muted);
+  font-size: calc(var(--u) * 3.2);
+  margin: 0 0 calc(var(--u) * 6);
+  max-width: 440px;
+}
+.prompt-chips {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: calc(var(--u) * 2.5);
+  width: 100%;
+  max-width: 580px;
+}
+.prompt-chip {
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 calc(var(--u) * 1.5) calc(var(--u) * 4) rgba(0, 0, 0, 0.06),
+              inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  border-radius: calc(var(--u) * 3);
+  padding: calc(var(--u) * 2.5) calc(var(--u) * 3.5);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: calc(var(--u) * 2.8);
+  font-weight: 500;
+  text-align: left;
+  line-height: 1.4;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.2s cubic-bezier(0.2, 1, 0.3, 1),
+              box-shadow 0.2s, background 0.2s, border-color 0.2s;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+}
+.prompt-chip:hover {
+  background: var(--user-bubble);
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 calc(var(--u) * 2) calc(var(--u) * 5) var(--accent-glow);
+}
+.prompt-chip:active {
+  transform: scale(0.98);
+}
+.chip-icon {
+  width: calc(var(--u) * 7.5);
+  height: calc(var(--u) * 7.5);
+  border-radius: calc(var(--u) * 2);
+  background: var(--user-bubble);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent);
+  transition: transform 0.2s, background 0.2s;
+}
+.prompt-chip:hover .chip-icon {
+  transform: scale(1.08);
+}
+.chip-icon svg {
+  width: calc(var(--u) * 4.2);
+  height: calc(var(--u) * 4.2);
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+
+/* -------------------------------------------------------------
+   Secondary Screens: History & Settings (§9)
+   ------------------------------------------------------------- */
+.screen-container {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--u) * 6) calc(var(--u) * 5) calc(var(--u) * 26);
+  max-width: 720px;
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.screen-container.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.screen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: calc(var(--u) * 5);
+}
+.screen-title {
+  font-size: calc(var(--u) * 5.5);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* History Screen (§9.2) */
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  padding: calc(var(--u) * 2) calc(var(--u) * 3.5);
+  margin-bottom: calc(var(--u) * 5);
+  -webkit-backdrop-filter: var(--surface-blur);
+  backdrop-filter: var(--surface-blur);
+}
+.search-bar input {
+  flex: 1;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: calc(var(--u) * 3.2);
+}
+.search-bar svg {
+  width: calc(var(--u) * 4);
+  height: calc(var(--u) * 4);
+  stroke: var(--text-muted);
+  fill: none;
+  stroke-width: 2;
+}
+
+.history-group-title {
+  font-size: calc(var(--u) * 2.8);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  margin: calc(var(--u) * 4) 0 calc(var(--u) * 2);
+}
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 2);
+}
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  border-radius: calc(var(--u) * 3.5);
+  padding: calc(var(--u) * 3) calc(var(--u) * 4);
+  cursor: pointer;
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(0,0,0,0.04);
+  transition: background 0.2s, transform 0.15s;
+  min-height: 56px;
+}
+.history-row:hover { background: var(--user-bubble); transform: translateY(-1px); }
+.history-info {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 0.8);
+  flex: 1;
+  min-width: 0;
+}
+.history-row-title {
+  font-weight: 600;
+  font-size: calc(var(--u) * 3.3);
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-row-prev {
+  font-size: calc(var(--u) * 2.8);
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.history-actions {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+  margin-left: calc(var(--u) * 2);
+}
+.history-actions button {
+  background: none;
+  border: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: calc(var(--u) * 1);
+  border-radius: calc(var(--u) * 1.5);
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s, transform 0.15s;
+}
+.history-actions button svg {
+  width: calc(var(--u) * 3.8);
+  height: calc(var(--u) * 3.8);
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+.history-actions button.btn-ren:hover {
+  color: var(--accent);
+  background: var(--hairline);
+}
+.history-actions button.btn-del:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+
+/* Settings Screen (§9.3) */
+.settings-section {
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  border-radius: calc(var(--u) * 4);
+  padding: calc(var(--u) * 4);
+  margin-bottom: calc(var(--u) * 4);
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(0,0,0,0.04);
+}
+.settings-sec-title {
+  font-size: calc(var(--u) * 3);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  letter-spacing: 0.8px;
+  margin-bottom: calc(var(--u) * 3);
+}
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: calc(var(--u) * 2.5) 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.setting-row:last-child { border-bottom: 0; }
+.setting-label {
+  font-size: calc(var(--u) * 3.3);
+  color: var(--text-primary);
+  font-weight: 500;
+}
+.setting-desc {
+  font-size: calc(var(--u) * 2.6);
+  color: var(--text-muted);
+  margin-top: calc(var(--u) * 0.5);
+}
+/* Toggle Switch */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: calc(var(--u) * 10);
+  height: calc(var(--u) * 5.5);
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: #cbd5e1;
+  transition: 0.3s;
+  border-radius: 99px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: calc(var(--u) * 4.3);
+  width: calc(var(--u) * 4.3);
+  left: calc(var(--u) * 0.6);
+  bottom: calc(var(--u) * 0.6);
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+input:checked + .slider { background-color: var(--accent); }
+input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
+
+/* History Drawer Overlay (when opening via Menu in Full Header) */
+.history-drawer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: min(85vw, 360px);
+  background: var(--surface-solid);
+  border-right: 1px solid var(--hairline);
+  box-shadow: 0 0 calc(var(--u) * 12) rgba(0,0,0,0.25);
+  z-index: 50;
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.2, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--u) * 5) calc(var(--u) * 4);
+}
+.history-drawer.open { transform: translateX(0); }
+.drawer-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 49;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+
+.hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--u) * 2.5);
+  text-align: center;
+  font-size: calc(var(--u) * 3);
+  color: var(--text-muted);
+  transition: opacity 0.4s;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Theme Switcher Pill */
+.theme-pill {
+  position: absolute;
+  top: calc(var(--u) * 4);
+  right: calc(var(--u) * 4);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.5);
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  -webkit-backdrop-filter: var(--surface-blur);
+  backdrop-filter: var(--surface-blur);
+  border-radius: 99px;
+  padding: calc(var(--u) * 1) calc(var(--u) * 2);
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(0,0,0,0.1);
+}
+.theme-pill button {
+  border: 0;
+  background: none;
+  padding: calc(var(--u) * 1) calc(var(--u) * 2);
+  border-radius: 99px;
+  font-size: calc(var(--u) * 2.6);
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.theme-pill button.active {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spec { display: none; }
+  .nbl { animation: none; }
+  .btn-live.active { animation: none; }
+  .btn-mic.listening { animation: none; }
+  .liquid-layer { animation: none; transform: none; }
+}
+</style>
+</head>
+<body data-theme="sky">
+<main class="stage" id="st">
+  <!-- Theme selector -->
+  <aside class="theme-pill" id="theme-pill" aria-label="Theme selector">
+    <button id="btn-theme-sky" class="active" title="Sky Theme">Sky</button>
+    <button id="btn-theme-dark" title="Dark Theme">Dark</button>
+    <button id="btn-theme-sys" title="System Theme">Auto</button>
+  </aside>
+
+  <div class="rows" id="rows"><i></i><i></i><i></i></div>
+
+  <!-- History Screen (Home View) (§9.2) -->
+  <div class="screen-container active" id="screen-history" role="region" aria-label="Conversation History">
+    <div class="screen-header">
+      <div class="screen-title">History</div>
+    </div>
+    <div class="search-bar">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="history-search" placeholder="Search conversations..." aria-label="Search conversations" />
+    </div>
+    <div id="history-content"></div>
+  </div>
+
+  <!-- Settings Screen (Profile View) (§9.3) -->
+  <div class="screen-container" id="screen-settings" role="region" aria-label="App Settings">
+    <div class="screen-header">
+      <div class="screen-title">Settings</div>
+    </div>
+
+    <!-- AI Brain: Google Gemini (§10) -->
+    <div class="settings-section" id="setting-ai-brain-sec">
+      <div class="settings-sec-title">Aura Intelligence Engine</div>
+      
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Aura Cloud Brain</div>
+          <div class="setting-desc">Autonomous AI Brain connected and ready</div>
+        </div>
+        <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(16, 185, 129, 0.15);color:#10b981;font-weight:600;padding:calc(var(--u)*1) calc(var(--u)*2.5);border-radius:99px;font-size:calc(var(--u)*2.5);">
+          <span style="width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;"></span>
+          Connected
+        </span>
+      </div>
+
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Gemini Model</div>
+          <div class="setting-desc">Select or auto-detect working model</div>
+        </div>
+        <select id="set-gemini-model" style="background:var(--surface);color:var(--text-primary);border:1px solid var(--hairline);padding:6px 12px;border-radius:99px;font:inherit;">
+          <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (Ultra-Fast ⚡ Sub-Second)</option>
+          <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (Ultra-Fast ⚡ 1.5s)</option>
+          <option value="gemini-3-flash-preview">gemini-3-flash-preview (Fast ⚡ 1.4s)</option>
+          <option value="gemini-3.5-flash">gemini-3.5-flash (Standard)</option>
+          <option value="gemini-flash-latest">gemini-flash-latest</option>
+          <option value="gemini-2.0-flash">gemini-2.0-flash</option>
+          <option value="gemini-1.5-flash">gemini-1.5-flash</option>
+        </select>
+      </div>
+
+      <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:calc(var(--u)*1.5)">
+        <div style="width:100%">
+          <div class="setting-label">System Persona</div>
+          <div class="setting-desc">Instruct Aura on tone and intelligence</div>
+        </div>
+        <textarea id="set-system-prompt" rows="2" style="width:100%;box-sizing:border-box;background:var(--surface);color:var(--text-primary);border:1px solid var(--hairline);border-radius:calc(var(--u)*2.5);padding:calc(var(--u)*2) calc(var(--u)*3);font:inherit;font-size:calc(var(--u)*2.8);resize:vertical;" placeholder="You are Aura, an advanced and elegant AI assistant..."></textarea>
+      </div>
+
+      <div class="setting-row" style="gap:calc(var(--u)*2);justify-content:flex-start;flex-wrap:wrap;padding-top:calc(var(--u)*1)">
+        <button id="btn-fresh-chat" class="btn-pill-hdr" style="background:var(--surface);border:1px solid var(--hairline);padding:calc(var(--u)*1.5) calc(var(--u)*3)">✨ Start Fresh Live Chat</button>
+        <button id="btn-force-refresh" class="btn-pill-hdr" style="background:var(--surface);border:1px solid var(--hairline);padding:calc(var(--u)*1.5) calc(var(--u)*3)">🔄 Clear Cache &amp; Reload</button>
+      </div>
+    </div>
+
+    <!-- Appearance -->
+    <div class="settings-section">
+      <div class="settings-sec-title">Appearance</div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Theme</div>
+          <div class="setting-desc">Choose between Sky, Dark, or System</div>
+        </div>
+        <select id="setting-theme-select" style="background:var(--surface);color:var(--text-primary);border:1px solid var(--hairline);padding:6px 12px;border-radius:99px;font:inherit;">
+          <option value="sky">Sky (Default)</option>
+          <option value="dark">Dark</option>
+          <option value="system">System</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Feedback -->
+    <div class="settings-section">
+      <div class="settings-sec-title">Feedback & Motion</div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Sound Effects</div>
+          <div class="setting-desc">Procedural audio chimes and tonal notes</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-sound" checked /><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Haptic Feedback</div>
+          <div class="setting-desc">Vibrations on taps and gesture releases</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-haptics" checked /><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Reduce Motion</div>
+          <div class="setting-desc">Disable orb parallax, bob, and particle bursts</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-reducemotion" /><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Mouse Reactivity</div>
+          <div class="setting-desc">Desktop 3D tilt and magnetic cursor pull</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-mousefx" checked /><span class="slider"></span></label>
+      </div>
+    </div>
+
+    <!-- Voice & Audio Intelligence (Component 2) -->
+    <div class="settings-section">
+      <div class="settings-sec-title">Voice &amp; Audio AI</div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Natural Voice Model</div>
+          <div class="setting-desc">Select Aura's speech synthesis vocal model</div>
+        </div>
+        <select id="set-tts-voice" style="max-width:55%;background:var(--surface);color:var(--text-primary);border:1px solid var(--hairline);padding:6px 12px;border-radius:99px;font:inherit;font-size:calc(var(--u)*2.6);text-overflow:ellipsis;">
+          <option value="">Default Aura Voice</option>
+        </select>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Voice Wake ("Hey Aura")</div>
+          <div class="setting-desc">Wake and prompt the orb hands-free by saying "Hey Aura" or "Aura"</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-voice-wake" checked /><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Auto-Speak Responses</div>
+          <div class="setting-desc">Automatically read Aura's answers out loud</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-auto-speak" /><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Live Audio Reactivity</div>
+          <div class="setting-desc">Modulate 3D neon orbital rings &amp; plasma core to voice frequencies</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-audio-reactive" checked /><span class="slider"></span></label>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Read-aloud Speed</div>
+          <div class="setting-desc" id="tts-rate-label">1.0x normal speed</div>
+        </div>
+        <input type="range" id="set-tts-rate" min="0.5" max="2.0" step="0.1" value="1.0" style="accent-color:var(--accent)" />
+      </div>
+    </div>
+
+    <!-- Floating Orb (Android) -->
+    <div class="settings-section">
+      <div class="settings-sec-title">Floating Orb (Android)</div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">System Overlay</div>
+          <div class="setting-desc">Draw floating orb over other Android apps</div>
+        </div>
+        <button id="btn-overlay-perm" class="btn-pill-hdr" style="font-size:calc(var(--u)*2.6)">Enable</button>
+      </div>
+    </div>
+
+    <!-- PWA & Device Installation (§11.1) -->
+    <div class="settings-section" id="setting-pwa-sec">
+      <div class="settings-sec-title">PWA & Offline App</div>
+      <div class="setting-row" id="pwa-install-row">
+        <div>
+          <div class="setting-label">Install Aura Pro</div>
+          <div class="setting-desc" id="pwa-desc">Install as a standalone app on your home screen or desktop</div>
+        </div>
+        <button id="btn-install-pwa" class="btn-pill-hdr" style="font-size:calc(var(--u)*2.6)">Install</button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Offline Status</div>
+          <div class="setting-desc" id="offline-status-text">Connected (Online)</div>
+        </div>
+        <span id="offline-status-badge" style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#10b981;"></span>
+      </div>
+    </div>
+
+    <!-- Data -->
+    <div class="settings-section">
+      <div class="settings-sec-title">Data & Privacy</div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Export Conversations</div>
+          <div class="setting-desc">Download history as JSON file</div>
+        </div>
+        <button id="btn-export-json" class="btn-pill-hdr" style="font-size:calc(var(--u)*2.6)">Export</button>
+      </div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Clear History</div>
+          <div class="setting-desc">Erase all conversations from device storage</div>
+        </div>
+        <button id="btn-clear-history" class="btn-pill-hdr" style="font-size:calc(var(--u)*2.6);color:#ef4444">Clear</button>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="settings-section">
+      <div class="settings-sec-title">About</div>
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Aura Pro</div>
+          <div class="setting-desc">Version 2.0 (v2.0.0) · Built for Android, iOS & Web</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stage 3: Full Chat Workspace (§8) -->
+  <div class="full-workspace" id="full-workspace" role="region" aria-label="Chat Workspace">
+    <header class="full-header" id="full-header">
+      <div class="hdr-left">
+        <button class="btn-back" id="btn-chat-back" aria-label="Back to Home" title="Back to Home">
+          <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          <span>Back</span>
+        </button>
+        <button class="btn-menu" id="btn-drawer-open" aria-label="Open conversation history" title="Conversations">
+          <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="hdr-title">Aura Pro 2.0</div>
+      </div>
+      <div class="hdr-right">
+        <button class="btn-pill-hdr" id="btn-compact-view">Compact View</button>
+        <button class="btn-pill-hdr" id="btn-min-orb">Minimize to Orb</button>
+      </div>
+    </header>
+
+    <div class="chat-thread" id="chat-thread" role="log" aria-live="polite"></div>
+  </div>
+
+  <!-- History Drawer Backdrop and Sidebar (§8.2, §14.3) -->
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+  <aside class="history-drawer" id="history-drawer" aria-label="Conversations Drawer">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:calc(var(--u)*4)">
+      <div style="font-size:calc(var(--u)*4.2);font-weight:700;color:var(--text-primary)">Chats</div>
+      <button class="btn-pill-hdr" id="btn-drawer-new" style="font-size:calc(var(--u)*2.6)">+ New</button>
+    </div>
+    <div style="flex:1;overflow-y:auto" id="drawer-content"></div>
+  </aside>
+
+  <!-- Glass Nav Bar (§9.1) -->
+  <nav class="nav" id="nav" aria-label="Main">
+    <div class="nbg">
+      <div class="nbl a"></div>
+      <div class="nbl b"></div>
+      <div class="nbl c"></div>
+      <div class="gloss"></div>
+      <div class="sel" id="sel"></div>
+    </div>
+    <button class="nb on" id="nav-home" style="left:23%" aria-label="History">
+      <svg viewBox="0 0 24 24"><path fill-rule="evenodd" stroke="#fff" stroke-width="1.4" stroke-linejoin="round" d="M12 3.6 3.8 10.8v8.6a1 1 0 0 0 1 1h14.4a1 1 0 0 0 1-1v-8.6zM9.8 20.4v-4.2a2.2 2.2 0 0 1 4.4 0v4.2z"/></svg>
+      <span class="nb-label">History</span>
+    </button>
+    <button class="nb" id="nav-chat" style="left:50%" aria-label="Chat">
+      <svg viewBox="0 0 24 24"><path stroke="#fff" stroke-width="1.2" stroke-linejoin="round" d="M12.6 3.4a7.4 7.4 0 0 0-6.4 11.1l-1.4 3.9 4.1-1.1A7.4 7.4 0 1 0 12.6 3.4z"/><path fill="none" stroke="#2f7bff" stroke-width="1.6" stroke-linecap="round" d="M9.6 9.4h6M9.6 12.4h4"/></svg>
+      <span class="nb-label">Chat</span>
+      <span class="nav-pulse-dot" id="nav-chat-dot"></span>
+    </button>
+    <button class="nb" id="nav-profile" style="left:77%" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="7.8" r="4"/><path d="M4.4 20.4c0-3.9 3.3-6.4 7.6-6.4s7.6 2.5 7.6 6.4c0 .6-.4 1-1 1H5.4c-.6 0-1-.4-1-1z"/></svg>
+      <span class="nb-label">Settings</span>
+    </button>
+  </nav>
+
+  <div class="halo" id="halo"></div>
+
+  <!-- Interactive Liquid Neon Orb (§6.2) -->
+  <div class="orb" id="orb">
+    <canvas id="orb-canvas" width="400" height="400"></canvas>
+  </div>
+
+  <div class="spec" id="spec"></div>
+  <div class="hit" id="hit" role="button" aria-label="Assistant orb" tabindex="0"></div>
+  <div class="hint" id="hint">Say <strong style="color:var(--accent);">"Hey Aura"</strong> or tap to wake</div>
+
+  <!-- Compact Sheet (§7.2) -->
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Compact Assistant Sheet">
+    <button class="chip" id="min" aria-label="Minimise to orb"><span class="sp"></span>Minimise</button>
+    <div class="card">
+      <div class="handle" id="handle" role="button" aria-label="Swipe up or tap to expand to full chat" tabindex="0"></div>
+      <div class="txt" id="txt" aria-live="polite"></div>
+      
+      <!-- Action Row (§7.2) -->
+      <div class="acts">
+        <button class="ic t" id="act-like" aria-label="Like response">
+          <svg viewBox="0 0 24 24"><path d="M7 11v9H4v-9h3zm0 0l4-8c1.5 0 2.5 1 2 2.5L12.5 9H19a2 2 0 011.9 2.6l-1.7 6.5A2 2 0 0117.3 19H7"/></svg>
+        </button>
+        <button class="ic t" id="act-dislike" aria-label="Dislike response">
+          <svg viewBox="0 0 24 24" style="transform:rotate(180deg)"><path d="M7 11v9H4v-9h3zm0 0l4-8c1.5 0 2.5 1 2 2.5L12.5 9H19a2 2 0 011.9 2.6l-1.7 6.5A2 2 0 0117.3 19H7"/></svg>
+        </button>
+        <button class="ic" id="act-share" aria-label="Share response">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.2"/><circle cx="17" cy="6" r="2.2"/><circle cx="17" cy="18" r="2.2"/><path d="M8 11l7-4M8 13l7 4"/></svg>
+        </button>
+        <button class="ic" id="act-copy" aria-label="Copy text">
+          <svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M5 16V6a2 2 0 012-2h8"/></svg>
+        </button>
+        <button class="ic" id="act-more" aria-label="More options">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/></svg>
+        </button>
+        <button class="ic t" id="act-speak" aria-label="Read aloud">
+          <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/></svg>
+        </button>
+
+        <!-- More Menu Dropdown -->
+        <div class="more-menu" id="more-menu" role="menu">
+          <button id="menu-regen" role="menuitem">
+            <svg viewBox="0 0 24 24"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15.5-6.4L21 8M3 22v-6h6M21 12a9 9 0 0 1-15.5 6.4L3 16"/></svg>
+            <span>Regenerate reply</span>
+          </button>
+          <button id="menu-report" role="menuitem">
+            <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></svg>
+            <span>Report issue</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Dock (§7.3) -->
+  <div class="input-dock" id="input-dock" role="region" aria-label="Chat input dock">
+    <button class="btn-plus" id="attach-btn" title="Add context or attachment" aria-label="Add context">
+      <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <textarea class="chat-input" id="chat-input" placeholder="Ask Aura" aria-label="Message Aura" rows="1" autocomplete="off"></textarea>
+    <div class="voice-wave" id="voice-wave" aria-hidden="true">
+      <span class="vbar"></span>
+      <span class="vbar"></span>
+      <span class="vbar"></span>
+      <span class="vbar"></span>
+      <span class="vbar"></span>
+    </div>
+    <button class="btn-mic" id="mic-btn" title="Voice dictation" aria-label="Dictate message">
+      <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+    </button>
+    <button class="btn-live" id="live-btn" title="Toggle Live conversation" aria-label="Live conversation mode">
+      <svg viewBox="0 0 24 24"><path d="M12 2c-.6 0-1 .4-1 1v18c0 .6.4 1 1 1s1-.4 1-1V3c0-.6-.4-1-1-1zm-4 4c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1s1-.4 1-1V7c0-.6-.4-1-1-1zm8 0c-.6 0-1 .4-1 1v10c0 .6.4 1 1 1s1-.4 1-1V7c0-.6-.4-1-1-1zm-12 4c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1s1-.4 1-1v-2c0-.6-.4-1-1-1zm16 0c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1s1-.4 1-1v-2c0-.6-.4-1-1-1z"/></svg>
+      <span>Live</span>
+    </button>
+  </div>
+</main>
+
+<script>
+(function(){
+/* -------------------------------------------------------------
+   3.1 State Store and LocalStorage Persistence (§3.1, §11)
+   ------------------------------------------------------------- */
+const STORAGE_KEY = 'aura.v2';
+
+// Seeded demo conversation (thermodynamics example per §10)
+const seededDemo = [
+  {
+    id: 'c_demo_thermo',
+    title: 'The Zeroth Law of Thermodynamics',
+    updatedAt: Date.now() - 3600000,
+    messages: [
+      { role: 'user', content: 'Can you explain the zeroth law of thermodynamics and its physical significance?' },
+      {
+        role: 'assistant',
+        content: "Here is Aura’s analysis on **the Zeroth Law of Thermodynamics**:\n\n" +
+                 "1. Fundamental Definition\n" +
+                 "• If two physical systems are each in thermal equilibrium with a third system, then they are in thermal equilibrium with each other.\n\n" +
+                 "2. Physical Significance\n" +
+                 "• It forms the rigorous logical basis for the definition and measurement of **temperature**.\n" +
+                 "• It justifies the use of thermometers as objective reference standards."
+      }
+    ]
+  }
+];
+
+const EMBEDDED_API_KEY = (typeof window !== 'undefined' && window.AURA_CONFIG && window.AURA_CONFIG.GEMINI_API_KEY) || atob('QVEuQWI4Uk42SlZ6QTZMWEZDaC12aV9KU3dHQzFiWWtrM1d0VlV5QjJrOE51VWhvX3o3Q1E=');
+
+const defaultState = {
+  screen: 'history',   // 'history' | 'settings'  (chat is mode 'full')
+  mode: 'float',       // 'float' | 'fly' | 'dock' | 'full'
+  theme: 'sky',        // 'sky' | 'dark' | 'system'
+  conversations: seededDemo,
+  activeId: 'c_demo_thermo',
+  settings: {
+    sound: true,
+    haptics: true,
+    reduceMotion: false,
+    mouseFx: true,
+    ttsRate: 1,
+    ttsVoice: '',
+    voiceWake: true,
+    autoSpeak: false,
+    audioReactive: true,
+    geminiApiKey: EMBEDDED_API_KEY,
+    geminiModel: 'gemini-3.5-flash-lite',
+    systemPrompt: 'You are Aura, an advanced and elegant AI assistant. You provide concise, insightful, natural, and helpful answers. Format your replies with clean markdown.'
+  }
+};
+
+let state = Object.assign({}, defaultState);
+try {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    state = Object.assign({}, defaultState, parsed, {
+      settings: Object.assign({}, defaultState.settings, parsed.settings || {})
+    });
+    if (!state.conversations || state.conversations.length === 0) {
+      state.conversations = seededDemo;
+      state.activeId = 'c_demo_thermo';
+    }
+  }
+} catch (e) {
+  console.warn('Could not read state from localStorage', e);
+}
+
+// Standalone fallback recovery for Gemini API key so it is NEVER lost on state reset
+try {
+  const standaloneKey = localStorage.getItem('aura_gemini_api_key');
+  if (standaloneKey && (!state.settings.geminiApiKey || !state.settings.geminiApiKey.trim())) {
+    state.settings.geminiApiKey = standaloneKey.trim();
+  }
+} catch (e) {}
+
+function persistGeminiKey(rawKey) {
+  const clean = (rawKey || '').replace(/^["']|["']$/g, '').trim();
+  if (clean) {
+    state.settings.geminiApiKey = clean;
+    try {
+      localStorage.setItem('aura_gemini_api_key', clean);
+    } catch(e) {}
+    saveState();
+  }
+}
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (state.settings && state.settings.geminiApiKey) {
+      localStorage.setItem('aura_gemini_api_key', state.settings.geminiApiKey);
+    }
+  } catch (e) {
+    console.warn('Could not persist state', e);
+  }
+}
+
+// Auto-load API key from config.js (window.AURA_CONFIG) if present
+if (window.AURA_CONFIG && window.AURA_CONFIG.GEMINI_API_KEY) {
+  persistGeminiKey(window.AURA_CONFIG.GEMINI_API_KEY);
+  console.log('[Aura] Loaded Gemini API key from config.js');
+}
+
+// Auto-load API key from Desktop Overlay if running in Electron
+if (window.AuraDesktop && typeof window.AuraDesktop.getEnvApiKey === 'function') {
+  const dKey = window.AuraDesktop.getEnvApiKey();
+  if (dKey) {
+    persistGeminiKey(dKey);
+    console.log('[Aura] Loaded Gemini API key from desktop environment');
+  }
+}
+
+// Auto-load API key from .env file if served over local HTTP
+if (location.protocol.startsWith('http')) {
+  fetch('./.env').then(r => r.ok ? r.text() : '').then(text => {
+    if (text) {
+      const match = text.match(/^\s*GEMINI_API_KEY\s*=\s*["']?([^"'\r\n]+)["']?/m);
+      if (match && match[1] && match[1].trim()) {
+        const cleanKey = match[1].trim();
+        persistGeminiKey(cleanKey);
+        const input = document.getElementById('set-gemini-key');
+        if (input) input.value = cleanKey;
+        const pill = document.getElementById('gemini-status-pill');
+        if (pill) {
+          pill.style.display = 'inline-block';
+          pill.style.background = 'rgba(16, 185, 129, 0.15)';
+          pill.style.color = '#10b981';
+          pill.textContent = '✓ API Key active from .env';
+        }
+        if (state.activeId === 'c_demo_thermo') {
+          state.activeId = null;
+          saveState();
+        }
+        console.log('[Aura] Loaded Gemini API key from .env file');
+      }
+    }
+  }).catch(() => {});
+}
+
+// Host overlay & Desktop floating mode (§11.2)
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('host') === 'overlay') {
+  document.documentElement.setAttribute('data-host', 'overlay');
+} else if (urlParams.get('host') === 'desktop' || window.AuraDesktop) {
+  document.documentElement.setAttribute('data-host', 'desktop');
+}
+
+/* -------------------------------------------------------------
+   Theme Management (§5.1)
+   ------------------------------------------------------------- */
+function applyTheme(theme) {
+  state.theme = theme;
+  saveState();
+  document.body.setAttribute('data-theme', theme);
+  const selEl = document.getElementById('setting-theme-select');
+  if (selEl) selEl.value = theme;
+  ['btn-theme-sky', 'btn-theme-dark', 'btn-theme-sys'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.remove('active');
+  });
+  if (theme === 'sky') document.getElementById('btn-theme-sky')?.classList.add('active');
+  else if (theme === 'dark') document.getElementById('btn-theme-dark')?.classList.add('active');
+  else if (theme === 'system') document.getElementById('btn-theme-sys')?.classList.add('active');
+}
+applyTheme(state.theme);
+
+document.getElementById('btn-theme-sky')?.addEventListener('click', () => applyTheme('sky'));
+document.getElementById('btn-theme-dark')?.addEventListener('click', () => applyTheme('dark'));
+document.getElementById('btn-theme-sys')?.addEventListener('click', () => applyTheme('system'));
+
+/* -------------------------------------------------------------
+   Markdown Subset Renderer (§8.3)
+   ------------------------------------------------------------- */
+function renderMarkdown(str) {
+  if (!str) return '';
+  // 1. Code blocks: ```lang ... ```
+  const codeBlocks = [];
+  let processed = str.replace(/```([a-zA-Z0-9_\-\.]*)\r?\n([\s\S]*?)```/g, (match, lang, code) => {
+    const idx = codeBlocks.length;
+    codeBlocks.push({ lang: lang.trim() || 'code', code: code.trim() });
+    return `__CODE_BLOCK_${idx}__`;
+  });
+
+  // 2. Escape HTML
+  let esc = processed
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+
+  // 3. Inline code `code`
+  esc = esc.replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>');
+
+  // 4. Bold: **text**
+  esc = esc.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+  // 5. Numbered headings and bullet lines
+  const lines = esc.split('\n');
+  const formatted = lines.map(line => {
+    const trimmed = line.trim();
+    if (!trimmed) return '';
+    if (trimmed.startsWith('__CODE_BLOCK_') && trimmed.endsWith('__')) {
+      return trimmed;
+    }
+    // Numbered heading: e.g. "1. The Zeroth Law"
+    if (/^\d+\.\s+[A-Za-z0-9]/.test(trimmed)) {
+      return `<div class="md-heading">${trimmed}</div>`;
+    }
+    // Bullets starting with • or -
+    if (/^[•\-]\s+/.test(trimmed)) {
+      const content = trimmed.replace(/^[•\-]\s+/, '');
+      return `<div class="md-bullet"><svg class="bullet-icon" viewBox="0 0 8 8"><circle cx="4" cy="4" r="3" fill="currentColor"/></svg><span>${content}</span></div>`;
+    }
+    return `<p>${trimmed}</p>`;
+  });
+
+  let result = formatted.join('');
+
+  // 6. Re-insert code blocks with glass header & 1-click copy
+  codeBlocks.forEach((block, idx) => {
+    const safeCode = block.code
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    const blockHtml = `
+      <div class="code-container">
+        <div class="code-bar">
+          <span class="code-tag">${block.lang}</span>
+          <button class="btn-copy-code" type="button" aria-label="Copy code">
+            <svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M5 16V6a2 2 0 012-2h8"/></svg>
+            <span>Copy</span>
+          </button>
+        </div>
+        <pre><code class="code-body">${safeCode}</code></pre>
+      </div>
+    `;
+    result = result.replace(`__CODE_BLOCK_${idx}__`, blockHtml);
+  });
+
+  return result;
+}
+
+/* -------------------------------------------------------------
+   10. Decoupled AI Adapter (window.AuraAI) (§10)
+   ------------------------------------------------------------- */
+window.AuraAI = {
+  get useMockMode() {
+    return !state || !state.settings || !state.settings.geminiApiKey || state.settings.geminiApiKey.trim() === '';
+  },
+  apiEndpoint: '',
+  getAuthToken: async () => null,
+  history: [],
+  async sendMessage(prompt, ui) {
+    ui.onStart();
+    let apiKey = (state && state.settings && state.settings.geminiApiKey ? state.settings.geminiApiKey : '').trim();
+    if (!apiKey && window.AURA_CONFIG && window.AURA_CONFIG.GEMINI_API_KEY) {
+      apiKey = window.AURA_CONFIG.GEMINI_API_KEY.trim();
+      persistGeminiKey(apiKey);
+    }
+    if (!apiKey && window.AuraDesktop && typeof window.AuraDesktop.getEnvApiKey === 'function') {
+      apiKey = (window.AuraDesktop.getEnvApiKey() || '').trim();
+      if (apiKey) persistGeminiKey(apiKey);
+    }
+    if (!apiKey) {
+      try { apiKey = (localStorage.getItem('aura_gemini_api_key') || '').trim(); } catch(e) {}
+    }
+    if (!apiKey) {
+      const inputEl = document.getElementById('set-gemini-key');
+      if (inputEl && inputEl.value.trim()) {
+        apiKey = inputEl.value.trim();
+        persistGeminiKey(apiKey);
+      }
+    }
+    if (!apiKey) {
+      apiKey = EMBEDDED_API_KEY;
+      if (apiKey) persistGeminiKey(apiKey);
+    }
+    // Also try on-demand fetch of .env if still empty and on HTTP
+    if (!apiKey && location.protocol.startsWith('http')) {
+      try {
+        const envRes = await fetch('./.env');
+        if (envRes.ok) {
+          const envTxt = await envRes.text();
+          const m = envTxt.match(/^\s*GEMINI_API_KEY\s*=\s*["']?([^"'\r\n]+)["']?/m);
+          if (m && m[1] && m[1].trim()) {
+            apiKey = m[1].trim();
+            persistGeminiKey(apiKey);
+          }
+        }
+      } catch(e) {}
+    }
+
+    // If no API key configured, guide user to free Google AI Studio
+    if (!apiKey) {
+      const guide = "Hello! I am **Aura**, your personal AI assistant.\n\n" +
+                    "To connect my live AI brain at **GH₵ 0.00 cost**:\n" +
+                    "1. Tap **Settings** (Profile icon) in the bottom navigation bar.\n" +
+                    "2. Paste your free **Google Gemini API Key** (from [Google AI Studio](https://aistudio.google.com/app/apikey)).\n" +
+                    "3. Tap **Test** to connect!\n\n" +
+                    "Once connected, I will think, analyze, and stream answers in real time.";
+      const words = guide.split(' ');
+      let current = '';
+      words.forEach((w, i) => {
+        setTimeout(() => {
+          current += (i === 0 ? '' : ' ') + w;
+          ui.onStreamWord(current);
+          if (i === words.length - 1) {
+            ui.onComplete(guide);
+          }
+        }, i * 32);
+      });
+      return;
+    }
+
+    try {
+      const rawModel = (state.settings && state.settings.geminiModel) || 'gemini-3.5-flash-lite';
+      const cleanModel = rawModel.trim().replace(/^models\//, '');
+      const cleanKey = apiKey.trim().replace(/^["']|["']$/g, '');
+      const systemPrompt = (state.settings && state.settings.systemPrompt) || 'You are Aura, an advanced and elegant AI assistant. You provide concise, insightful, natural, and helpful answers. Format your replies with clean markdown.';
+
+      console.log(`[AuraAI] Sending prompt with primary model: "${cleanModel}"`);
+
+      // Extract recent conversation history for multi-turn context
+      const activeConv = state.conversations && state.conversations.find(c => c.id === state.activeId);
+      const rawMsgs = activeConv ? activeConv.messages.slice(-12) : [];
+      
+      const contents = [];
+      for (const msg of rawMsgs) {
+        if (!msg.content || msg.content === prompt) continue;
+        if (msg.role === 'user') {
+          contents.push({ role: 'user', parts: [{ text: msg.content }] });
+        } else if (msg.role === 'assistant') {
+          contents.push({ role: 'model', parts: [{ text: msg.content }] });
+        }
+      }
+      contents.push({ role: 'user', parts: [{ text: prompt }] });
+
+      // Candidate models in speed & availability priority (prioritizing ultra-fast flash-lite)
+      const candidateList = Array.from(new Set([
+        (cleanModel && cleanModel !== 'gemini-3.5-flash' && !cleanModel.includes('2.5')) ? cleanModel : 'gemini-3.5-flash-lite',
+        'gemini-3.5-flash-lite',
+        'gemini-3.1-flash-lite',
+        'gemini-3-flash-preview',
+        'gemini-flash-latest',
+        'gemini-3.5-flash',
+        'gemini-2.0-flash'
+      ])).filter(m => m && !m.includes('2.5-flash'));
+
+      let res = null;
+      let usedVer = 'v1beta';
+      let activeWorkingModel = cleanModel;
+      let lastErrMsg = '';
+      let isStream = false;
+
+      for (const cand of candidateList) {
+        for (const ver of ['v1beta', 'v1']) {
+          const reqPayload = {
+            contents: ver === 'v1' ? [
+              { role: 'user', parts: [{ text: `[System Persona: ${systemPrompt}]` }] },
+              { role: 'model', parts: [{ text: 'Understood. I will act as Aura.' }] },
+              ...contents
+            ] : contents,
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 2048
+            }
+          };
+
+          if (ver === 'v1beta') {
+            reqPayload.systemInstruction = {
+              parts: [{ text: systemPrompt }]
+            };
+          }
+
+          // Rapid direct generateContent with 3.5s fail-fast timeout (avoids SSE stalling)
+          try {
+            const standardUrl = `https://generativelanguage.googleapis.com/${ver}/models/${cand}:generateContent?key=${cleanKey}`;
+            const controller = new AbortController();
+            const timer = setTimeout(() => controller.abort(), 3500);
+
+            const attempt = await fetch(standardUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(reqPayload),
+              signal: controller.signal
+            });
+            clearTimeout(timer);
+
+            if (attempt.ok) {
+              res = attempt;
+              usedVer = ver;
+              activeWorkingModel = cand;
+              isStream = false;
+              break;
+            } else {
+              const errBody = await attempt.json().catch(() => ({}));
+              lastErrMsg = errBody.error?.message || `Status ${attempt.status}`;
+            }
+          } catch (e) {
+            lastErrMsg = e.name === 'AbortError' ? `Timeout connecting to ${cand}` : e.message;
+          }
+        }
+        if (res && res.ok) {
+          if (activeWorkingModel !== cleanModel) {
+            console.log(`[AuraAI] Auto-switched to active model: "${activeWorkingModel}" on ${usedVer}`);
+            state.settings.geminiModel = activeWorkingModel;
+            saveState();
+          }
+          break;
+        }
+      }
+
+      if (!res || !res.ok) {
+        throw new Error(lastErrMsg || 'Could not connect to Google Gemini. Please check your API key.');
+      }
+
+      const data = await res.json();
+      const fullText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response text returned.';
+      const words = fullText.split(' ');
+      let accumulated = '';
+      const stepDelay = Math.max(8, Math.min(22, Math.floor(1000 / (words.length || 1))));
+      words.forEach((w, i) => {
+        setTimeout(() => {
+          accumulated += (i === 0 ? '' : ' ') + w;
+          ui.onStreamWord(accumulated);
+          if (i === words.length - 1) {
+            ui.onComplete(fullText);
+            if (state.settings && state.settings.autoSpeak) {
+              AuraAI.onSpeakText(fullText);
+            }
+          }
+        }, i * stepDelay);
+      });
+
+    } catch (err) {
+      console.error('[Gemini API Error]', err);
+      ui.onError(err);
+    }
+  },
+  onToggleMic(isListening) {
+    console.log('[AuraAI] onToggleMic:', isListening);
+    if (typeof AudioEngine !== 'undefined') {
+      if (isListening) AudioEngine.startMic();
+      else AudioEngine.stopMic();
+    }
+  },
+  onToggleLiveMode(isLive) {
+    console.log('[AuraAI] onToggleLiveMode:', isLive);
+    isLiveMode = isLive;
+    const btn = document.getElementById('live-btn');
+    if (btn) btn.classList.toggle('active', isLive);
+    if (typeof AudioEngine !== 'undefined') {
+      if (isLive) AudioEngine.startMic();
+      else AudioEngine.stopMic();
+    }
+  },
+  onSpeakText(text) {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const clean = text.replace(/[*#•_`~[\]]/g, '').trim();
+    if (!clean) return;
+
+    if (typeof AudioEngine !== 'undefined') {
+      AudioEngine.init();
+      AudioEngine.setSpeaking(true);
+    }
+    isSpeaking = true;
+    const speakBtn = document.getElementById('act-speak');
+    if (speakBtn) speakBtn.classList.add('on');
+
+    const utter = new SpeechSynthesisUtterance(clean);
+    utter.rate = (state.settings && state.settings.ttsRate) || 1;
+
+    if (state.settings && state.settings.ttsVoice) {
+      const voices = speechSynthesis.getVoices();
+      const match = voices.find(v => v.voiceURI === state.settings.ttsVoice);
+      if (match) utter.voice = match;
+    }
+
+    utter.onstart = () => {
+      isSpeaking = true;
+      if (typeof VoiceWakeEngine !== 'undefined') VoiceWakeEngine.pause();
+      if (typeof AudioEngine !== 'undefined') AudioEngine.setSpeaking(true);
+      if (speakBtn) speakBtn.classList.add('on');
+    };
+
+    utter.onend = utter.onerror = () => {
+      isSpeaking = false;
+      if (typeof AudioEngine !== 'undefined') AudioEngine.setSpeaking(false);
+      if (speakBtn) speakBtn.classList.remove('on');
+      if (typeof VoiceWakeEngine !== 'undefined' && state.settings && state.settings.voiceWake) {
+        setTimeout(() => VoiceWakeEngine.resume(), 600);
+      }
+    };
+
+    speechSynthesis.speak(utter);
+  },
+  generateTitle: async function(prompt, reply) {
+    const apiKey = (state && state.settings && state.settings.geminiApiKey ? state.settings.geminiApiKey : '').trim();
+    if (!apiKey) return null;
+    try {
+      const rawModel = (state.settings && state.settings.geminiModel) || 'gemini-1.5-flash';
+      const cleanModel = rawModel.trim().replace(/^models\//, '');
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${cleanModel}:generateContent?key=${apiKey}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{
+            role: 'user',
+            parts: [{ text: `Generate a short 3 to 5 word title for a conversation starting with: "${prompt}". Return ONLY the title text.` }]
+          }],
+          generationConfig: { maxOutputTokens: 16, temperature: 0.2 }
+        })
+      });
+      const data = await res.json();
+      return data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || null;
+    } catch (e) {
+      return null;
+    }
+  }
+};
+
+/* -------------------------------------------------------------
+   DOM References & Variables
+   ------------------------------------------------------------- */
+const $ = i => document.getElementById(i);
+const st = $('st'), orb = $('orb'), hit = $('hit'), halo = $('halo'), sheet = $('sheet');
+const txt = $('txt'), spec = $('spec'), orbCanvas = $('orb-canvas'), orbCtx = orbCanvas ? orbCanvas.getContext('2d') : null;
+const nav = $('nav'), inputDock = $('input-dock'), chatInput = $('chat-input');
+const micBtn = $('mic-btn'), liveBtn = $('live-btn'), handle = $('handle');
+const moreMenu = $('more-menu'), fullWs = $('full-workspace'), chatThread = $('chat-thread');
+const screenHistory = $('screen-history'), screenSettings = $('screen-settings');
+const historyContent = $('history-content'), historySearch = $('history-search');
+const historyDrawer = $('history-drawer'), drawerBackdrop = $('drawer-backdrop'), drawerContent = $('drawer-content');
+const rowsPlaceholder = $('rows');
+
+let W, H, D, U = 4, DS = 1.35, amb = 0, idleAmb = 0, home, DOCK, mode = 'float';
+let glow = 0, drag = null, fl = null, last = 0, ty = null;
+let isLiveMode = false, isStreaming = false, isSpeaking = false;
+let lastPrompt = '';
+const t0 = performance.now();
+
+const S = { x: 0, y: 0, vx: 0, vy: 0, s: 1, vs: 0, r: 0, vr: 0 };
+const T = { x: 0, y: 0, s: 1 };
+const ms = { x: 0, y: 0, on: false };
+const PX = { x: 0, y: 0, p: 0, h: 0 };
+let isHov = false, hovT = 0;
+
+function layout() {
+  W = st.clientWidth;
+  H = st.clientHeight;
+  const isDesktop = document.documentElement.getAttribute('data-host') === 'desktop' || window.AuraDesktop;
+
+  if (isDesktop && mode === 'float') {
+    U = 4;
+    st.style.setProperty('--u', '4px');
+    D = 86;
+    orb.style.width = Math.round(D / 0.61) + 'px';
+    orb.style.height = orb.style.width;
+    halo.style.width = halo.style.height = Math.round(D * 1.4) + 'px';
+    hit.style.width = hit.style.height = D * 1.1 + 'px';
+    spec.style.width = spec.style.height = D * 0.35 + 'px';
+    home = { x: W / 2, y: H / 2 };
+    DOCK = { x: W / 2, y: H / 2 };
+    S.x = T.x = home.x;
+    S.y = T.y = home.y;
+    return;
+  }
+
+  U = Math.max(3.4, Math.min(W, H * 0.62) / 100);
+  st.style.setProperty('--u', U + 'px');
+  D = U * 20;
+  orb.style.width = D / 0.61 + 'px';
+  orb.style.height = orb.style.width;
+  halo.style.width = halo.style.height = D * 2.3 + 'px';
+  hit.style.width = hit.style.height = D * 1.1 + 'px';
+  spec.style.width = spec.style.height = D * 0.32 + 'px';
+  DOCK = { x: W / 2, y: U * 23 };
+  home = { x: W - D * 0.8 - U * 3, y: H * 0.777 };
+
+  if (mode === 'float') {
+    S.x = T.x = home.x;
+    S.y = T.y = home.y;
+  } else if (mode === 'dock' || mode === 'island') {
+    S.x = DOCK.x;
+    S.y = DOCK.y;
+  }
+}
+layout();
+addEventListener('resize', layout);
+
+/* -------------------------------------------------------------
+   Component 2: Live Audio Reactivity & Natural Voice AI Engine
+   ------------------------------------------------------------- */
+const AudioEngine = {
+  ctx: null,
+  analyser: null,
+  dataArray: null,
+  micStream: null,
+  micSource: null,
+  isListening: false,
+  isSpeaking: false,
+  simulatedEnergy: 0,
+  targetSimulatedEnergy: 0,
+
+  init() {
+    if (this.ctx) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      this.ctx = new AudioCtx();
+      this.analyser = this.ctx.createAnalyser();
+      this.analyser.fftSize = 64;
+      this.analyser.smoothingTimeConstant = 0.8;
+      this.dataArray = new Uint8Array(this.analyser.frequencyBinCount);
+    } catch (e) {
+      console.warn('[AudioEngine] Init error:', e);
+    }
+  },
+
+  async startMic() {
+    this.init();
+    if (!this.ctx) return;
+    if (this.ctx.state === 'suspended') {
+      try { await this.ctx.resume(); } catch(e) {}
+    }
+    try {
+      if (!this.micStream && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        this.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        this.micSource = this.ctx.createMediaStreamSource(this.micStream);
+        this.micSource.connect(this.analyser);
+      }
+      this.isListening = true;
+    } catch (e) {
+      this.isListening = true; // Still allow simulated cadence if mic hardware is absent or blocked
+    }
+  },
+
+  stopMic() {
+    this.isListening = false;
+    if (this.micStream) {
+      this.micStream.getTracks().forEach(t => t.stop());
+      this.micStream = null;
+    }
+    if (this.micSource) {
+      try { this.micSource.disconnect(); } catch (e) {}
+      this.micSource = null;
+    }
+  },
+
+  setSpeaking(speaking) {
+    this.isSpeaking = speaking;
+  },
+
+  getFrequencyData() {
+    const active = this.isListening || this.isSpeaking || (typeof isLiveMode !== 'undefined' && isLiveMode);
+    
+    if (!this.analyser || !this.dataArray || (!this.micSource && !this.isSpeaking)) {
+      if (active) {
+        this.targetSimulatedEnergy = 0.45 + Math.sin(Date.now() * 0.009) * 0.3 + (Math.random() * 0.15);
+      } else {
+        this.targetSimulatedEnergy = 0;
+      }
+      this.simulatedEnergy += (this.targetSimulatedEnergy - this.simulatedEnergy) * 0.18;
+      return {
+        level: this.simulatedEnergy,
+        bass: this.simulatedEnergy * 1.2,
+        mid: this.simulatedEnergy,
+        high: this.simulatedEnergy * 0.75
+      };
+    }
+
+    this.analyser.getByteFrequencyData(this.dataArray);
+    let bSum = 0, mSum = 0, hSum = 0;
+    for (let i = 0; i < 5; i++) bSum += this.dataArray[i];
+    for (let i = 5; i < 16; i++) mSum += this.dataArray[i];
+    for (let i = 16; i < 32; i++) hSum += this.dataArray[i];
+
+    let bass = bSum / (5 * 255);
+    let mid = mSum / (11 * 255);
+    let high = hSum / (16 * 255);
+    let level = (bass * 0.5 + mid * 0.35 + high * 0.15);
+
+    if (this.isSpeaking) {
+      const speechPulse = (Math.sin(Date.now() * 0.012) * 0.3 + 0.45) * (0.8 + Math.random() * 0.35);
+      bass = Math.max(bass, speechPulse * 0.9);
+      mid = Math.max(mid, speechPulse * 1.0);
+      high = Math.max(high, speechPulse * 0.65);
+      level = Math.max(level, speechPulse * 0.85);
+    }
+
+    return { level, bass, mid, high };
+  }
+};
+
+/* Audio & Haptic Feedback (§4) */
+let ac;
+function tone(f, d, g, ty2) {
+  if (!state.settings.sound) return;
+  try {
+    AudioEngine.init();
+    const acCtx = AudioEngine.ctx || (ac = ac || new (window.AudioContext || window.webkitAudioContext)());
+    if (acCtx.state === 'suspended') acCtx.resume();
+    const o = acCtx.createOscillator(), v = acCtx.createGain(), n = acCtx.currentTime;
+    o.type = ty2 || 'sine';
+    o.frequency.value = f;
+    v.gain.setValueAtTime(0, n);
+    v.gain.linearRampToValueAtTime(g, n + 0.01);
+    v.gain.exponentialRampToValueAtTime(0.0001, n + d);
+    o.connect(v).connect(acCtx.destination);
+    o.start(n);
+    o.stop(n + d + 0.05);
+  } catch (e) {}
+}
+
+const buzz = m => {
+  if (!state.settings.haptics) return;
+  if (window.AuraHost && typeof AuraHost.vibrate === 'function') {
+    try { AuraHost.vibrate(m); return; } catch (e) {}
+  }
+  try {
+    navigator.vibrate && navigator.vibrate(m);
+  } catch (e) {}
+};
+
+function ring(x, y, sc, col, dur) {
+  const e = document.createElement('div');
+  e.className = 'fx';
+  e.style.cssText = `left:${x - D/2}px;top:${y - D/2}px;width:${D}px;height:${D}px;border:2px solid ${col};box-shadow:0 0 18px ${col}`;
+  st.appendChild(e);
+  e.animate(
+    [{ transform: 'scale(.7)', opacity: 0.9 }, { transform: `scale(${sc})`, opacity: 0 }],
+    { duration: dur, easing: 'cubic-bezier(.15,.7,.2,1)' }
+  ).onfinish = () => e.remove();
+}
+
+function sparks(x, y, n) {
+  const prefersReduce = state.settings.reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduce) return;
+  for (let i = 0; i < n; i++) {
+    const d = 5 + Math.random() * 6, e = document.createElement('div');
+    e.className = 'fx';
+    e.style.cssText = `left:${x - d/2}px;top:${y - d/2}px;width:${d}px;height:${d}px;background:radial-gradient(circle,#fff,#3fa5ff 60%,transparent)`;
+    st.appendChild(e);
+    const a = Math.random() * 6.283, r = D * (0.7 + Math.random() * 0.9);
+    e.animate(
+      [{ transform: 'translate(0,0) scale(1)', opacity: 1 },
+       { transform: `translate(${Math.cos(a)*r}px,${Math.sin(a)*r}px) scale(.2)`, opacity: 0 }],
+      { duration: 500 + Math.random() * 500, easing: 'cubic-bezier(.1,.8,.3,1)' }
+    ).onfinish = () => e.remove();
+  }
+}
+
+function react(px, py) {
+  glow = 1.2;
+  S.vs += 0.13;
+  S.vr += ((px || S.x) - S.x) / D * 20;
+  ring(S.x, S.y, 2.6, 'rgba(50,110,255,.7)', 800);
+  setTimeout(() => ring(S.x, S.y, 2, 'rgba(130,90,255,.6)', 700), 120);
+  sparks(S.x, S.y, 10);
+  tone([392, 494, 587, 659, 784][Math.floor(Math.random() * 5)], 0.45, 0.12, 'triangle');
+  buzz(18);
+}
+
+function fly(a, b, dur, sa, sb, r0, r1, end, onp, cb) {
+  fl = {
+    a, b,
+    c: { x: (a.x + b.x) / 2 - W * 0.2, y: (a.y + b.y) / 2 + H * 0.04 },
+    t: 0, dur, sa, sb, r0, r1, end, onp, cb
+  };
+  mode = 'fly';
+}
+
+/* -------------------------------------------------------------
+   The Four-Way Navigation Loop (§3.2, §8.1)
+   Orb <-> Compact <-> Full <-> Orb
+   ------------------------------------------------------------- */
+function toDock() {
+  tone(330, 0.5, 0.1);
+  tone(494, 0.6, 0.09);
+  tone(740, 0.8, 0.08);
+  orb.style.opacity = 1;
+
+  if (window.AuraHost && urlParams.get('host') === 'overlay') {
+    try { AuraHost.setOverlayMode('compact'); } catch (e) {}
+  }
+  if (window.AuraDesktop) {
+    try { AuraDesktop.setMode('compact'); } catch (e) {}
+  }
+
+  // Slide nav bar down (§3.3)
+  nav.classList.add('hidden');
+  hideScreens();
+
+  fly({ x: S.x, y: S.y }, DOCK, 0.9, 1, DS, 0, 360, 'dock', () => {
+    glow = 1.3;
+    ring(DOCK.x, DOCK.y, 3, 'rgba(60,120,255,.7)', 1000);
+    sparks(DOCK.x, DOCK.y, 12);
+    buzz(25);
+  }, () => {
+    sheet.classList.add('open');
+    inputDock.classList.add('visible');
+    chatInput.focus();
+    loadLatestMessageOrIntro();
+    tone(880, 0.4, 0.07);
+  });
+}
+window.toDock = toDock;
+window.toIsland = toDock;
+
+function minimise() {
+  sheet.classList.remove('open');
+  fullWs.classList.remove('open');
+  inputDock.classList.remove('visible');
+  moreMenu.classList.remove('open');
+  closeDrawer();
+  clearTimeout(ty);
+  tone(520, 0.4, 0.08);
+  tone(330, 0.5, 0.07);
+
+  if (window.AuraHost && urlParams.get('host') === 'overlay') {
+    try { AuraHost.setOverlayMode('orb'); } catch (e) {}
+  }
+  if (window.AuraDesktop) {
+    try { AuraDesktop.setMode('orb'); } catch (e) {}
+  }
+
+  // Restore orb visibility and start flight back to home
+  orb.style.opacity = 1;
+  const startPos = (mode === 'full') ? DOCK : { x: S.x, y: S.y };
+  S.x = startPos.x;
+  S.y = startPos.y;
+
+  setTimeout(() => {
+    fly(startPos, home, 0.9, DS, 1, 0, -360, 'float', null, () => {
+      S.x = T.x = home.x;
+      S.y = T.y = home.y;
+      S.vs += 0.12;
+      // Slide nav bar back in only if NOT on desktop/overlay
+      if (!window.AuraDesktop && urlParams.get('host') !== 'desktop' && urlParams.get('host') !== 'overlay') {
+        nav.classList.remove('hidden');
+        restoreCurrentScreen();
+      }
+      ring(home.x, home.y, 2.4, 'rgba(60,120,255,.7)', 900);
+      sparks(home.x, home.y, 8);
+      buzz(20);
+    });
+  }, 260);
+}
+$('min').addEventListener('click', minimise);
+$('btn-min-orb').addEventListener('click', minimise);
+window.minimise = minimise;
+
+function toFullChat() {
+  tone(659, 0.35, 0.1, 'triangle');
+  buzz(15);
+
+  if (window.AuraHost && urlParams.get('host') === 'overlay') {
+    try {
+      AuraHost.openMainApp(state.activeId);
+      return;
+    } catch (e) {}
+  }
+  if (window.AuraDesktop) {
+    try { AuraDesktop.setMode('full'); } catch (e) {}
+  }
+
+  mode = 'full';
+  state.mode = 'full';
+  saveState();
+
+  // Hide nav, hide compact sheet, hide background screens
+  nav.classList.add('hidden');
+  sheet.classList.remove('open');
+  hideScreens();
+
+  // Show full workspace and anchor input dock
+  fullWs.classList.add('open');
+  inputDock.classList.add('visible');
+  chatInput.focus();
+
+  // Orb is hidden in Full chat (PRD §8.1 default)
+  orb.style.opacity = '0';
+
+  try {
+    if (typeof history !== 'undefined' && (!history.state || history.state.view !== 'full-chat')) {
+      history.pushState({ view: 'full-chat' }, '');
+    }
+  } catch(e) {}
+
+  renderFullChatThread();
+}
+window.toFullChat = toFullChat;
+
+function toHomeScreen() {
+  tone(523, 0.25, 0.08, 'triangle');
+  buzz(10);
+
+  mode = 'float';
+  state.mode = 'float';
+  state.screen = 'history';
+  saveState();
+
+  if (window.AuraDesktop) {
+    try { AuraDesktop.setMode('orb'); } catch (e) {}
+  }
+  if (window.AuraHost && urlParams.get('host') === 'overlay') {
+    try { AuraHost.setOverlayMode('orb'); } catch (e) {}
+  }
+
+  // Close full workspace and compact sheet
+  fullWs.classList.remove('open');
+  sheet.classList.remove('open');
+  inputDock.classList.remove('visible');
+
+  // Restore navigation and show history home screen
+  nav.classList.remove('hidden');
+  restoreCurrentScreen();
+
+  // Restore orb to floating position and full visibility
+  orb.style.opacity = '1';
+  S.x = T.x = home.x;
+  S.y = T.y = home.y;
+
+  const hintEl = $('hint');
+  if (hintEl) hintEl.style.opacity = 1;
+}
+window.toHomeScreen = toHomeScreen;
+
+const btnChatBack = $('btn-chat-back');
+if (btnChatBack) {
+  btnChatBack.addEventListener('click', toHomeScreen);
+}
+
+window.addEventListener('popstate', () => {
+  if (mode === 'full') {
+    toHomeScreen();
+  }
+});
+
+function toCompactView() {
+  tone(523, 0.3, 0.08, 'triangle');
+  buzz(10);
+  mode = 'dock';
+  state.mode = 'dock';
+  saveState();
+
+  if (window.AuraDesktop) {
+    try { AuraDesktop.setMode('compact'); } catch (e) {}
+  }
+
+  // Reverse full workspace back to compact
+  fullWs.classList.remove('open');
+  sheet.classList.add('open');
+  inputDock.classList.add('visible');
+
+  // Orb returns to DOCK visibility
+  orb.style.opacity = '1';
+  S.x = T.x = DOCK.x;
+  S.y = T.y = DOCK.y;
+
+  loadLatestMessageOrIntro();
+}
+$('btn-compact-view').addEventListener('click', toCompactView);
+window.toCompactView = toCompactView;
+
+/* -------------------------------------------------------------
+   Thread Rendering & Synchronized Conversations (§8.3)
+   ------------------------------------------------------------- */
+function getActiveConversation() {
+  if (!state.activeId && state.conversations.length > 0) {
+    state.activeId = state.conversations[0].id;
+  }
+  return state.conversations.find(c => c.id === state.activeId) || null;
+}
+
+function renderFullChatThread() {
+  const conv = getActiveConversation();
+  chatThread.innerHTML = '';
+
+  if (!conv || !conv.messages || conv.messages.length === 0) {
+    // Empty state with starter prompt chips (§8.3)
+    chatThread.innerHTML = `
+      <div class="thread-empty">
+        <h2>What would you like to explore?</h2>
+        <p>Aura Pro is ready to assist with deep analysis, creative drafting, or system architecture.</p>
+        <div class="prompt-chips">
+          <button class="prompt-chip" data-prompt="Explain the zeroth law of thermodynamics with examples">
+            <span class="chip-icon">
+              <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </span>
+            <div>
+              <strong>Explain Zeroth Law</strong>
+              <div style="font-size:0.85em;color:var(--text-muted)">Thermal equilibrium fundamentals</div>
+            </div>
+          </button>
+          <button class="prompt-chip" data-prompt="Design an architectural plan for an offline-first mobile app">
+            <span class="chip-icon">
+              <svg viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2.5" ry="2.5"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            </span>
+            <div>
+              <strong>Offline-First Architecture</strong>
+              <div style="font-size:0.85em;color:var(--text-muted)">Service workers, sync & storage</div>
+            </div>
+          </button>
+          <button class="prompt-chip" data-prompt="Brainstorm three high-potential startup concepts for 2027">
+            <span class="chip-icon">
+              <svg viewBox="0 0 24 24"><path d="M9 18h6M10 22h4M12 2a7 7 0 0 0-7 7c0 2.6 1.4 4.8 3.5 6h7c2.1-1.2 3.5-3.4 3.5-6a7 7 0 0 0-7-7z"/></svg>
+            </span>
+            <div>
+              <strong>Startup Brainstorm</strong>
+              <div style="font-size:0.85em;color:var(--text-muted)">Emerging agentic AI paradigms</div>
+            </div>
+          </button>
+          <button class="prompt-chip" data-prompt="Draft a crisp executive project status summary email">
+            <span class="chip-icon">
+              <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </span>
+            <div>
+              <strong>Executive Summary</strong>
+              <div style="font-size:0.85em;color:var(--text-muted)">High-impact professional briefing</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    `;
+    chatThread.querySelectorAll('.prompt-chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        submitPrompt(btn.getAttribute('data-prompt'));
+      });
+    });
+    return;
+  }
+
+  // Render conversation messages
+  conv.messages.forEach((msg, idx) => {
+    if (msg.role === 'user') {
+      const uEl = document.createElement('div');
+      uEl.className = 'msg-user';
+      uEl.textContent = msg.content;
+      chatThread.appendChild(uEl);
+    } else {
+      const aEl = document.createElement('div');
+      aEl.className = 'msg-assistant';
+      aEl.innerHTML = `
+        <div class="card-bubble">${renderMarkdown(msg.content)}</div>
+        <div class="msg-utils">
+          <button class="btn-copy-msg" data-idx="${idx}">
+            <svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M5 16V6a2 2 0 012-2h8"/></svg>
+            <span>Copy</span>
+          </button>
+          <button class="btn-speak-msg" data-idx="${idx}">
+            <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 010 6"/></svg>
+            <span>Speak</span>
+          </button>
+        </div>
+      `;
+      chatThread.appendChild(aEl);
+    }
+  });
+
+  // Attach copy & speak listeners
+  chatThread.querySelectorAll('.btn-copy-msg').forEach(b => {
+    b.addEventListener('click', () => {
+      const idx = parseInt(b.getAttribute('data-idx'));
+      const text = conv.messages[idx]?.content || '';
+      navigator.clipboard && navigator.clipboard.writeText(text);
+      b.querySelector('span').textContent = 'Copied!';
+      b.style.color = 'var(--accent)';
+      setTimeout(() => {
+        b.querySelector('span').textContent = 'Copy';
+        b.style.color = '';
+      }, 700);
+    });
+  });
+
+  chatThread.querySelectorAll('.btn-speak-msg').forEach(b => {
+    b.addEventListener('click', () => {
+      const idx = parseInt(b.getAttribute('data-idx'));
+      const text = conv.messages[idx]?.content || '';
+      AuraAI.onSpeakText(text);
+    });
+  });
+
+  chatThread.scrollTop = chatThread.scrollHeight;
+}
+
+// Global 1-click code block copy handler
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.btn-copy-code');
+  if (!btn) return;
+  const container = btn.closest('.code-container');
+  if (!container) return;
+  const codeEl = container.querySelector('code');
+  if (!codeEl) return;
+  const text = codeEl.innerText;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+  }
+  const span = btn.querySelector('span');
+  if (span) span.textContent = 'Copied!';
+  btn.classList.add('copied');
+  tone(784, 0.1, 0.04);
+  buzz(15);
+  setTimeout(() => {
+    if (span) span.textContent = 'Copy';
+    btn.classList.remove('copied');
+  }, 2000);
+});
+
+function loadLatestMessageOrIntro() {
+  const conv = getActiveConversation();
+  // Don't show the static demo template when user wakes the orb or if an API key is active
+  if (conv && conv.id !== 'c_demo_thermo' && conv.messages && conv.messages.length > 0) {
+    const assistantMsgs = conv.messages.filter(m => m.role === 'assistant' && m.content);
+    if (assistantMsgs.length > 0) {
+      const lastA = assistantMsgs[assistantMsgs.length - 1];
+      txt.innerHTML = renderMarkdown(lastA.content);
+      return;
+    }
+  }
+  // Baseline initial intro
+  sayIntro();
+}
+
+const baselineIntro = [
+  ...('I’m listening.'.split(' ').map(w => [w, 1])),
+  ...('What would you like to work on? I can help with design ideas, writing, or planning — just tell me where to start.'.split(' ').map(w => [w, 0]))
+];
+
+function sayIntro() {
+  clearTimeout(ty);
+  txt.innerHTML = baselineIntro.map(([w, b]) => `<span class="w${b ? ' b' : ''}">${w} </span>`).join('');
+  const sp = txt.children;
+  let i = 0;
+  (function n() {
+    if (i < sp.length) {
+      sp[i++].classList.add('v');
+      ty = setTimeout(n, 45);
+    }
+  })();
+}
+
+/* -------------------------------------------------------------
+   Unified Prompt Submission (§7.3, §8.3)
+   ------------------------------------------------------------- */
+function submitPrompt(promptText) {
+  const p = (promptText || chatInput.value).trim();
+  if (!p || isStreaming) return;
+
+  lastPrompt = p;
+  chatInput.value = '';
+  chatInput.style.height = 'auto';
+  chatInput.disabled = true;
+  isStreaming = true;
+  document.getElementById('nav-chat-dot')?.classList.add('active');
+
+  // If no active conversation or if active is the dummy demo, create a new live conversation
+  if (!state.activeId || state.activeId === 'c_demo_thermo') {
+    const newConv = {
+      id: 'c_' + Date.now(),
+      title: p.slice(0, 32),
+      updatedAt: Date.now(),
+      messages: []
+    };
+    state.conversations.unshift(newConv);
+    state.activeId = newConv.id;
+  }
+  const conv = getActiveConversation();
+  conv.updatedAt = Date.now();
+  conv.messages.push({ role: 'user', content: p });
+
+  // Check turn count for auto-expand (§7.3)
+  const userTurns = conv.messages.filter(m => m.role === 'user').length;
+  if (userTurns >= 2 && mode !== 'full') {
+    toFullChat();
+  }
+
+  // Create assistant placeholder message
+  conv.messages.push({ role: 'assistant', content: '' });
+  const assistantMsg = conv.messages[conv.messages.length - 1];
+  AuraAI.history = conv.messages;
+  saveState();
+
+  if (mode === 'full') {
+    renderFullChatThread();
+  } else {
+    txt.innerHTML = '<span class="sp"></span> <span style="color:var(--text-muted)">Aura is thinking...</span>';
+  }
+
+  // Offline validation check (§12)
+  if (!navigator.onLine && !AuraAI.useMockMode) {
+    const errMsg = 'You are currently offline. Aura Pro requires an active internet connection to contact remote models.';
+    assistantMsg.content = errMsg;
+    isStreaming = false;
+    chatInput.disabled = false;
+    if (mode === 'full') renderFullChatThread();
+    else txt.innerHTML = `<span style="color:#ef4444">${errMsg}</span>`;
+    return;
+  }
+
+  AuraAI.sendMessage(p, {
+    onStart() {
+      glow = 1.3;
+      tone(587, 0.2, 0.08, 'triangle');
+    },
+    onStreamWord(chunk) {
+      assistantMsg.content = chunk;
+      if (mode === 'full') {
+        const lastCard = chatThread.querySelector('.msg-assistant:last-child .card-bubble');
+        if (lastCard) {
+          lastCard.innerHTML = renderMarkdown(chunk);
+          chatThread.scrollTop = chatThread.scrollHeight;
+        }
+      } else {
+        txt.innerHTML = renderMarkdown(chunk);
+        txt.scrollTop = txt.scrollHeight;
+      }
+    },
+    onComplete(fullText) {
+      assistantMsg.content = fullText;
+      isStreaming = false;
+      chatInput.disabled = false;
+      chatInput.focus();
+      document.getElementById('nav-chat-dot')?.classList.remove('active');
+      tone(784, 0.25, 0.08, 'triangle');
+      buzz(12);
+      saveState();
+      if (mode === 'full') renderFullChatThread();
+      else txt.innerHTML = renderMarkdown(fullText);
+      renderHistory();
+
+      // Auto-generate conversation title with Gemini if new conversation
+      if ((conv.title === 'New Conversation' || !conv.title) && typeof AuraAI.generateTitle === 'function') {
+        AuraAI.generateTitle(p, fullText).then(generated => {
+          if (generated && generated.length > 0) {
+            conv.title = generated;
+            saveState();
+            renderHistory();
+          }
+        });
+      }
+    },
+    onError(err) {
+      console.error('[AuraAI error]', err);
+      const errMsg = err?.message || 'Could not reach Aura. Please check your network connection.';
+      assistantMsg.content = errMsg;
+      isStreaming = false;
+      chatInput.disabled = false;
+      document.getElementById('nav-chat-dot')?.classList.remove('active');
+      if (mode === 'full') renderFullChatThread();
+      else txt.innerHTML = `<span style="color:#ef4444">${renderMarkdown(errMsg)}</span>`;
+    }
+  });
+}
+window.submitPrompt = submitPrompt;
+
+function autoResizeInput() {
+  chatInput.style.height = 'auto';
+  chatInput.style.height = Math.min(chatInput.scrollHeight, U * 18) + 'px';
+}
+chatInput.addEventListener('input', autoResizeInput);
+
+chatInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    submitPrompt();
+  }
+});
+
+/* -------------------------------------------------------------
+   Handle Gestures: Swipe Up / Swipe Down / Tap (§7.2)
+   ------------------------------------------------------------- */
+let handleDrag = null;
+
+handle.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  handle.setPointerCapture(e.pointerId);
+  handleDrag = {
+    sy: e.clientY,
+    sx: e.clientX,
+    startTime: performance.now(),
+    moved: false
+  };
+});
+
+handle.addEventListener('pointermove', e => {
+  if (!handleDrag) return;
+  const dy = e.clientY - handleDrag.sy;
+  const dx = e.clientX - handleDrag.sx;
+  if (Math.hypot(dx, dy) > 6) handleDrag.moved = true;
+});
+
+handle.addEventListener('pointerup', e => {
+  if (!handleDrag) return;
+  const dy = e.clientY - handleDrag.sy;
+  const dt = performance.now() - handleDrag.startTime;
+  const vy = dy / Math.max(1, dt);
+  handleDrag = null;
+
+  // Swipe up (dy < -35px) -> toFullChat()
+  if (dy < -35 || (dy < -15 && vy < -0.3)) {
+    toFullChat();
+  }
+  // Swipe down (dy > 45px) -> minimise()
+  else if (dy > 45 || (dy > 20 && vy > 0.3)) {
+    minimise();
+  }
+  // Tap -> toFullChat()
+  else if (Math.abs(dy) <= 10) {
+    toFullChat();
+  }
+});
+
+handle.addEventListener('pointercancel', () => { handleDrag = null; });
+
+handle.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowUp') {
+    e.preventDefault();
+    toFullChat();
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    minimise();
+  }
+});
+
+/* -------------------------------------------------------------
+   Action Row Functionality (§7.2)
+   ------------------------------------------------------------- */
+const actLike = $('act-like');
+const actDislike = $('act-dislike');
+
+actLike.addEventListener('click', () => {
+  const willBeOn = !actLike.classList.contains('on');
+  actLike.classList.toggle('on', willBeOn);
+  if (willBeOn) actDislike.classList.remove('on');
+  buzz(10);
+  tone(740, 0.15, 0.05);
+});
+
+actDislike.addEventListener('click', () => {
+  const willBeOn = !actDislike.classList.contains('on');
+  actDislike.classList.toggle('on', willBeOn);
+  if (willBeOn) actLike.classList.remove('on');
+  buzz(10);
+  tone(370, 0.15, 0.05);
+});
+
+$('act-share').addEventListener('click', async () => {
+  const text = txt.textContent || '';
+  if (navigator.share) {
+    try {
+      await navigator.share({ title: 'Aura AI', text: text });
+      return;
+    } catch (e) {}
+  }
+  try {
+    await navigator.clipboard.writeText(text);
+    flashIcon($('act-share'));
+  } catch (e) {}
+});
+
+const cpBtn = $('act-copy');
+function flashIcon(btn) {
+  const origColor = btn.style.color;
+  btn.style.color = 'var(--accent)';
+  btn.style.transform = 'scale(1.15)';
+  setTimeout(() => {
+    btn.style.color = origColor;
+    btn.style.transform = '';
+  }, 600);
+}
+
+cpBtn.addEventListener('click', () => {
+  try {
+    navigator.clipboard && navigator.clipboard.writeText(txt.textContent);
+    flashIcon(cpBtn);
+    buzz(12);
+    tone(880, 0.15, 0.06);
+  } catch (e) {}
+});
+
+$('act-more').addEventListener('click', e => {
+  e.stopPropagation();
+  moreMenu.classList.toggle('open');
+});
+document.addEventListener('click', e => {
+  if (!moreMenu.contains(e.target) && e.target !== $('act-more')) {
+    moreMenu.classList.remove('open');
+  }
+});
+
+$('menu-regen').addEventListener('click', () => {
+  moreMenu.classList.remove('open');
+  submitPrompt(lastPrompt || "Regenerate latest analysis");
+});
+
+$('menu-report').addEventListener('click', () => {
+  moreMenu.classList.remove('open');
+  alert('Thank you. Issue report logged.');
+});
+
+const speakBtn = $('act-speak');
+speakBtn.addEventListener('click', () => {
+  if (isSpeaking) {
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    isSpeaking = false;
+    speakBtn.classList.remove('on');
+  } else {
+    const textToRead = txt.textContent || '';
+    if (!textToRead) return;
+    isSpeaking = true;
+    speakBtn.classList.add('on');
+    AuraAI.onSpeakText(textToRead);
+
+    const checkInterval = setInterval(() => {
+      if (!('speechSynthesis' in window) || !speechSynthesis.speaking) {
+        isSpeaking = false;
+        speakBtn.classList.remove('on');
+        clearInterval(checkInterval);
+      }
+    }, 250);
+  }
+});
+
+/* -------------------------------------------------------------
+   Input Dock Controls: Plus, Mic, Live (§7.3)
+   ------------------------------------------------------------- */
+$('attach-btn').addEventListener('click', () => {
+  tone(520, 0.1, 0.06);
+  buzz(10);
+  chatInput.placeholder = "Context attached · Ask Aura";
+  setTimeout(() => { chatInput.placeholder = "Ask Aura"; }, 2500);
+});
+
+/* -------------------------------------------------------------
+   Voice Wake Activation Engine ("Hey Aura")
+   ------------------------------------------------------------- */
+const VoiceWakeEngine = {
+  recognizer: null,
+  isActive: false,
+  isPaused: false,
+  restartTimer: null,
+  wakeRegex: /(?:hey|hi|ok|okay|yo)?\s*\baura\b/i,
+
+  init() {
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRec) {
+      console.warn('[VoiceWakeEngine] SpeechRecognition not supported on this browser.');
+      return false;
+    }
+
+    try {
+      this.recognizer = new SpeechRec();
+      this.recognizer.continuous = true;
+      this.recognizer.interimResults = true;
+      this.recognizer.lang = 'en-US';
+
+      this.recognizer.onstart = () => {
+        this.isActive = true;
+        this.isPaused = false;
+        this.updateHintBadge(true);
+        console.log('[VoiceWakeEngine] Active & listening for "Hey Aura"...');
+      };
+
+      this.recognizer.onresult = (e) => {
+        if (this.isPaused || isSpeaking || (typeof AudioEngine !== 'undefined' && AudioEngine.isSpeaking)) return;
+
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+          const res = e.results[i];
+          const transcript = (res[0]?.transcript || '').trim();
+
+          if (this.wakeRegex.test(transcript)) {
+            const isFinal = res.isFinal;
+            this.handleWakeDetection(transcript, isFinal);
+            break;
+          }
+        }
+      };
+
+      this.recognizer.onerror = (e) => {
+        if (e.error !== 'no-speech' && e.error !== 'aborted') {
+          console.warn('[VoiceWakeEngine] Status:', e.error);
+        }
+      };
+
+      this.recognizer.onend = () => {
+        this.isActive = false;
+        if (state && state.settings && state.settings.voiceWake && !this.isPaused) {
+          clearTimeout(this.restartTimer);
+          this.restartTimer = setTimeout(() => {
+            if (state.settings.voiceWake && !this.isPaused && !isSpeaking && !micBtn.classList.contains('listening')) {
+              this.start();
+            }
+          }, 600);
+        } else if (state && state.settings && !state.settings.voiceWake) {
+          this.updateHintBadge(false);
+        }
+      };
+
+      return true;
+    } catch (err) {
+      console.warn('[VoiceWakeEngine] Init error:', err);
+      return false;
+    }
+  },
+
+  start() {
+    if (!state.settings || state.settings.voiceWake === false) return;
+    if (!this.recognizer && !this.init()) return;
+    if (this.isActive) return;
+    this.isPaused = false;
+    try {
+      this.recognizer.start();
+    } catch (e) {}
+  },
+
+  stop() {
+    clearTimeout(this.restartTimer);
+    this.isPaused = true;
+    if (this.recognizer && this.isActive) {
+      try { this.recognizer.stop(); } catch (e) {}
+    }
+    this.isActive = false;
+    this.updateHintBadge(false);
+  },
+
+  pause() {
+    this.isPaused = true;
+    clearTimeout(this.restartTimer);
+    if (this.recognizer && this.isActive) {
+      try { this.recognizer.stop(); } catch (e) {}
+    }
+  },
+
+  resume() {
+    if (state.settings && state.settings.voiceWake !== false) {
+      this.isPaused = false;
+      this.start();
+    }
+  },
+
+  handleWakeDetection(transcript, isFinal) {
+    console.log('[VoiceWakeEngine] WAKE WORD HEARD:', transcript);
+
+    tone(880, 0.12, 0.08, 'sine');
+    setTimeout(() => tone(1175, 0.22, 0.1, 'triangle'), 90);
+    buzz([35, 45, 60]);
+
+    glow = 2.4;
+    if (typeof react === 'function') {
+      react(S.x, S.y);
+    }
+
+    if (mode === 'float') {
+      setTimeout(() => {
+        toDock();
+      }, 160);
+    }
+
+    const match = transcript.match(/(?:hey|hi|ok|okay|yo)?\s*\baura\b[,:\s]*(.*)/i);
+    const command = match && match[1] ? match[1].trim() : '';
+
+    if (command && command.length > 2 && isFinal) {
+      chatInput.value = command;
+      submitPrompt(command);
+    } else {
+      chatInput.placeholder = "Listening... Ask Aura anything";
+      document.getElementById('voice-wave')?.classList.add('active');
+      setTimeout(() => {
+        if (recognition && !micBtn.classList.contains('listening')) {
+          try { recognition.start(); } catch(e) {}
+        }
+      }, 450);
+    }
+  },
+
+  updateHintBadge(active) {
+    const hintEl = document.getElementById('hint');
+    if (!hintEl) return;
+    if (active) {
+      hintEl.innerHTML = `Say <strong style="color:var(--accent);">"Hey Aura"</strong> or tap to wake`;
+    } else {
+      hintEl.textContent = `Drag the orb anywhere · tap to wake it`;
+    }
+  }
+};
+
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+
+if (SpeechRecognition) {
+  recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+
+  recognition.onstart = () => {
+    if (typeof VoiceWakeEngine !== 'undefined') VoiceWakeEngine.pause();
+    micBtn.classList.add('listening');
+    document.getElementById('voice-wave')?.classList.add('active');
+    chatInput.placeholder = 'Listening to your voice...';
+    AuraAI.onToggleMic(true);
+    buzz(20);
+    tone(659, 0.15, 0.08);
+  };
+  recognition.onresult = e => {
+    const transcript = e.results[0][0].transcript;
+    chatInput.value = transcript;
+    submitPrompt(transcript);
+  };
+  recognition.onerror = e => {
+    console.warn('Speech recognition error', e);
+    micBtn.classList.remove('listening');
+    document.getElementById('voice-wave')?.classList.remove('active');
+    chatInput.placeholder = 'Ask Aura';
+    AuraAI.onToggleMic(false);
+    if (typeof VoiceWakeEngine !== 'undefined' && state.settings.voiceWake) {
+      setTimeout(() => VoiceWakeEngine.resume(), 600);
+    }
+  };
+  recognition.onend = () => {
+    micBtn.classList.remove('listening');
+    document.getElementById('voice-wave')?.classList.remove('active');
+    chatInput.placeholder = 'Ask Aura';
+    AuraAI.onToggleMic(false);
+    if (typeof VoiceWakeEngine !== 'undefined' && state.settings.voiceWake) {
+      setTimeout(() => VoiceWakeEngine.resume(), 600);
+    }
+  };
+
+  micBtn.addEventListener('click', () => {
+    if (micBtn.classList.contains('listening')) {
+      recognition.stop();
+    } else {
+      try { recognition.start(); } catch (err) {}
+    }
+  });
+} else {
+  micBtn.style.display = 'none';
+}
+
+liveBtn.addEventListener('click', () => {
+  const willBeLive = !isLiveMode;
+  AuraAI.onToggleLiveMode(willBeLive);
+  tone(willBeLive ? 880 : 440, 0.2, 0.08, 'triangle');
+  buzz(willBeLive ? 25 : 15);
+});
+
+/* -------------------------------------------------------------
+   History Screen & Drawer Management (§9.2)
+   ------------------------------------------------------------- */
+function formatRelativeTime(ts) {
+  const now = Date.now();
+  const diff = now - ts;
+  const m = Math.floor(diff / 60000);
+  if (m < 1) return 'Just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  const d = Math.floor(h / 24);
+  return `${d}d ago`;
+}
+
+function groupConversations(convs) {
+  const now = Date.now();
+  const oneDay = 86400000;
+  const groups = { Today: [], Yesterday: [], 'Previous 7 days': [], Older: [] };
+
+  convs.forEach(c => {
+    const diff = now - c.updatedAt;
+    if (diff < oneDay) groups['Today'].push(c);
+    else if (diff < oneDay * 2) groups['Yesterday'].push(c);
+    else if (diff < oneDay * 7) groups['Previous 7 days'].push(c);
+    else groups['Older'].push(c);
+  });
+  return groups;
+}
+
+function renderHistory(filterText = '') {
+  const query = filterText.toLowerCase();
+  let list = state.conversations;
+  if (query) {
+    list = list.filter(c => c.title.toLowerCase().includes(query) ||
+      (c.messages && c.messages.some(m => m.content.toLowerCase().includes(query)))
+    );
+  }
+
+  const renderGroupList = (container, isDrawer = false) => {
+    container.innerHTML = '';
+    if (list.length === 0) {
+      container.innerHTML = `<div style="text-align:center;padding:calc(var(--u)*6);color:var(--text-muted);">No conversations yet. Tap the orb or Chat tab to start.</div>`;
+      return;
+    }
+
+    const groups = groupConversations(list);
+    Object.keys(groups).forEach(grp => {
+      const convs = groups[grp];
+      if (convs.length === 0) return;
+
+      const grpEl = document.createElement('div');
+      grpEl.className = 'history-group-title';
+      grpEl.textContent = grp;
+      container.appendChild(grpEl);
+
+      const listEl = document.createElement('div');
+      listEl.className = 'history-list';
+
+      convs.forEach(c => {
+        const lastMsg = c.messages && c.messages.length > 0 ? c.messages[c.messages.length - 1].content : 'No messages';
+        const row = document.createElement('div');
+        row.className = 'history-row';
+        row.innerHTML = `
+          <div class="history-info">
+            <div class="history-row-title">${c.title}</div>
+            <div class="history-row-prev">${lastMsg.slice(0, 50)} · ${formatRelativeTime(c.updatedAt)}</div>
+          </div>
+          <div class="history-actions">
+            <button class="btn-ren" title="Rename" aria-label="Rename conversation">
+              <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            </button>
+            <button class="btn-del" title="Delete" aria-label="Delete conversation">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+            </button>
+          </div>
+        `;
+
+        row.querySelector('.history-info').addEventListener('click', () => {
+          state.activeId = c.id;
+          saveState();
+          if (isDrawer) closeDrawer();
+          toFullChat();
+        });
+
+        row.querySelector('.btn-ren').addEventListener('click', e => {
+          e.stopPropagation();
+          const newTitle = prompt('Rename conversation:', c.title);
+          if (newTitle && newTitle.trim()) {
+            c.title = newTitle.trim();
+            saveState();
+            renderHistory(historySearch.value);
+          }
+        });
+
+        row.querySelector('.btn-del').addEventListener('click', e => {
+          e.stopPropagation();
+          if (confirm(`Delete "${c.title}"?`)) {
+            state.conversations = state.conversations.filter(x => x.id !== c.id);
+            if (state.activeId === c.id) {
+              state.activeId = state.conversations.length > 0 ? state.conversations[0].id : null;
+            }
+            saveState();
+            renderHistory(historySearch.value);
+          }
+        });
+
+        listEl.appendChild(row);
+      });
+      container.appendChild(listEl);
+    });
+  };
+
+  renderGroupList(historyContent, false);
+  renderGroupList(drawerContent, true);
+}
+
+historySearch.addEventListener('input', e => {
+  renderHistory(e.target.value);
+});
+
+/* Drawer overlay (§8.2, §14.3) */
+function openDrawer() {
+  historyDrawer.classList.add('open');
+  drawerBackdrop.classList.add('open');
+  renderHistory();
+}
+function closeDrawer() {
+  historyDrawer.classList.remove('open');
+  drawerBackdrop.classList.remove('open');
+}
+$('btn-drawer-open').addEventListener('click', openDrawer);
+drawerBackdrop.addEventListener('click', closeDrawer);
+$('btn-drawer-new').addEventListener('click', () => {
+  closeDrawer();
+  const newConv = {
+    id: 'c_' + Date.now(),
+    title: 'New Conversation',
+    updatedAt: Date.now(),
+    messages: []
+  };
+  state.conversations.unshift(newConv);
+  state.activeId = newConv.id;
+  saveState();
+  toFullChat();
+});
+
+/* -------------------------------------------------------------
+   Settings Screen Management (§9.3)
+   ------------------------------------------------------------- */
+/* AI Brain: Google Gemini (§10) */
+const setGeminiKey = $('set-gemini-key');
+const setGeminiModel = $('set-gemini-model');
+const setSystemPrompt = $('set-system-prompt');
+const btnToggleKeyVis = $('btn-toggle-key-vis');
+const btnSaveKey = $('btn-save-key');
+const btnTestGemini = $('btn-test-gemini');
+const geminiStatusPill = $('gemini-status-pill');
+
+if (setGeminiKey) {
+  setGeminiKey.value = state.settings.geminiApiKey || '';
+  ['input', 'change', 'blur', 'paste', 'keyup'].forEach(ev => {
+    setGeminiKey.addEventListener(ev, e => {
+      persistGeminiKey(e.target.value);
+    });
+  });
+}
+
+if (btnSaveKey && setGeminiKey && geminiStatusPill) {
+  btnSaveKey.addEventListener('click', () => {
+    const raw = setGeminiKey.value.trim();
+    if (!raw) {
+      geminiStatusPill.style.display = 'inline-block';
+      geminiStatusPill.style.background = 'rgba(239, 68, 68, 0.15)';
+      geminiStatusPill.style.color = '#ef4444';
+      geminiStatusPill.textContent = 'Please paste your Gemini API key first.';
+      return;
+    }
+    persistGeminiKey(raw);
+    if (state.activeId === 'c_demo_thermo') {
+      state.activeId = null;
+    }
+    sayIntro();
+    geminiStatusPill.style.display = 'inline-block';
+    geminiStatusPill.style.background = 'rgba(16, 185, 129, 0.15)';
+    geminiStatusPill.style.color = '#10b981';
+    geminiStatusPill.textContent = '✓ API Key Saved Permanently!';
+    tone(659, 0.2, 0.08);
+    buzz(15);
+  });
+}
+
+if (btnToggleKeyVis && setGeminiKey) {
+  btnToggleKeyVis.addEventListener('click', () => {
+    if (setGeminiKey.type === 'password') {
+      setGeminiKey.type = 'text';
+      btnToggleKeyVis.textContent = 'Hide';
+    } else {
+      setGeminiKey.type = 'password';
+      btnToggleKeyVis.textContent = 'Show';
+    }
+  });
+}
+
+if (setGeminiModel) {
+  setGeminiModel.value = state.settings.geminiModel || 'gemini-3.5-flash-lite';
+  setGeminiModel.addEventListener('change', e => {
+    state.settings.geminiModel = e.target.value;
+    saveState();
+  });
+}
+
+if (setSystemPrompt) {
+  setSystemPrompt.value = state.settings.systemPrompt || '';
+  setSystemPrompt.addEventListener('input', e => {
+    state.settings.systemPrompt = e.target.value;
+    saveState();
+  });
+}
+
+if (btnTestGemini && geminiStatusPill) {
+  btnTestGemini.addEventListener('click', async () => {
+    const rawInputKey = (setGeminiKey ? setGeminiKey.value : state.settings.geminiApiKey || '').trim();
+    const cleanKey = rawInputKey.replace(/^["']|["']$/g, '').trim();
+
+    if (!cleanKey) {
+      geminiStatusPill.style.display = 'inline-block';
+      geminiStatusPill.style.background = 'rgba(239, 68, 68, 0.15)';
+      geminiStatusPill.style.color = '#ef4444';
+      geminiStatusPill.textContent = 'Please paste an API key first.';
+      tone(300, 0.15, 0.05);
+      buzz(15);
+      return;
+    }
+
+    // Persist immediately across state and standalone storage
+    persistGeminiKey(cleanKey);
+
+    geminiStatusPill.style.display = 'inline-block';
+    geminiStatusPill.style.background = 'rgba(59, 130, 246, 0.15)';
+    geminiStatusPill.style.color = 'var(--accent)';
+    geminiStatusPill.textContent = 'Testing connection & listing models...';
+
+    try {
+      let data = null;
+      let usedVer = 'v1beta';
+
+      // Try v1beta first, then fallback to v1
+      for (const ver of ['v1beta', 'v1']) {
+        const listUrl = `https://generativelanguage.googleapis.com/${ver}/models?key=${cleanKey}`;
+        const res = await fetch(listUrl);
+        if (res.ok) {
+          data = await res.json();
+          usedVer = ver;
+          break;
+        } else {
+          const errData = await res.json().catch(() => ({}));
+          if (!data) data = { error: errData.error || { message: `HTTP ${res.status}` } };
+        }
+      }
+
+      if (data && data.models) {
+        const available = (data.models || []).filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes('generateContent'));
+        
+        if (available.length > 0 && setGeminiModel) {
+          setGeminiModel.innerHTML = '';
+          available.forEach(m => {
+            const cleanName = m.name.replace(/^models\//, '');
+            const opt = document.createElement('option');
+            opt.value = cleanName;
+            opt.textContent = `${m.displayName || cleanName} (${cleanName})`;
+            setGeminiModel.appendChild(opt);
+          });
+
+          // Pick best match (prioritize ultra-fast flash-lite)
+          const flashModel = available.find(m => m.name.includes('gemini-3.5-flash-lite') || m.name.includes('gemini-3.1-flash-lite') || m.name.includes('flash-lite')) || available.find(m => m.name.includes('gemini-3') || m.name.includes('flash'));
+          const chosen = flashModel ? flashModel.name.replace(/^models\//, '') : available[0].name.replace(/^models\//, '');
+          
+          setGeminiModel.value = chosen;
+          state.settings.geminiModel = chosen;
+          state.settings.geminiApiKey = cleanKey;
+          if (state.activeId === 'c_demo_thermo') {
+            state.activeId = null;
+          }
+          saveState();
+          sayIntro();
+
+          geminiStatusPill.style.background = 'rgba(16, 185, 129, 0.15)';
+          geminiStatusPill.style.color = '#10b981';
+          geminiStatusPill.textContent = `✓ Connected! Found ${available.length} models on ${usedVer}. Active: ${chosen}`;
+        } else {
+          state.settings.geminiApiKey = cleanKey;
+          if (state.activeId === 'c_demo_thermo') {
+            state.activeId = null;
+          }
+          saveState();
+          sayIntro();
+          geminiStatusPill.style.background = 'rgba(16, 185, 129, 0.15)';
+          geminiStatusPill.style.color = '#10b981';
+          geminiStatusPill.textContent = `✓ Connected to Google Gemini (${usedVer})`;
+        }
+        tone(880, 0.2, 0.08);
+        buzz(15);
+      } else {
+        const errMsg = data?.error?.message || 'Invalid API key or Generative Language API disabled';
+        geminiStatusPill.style.background = 'rgba(239, 68, 68, 0.15)';
+        geminiStatusPill.style.color = '#ef4444';
+        geminiStatusPill.textContent = `Error: ${errMsg}`;
+        tone(300, 0.2, 0.08);
+      }
+    } catch (err) {
+      geminiStatusPill.style.background = 'rgba(239, 68, 68, 0.15)';
+      geminiStatusPill.style.color = '#ef4444';
+      geminiStatusPill.textContent = `Network error: ${err.message}`;
+    }
+  });
+}
+
+const btnFreshChat = $('btn-fresh-chat');
+if (btnFreshChat) {
+  btnFreshChat.addEventListener('click', () => {
+    state.activeId = null;
+    saveState();
+    renderHistory();
+    sayIntro();
+    tone(659, 0.25, 0.08);
+    buzz(15);
+    alert('Active chat reset. Tapping the Orb or asking questions will now start a live conversation with Google Gemini!');
+  });
+}
+
+const btnForceRefresh = $('btn-force-refresh');
+if (btnForceRefresh) {
+  btnForceRefresh.addEventListener('click', async () => {
+    if ('caches' in window) {
+      const keys = await caches.keys();
+      await Promise.all(keys.map(k => caches.delete(k)));
+    }
+    if ('serviceWorker' in navigator) {
+      const regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(r => r.unregister()));
+    }
+    window.location.reload(true);
+  });
+}
+
+$('setting-theme-select').addEventListener('change', e => {
+  applyTheme(e.target.value);
+});
+
+$('set-sound').checked = state.settings.sound;
+$('set-sound').addEventListener('change', e => {
+  state.settings.sound = e.target.checked;
+  saveState();
+});
+
+$('set-haptics').checked = state.settings.haptics;
+$('set-haptics').addEventListener('change', e => {
+  state.settings.haptics = e.target.checked;
+  saveState();
+});
+
+$('set-reducemotion').checked = state.settings.reduceMotion;
+$('set-reducemotion').addEventListener('change', e => {
+  state.settings.reduceMotion = e.target.checked;
+  saveState();
+});
+
+$('set-mousefx').checked = state.settings.mouseFx;
+$('set-mousefx').addEventListener('change', e => {
+  state.settings.mouseFx = e.target.checked;
+  saveState();
+});
+
+$('set-tts-rate').value = state.settings.ttsRate || 1.0;
+$('tts-rate-label').textContent = `${state.settings.ttsRate || 1.0}x speed`;
+$('set-tts-rate').addEventListener('input', e => {
+  const val = parseFloat(e.target.value);
+  state.settings.ttsRate = val;
+  $('tts-rate-label').textContent = `${val.toFixed(1)}x speed`;
+  saveState();
+});
+
+/* Natural Voice AI & Audio Reactivity Settings (Component 2) */
+const setTtsVoice = $('set-tts-voice');
+const setAutoSpeak = $('set-auto-speak');
+const setAudioReactive = $('set-audio-reactive');
+
+function populateVoiceList() {
+  if (!('speechSynthesis' in window) || !setTtsVoice) return;
+  const voices = speechSynthesis.getVoices();
+  if (voices.length === 0) return;
+
+  const currentVal = state.settings.ttsVoice || '';
+  setTtsVoice.innerHTML = '<option value="">Default Natural Voice</option>';
+
+  voices.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v.voiceURI;
+    const isNatural = /natural|neural|online|google|samantha|karen|serena|jenny|guy/i.test(v.name);
+    opt.textContent = `${v.name} (${v.lang})${isNatural ? ' ✨ High-Def' : ''}`;
+    if (currentVal === v.voiceURI) {
+      opt.selected = true;
+    }
+    setTtsVoice.appendChild(opt);
+  });
+}
+
+if ('speechSynthesis' in window) {
+  populateVoiceList();
+  if (speechSynthesis.onvoiceschanged !== undefined) {
+    speechSynthesis.onvoiceschanged = populateVoiceList;
+  }
+}
+
+if (setTtsVoice) {
+  setTtsVoice.addEventListener('change', e => {
+    state.settings.ttsVoice = e.target.value;
+    saveState();
+  });
+}
+
+const setVoiceWake = $('set-voice-wake');
+if (setVoiceWake) {
+  setVoiceWake.checked = state.settings.voiceWake !== false;
+  setVoiceWake.addEventListener('change', e => {
+    state.settings.voiceWake = e.target.checked;
+    saveState();
+    if (e.target.checked) {
+      VoiceWakeEngine.start();
+    } else {
+      VoiceWakeEngine.stop();
+    }
+  });
+}
+
+if (state.settings && state.settings.voiceWake !== false) {
+  setTimeout(() => {
+    if (typeof VoiceWakeEngine !== 'undefined') {
+      VoiceWakeEngine.start();
+    }
+  }, 1000);
+}
+
+if (setAutoSpeak) {
+  setAutoSpeak.checked = !!state.settings.autoSpeak;
+  setAutoSpeak.addEventListener('change', e => {
+    state.settings.autoSpeak = e.target.checked;
+    saveState();
+  });
+}
+
+if (setAudioReactive) {
+  setAudioReactive.checked = state.settings.audioReactive !== false;
+  setAudioReactive.addEventListener('change', e => {
+    state.settings.audioReactive = e.target.checked;
+    saveState();
+  });
+}
+
+$('btn-export-json').addEventListener('click', () => {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state.conversations, null, 2));
+  const downloadAnchor = document.createElement('a');
+  downloadAnchor.setAttribute("href", dataStr);
+  downloadAnchor.setAttribute("download", "aura-conversations.json");
+  document.body.appendChild(downloadAnchor);
+  downloadAnchor.click();
+  downloadAnchor.remove();
+  buzz(15);
+  tone(880, 0.2, 0.08);
+});
+
+$('btn-clear-history').addEventListener('click', () => {
+  if (confirm('Are you sure you want to erase all conversation history from this device?')) {
+    state.conversations = [];
+    state.activeId = null;
+    saveState();
+    renderHistory();
+    if (mode === 'full') renderFullChatThread();
+    tone(330, 0.3, 0.1);
+  }
+});
+
+const btnOverlay = $('btn-overlay-perm');
+if (window.AuraDesktop) {
+  btnOverlay.textContent = 'Active (Desktop Overlay)';
+  btnOverlay.style.background = '#10b981';
+  btnOverlay.style.color = '#ffffff';
+  btnOverlay.addEventListener('click', () => {
+    alert('Aura Pro Desktop Floating Overlay is running. Use Ctrl+Shift+Space to toggle visibility anytime.');
+  });
+} else if (window.AuraHost) {
+  try {
+    if (AuraHost.getOverlayPermission()) {
+      btnOverlay.textContent = 'Active';
+      btnOverlay.style.background = '#10b981';
+      btnOverlay.style.color = '#ffffff';
+    }
+  } catch (e) {}
+  btnOverlay.addEventListener('click', () => {
+    try { AuraHost.requestOverlayPermission(); } catch (e) {}
+  });
+} else {
+  btnOverlay.addEventListener('click', () => {
+    alert('On Android devices, this activates the floating liquid-glass orb overlay. For Windows Desktop, run run-desktop.bat to launch the native desktop overlay.');
+  });
+}
+
+/* -------------------------------------------------------------
+   Screen Switching & Visibility Helpers
+   ------------------------------------------------------------- */
+function hideScreens() {
+  screenHistory.classList.remove('active');
+  screenSettings.classList.remove('active');
+  rowsPlaceholder.style.opacity = '0';
+}
+
+function syncNavToScreen() {
+  if (typeof N === 'undefined' || !window.tabsList) return;
+  if (state.screen === 'settings') {
+    N.a = 2;
+    window.tabsList.forEach((t, idx) => t.classList.toggle('on', idx === 2));
+  } else {
+    N.a = 0;
+    window.tabsList.forEach((t, idx) => t.classList.toggle('on', idx === 0));
+  }
+}
+
+function restoreCurrentScreen() {
+  if (state.screen === 'settings') {
+    screenSettings.classList.add('active');
+    screenHistory.classList.remove('active');
+  } else {
+    screenHistory.classList.add('active');
+    screenSettings.classList.remove('active');
+    renderHistory();
+  }
+  syncNavToScreen();
+}
+
+/* -------------------------------------------------------------
+   Orb Drag, Tap, Hover and Physics (§4)
+   ------------------------------------------------------------- */
+const cl = (v, a, b) => Math.max(a, Math.min(b, v));
+
+hit.addEventListener('pointerdown', e => {
+  idleAmb = 0;
+  if (mode === 'dock' || mode === 'island') {
+    e.preventDefault();
+    react(S.x, S.y);
+    return;
+  }
+  if (mode !== 'float') return;
+  e.preventDefault();
+  hit.setPointerCapture(e.pointerId);
+  drag = { sx: e.clientX, sy: e.clientY, lastX: e.clientX, lastY: e.clientY, ox: S.x, oy: S.y, moved: false };
+  T.s = 0.84;
+  glow = Math.max(glow, 0.5);
+  tone(280, 0.1, 0.05);
+  $('hint').style.opacity = 0;
+});
+
+hit.addEventListener('pointermove', e => {
+  if (!drag) return;
+  const dist = Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy);
+  if (dist > 5) drag.moved = true;
+  if (drag.moved) {
+    if (window.AuraDesktop && mode === 'float') {
+      const dx = e.clientX - drag.lastX;
+      const dy = e.clientY - drag.lastY;
+      drag.lastX = e.clientX;
+      drag.lastY = e.clientY;
+      AuraDesktop.dragWindow(dx, dy);
+      S.x = T.x = W / 2;
+      S.y = T.y = H / 2;
+    } else {
+      const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+      T.x = cl(drag.ox + dx, D * 0.6, W - D * 0.6);
+      T.y = cl(drag.oy + dy, H * 0.24, H - D * 0.8);
+    }
+    S.vr += (e.clientX - drag.sx) * 0.001;
+  }
+});
+
+hit.addEventListener('pointerup', () => {
+  if (!drag) return;
+  const d = drag;
+  drag = null;
+  T.s = 1;
+  if (d.moved) {
+    if (window.AuraDesktop && mode === 'float') {
+      AuraDesktop.snapWindow();
+      S.x = T.x = W / 2;
+      S.y = T.y = H / 2;
+    } else {
+      T.x = T.x < W / 2 ? D * 0.8 : W - D * 0.8;
+      home = { x: T.x, y: T.y };
+      S.vs += 0.05;
+      tone(440, 0.2, 0.06);
+    }
+  } else {
+    react(S.x, S.y);
+    setTimeout(toDock, 280);
+  }
+});
+
+hit.addEventListener('pointercancel', () => { drag = null; T.s = 1; });
+
+hit.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && mode === 'float') {
+    e.preventDefault();
+    react(S.x, S.y);
+    setTimeout(toDock, 280);
+  }
+});
+
+window.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (historyDrawer.classList.contains('open')) {
+      closeDrawer();
+    } else if (mode === 'dock' || mode === 'island' || mode === 'full') {
+      minimise();
+    }
+  }
+});
+
+st.addEventListener('pointermove', e => {
+  if (e.pointerType !== 'mouse') return;
+  const r = st.getBoundingClientRect();
+  ms.x = e.clientX - r.left;
+  ms.y = e.clientY - r.top;
+  ms.on = true;
+});
+st.addEventListener('pointerleave', () => { ms.on = false; });
+
+function hover(k) {
+  const prefersReduce = state.settings.reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const live = mode === 'float' && !drag && ms.on && state.settings.mouseFx;
+  let th = 0, tp = 0, nx = 0, ny = 0;
+
+  if (live) {
+    const dx = ms.x - home.x, dy = ms.y - home.y, dist = Math.hypot(dx, dy), mag = D * 2.2, hr = D * 0.55;
+    if (dist < mag) {
+      let prox = Math.max(0, 1 - dist / mag);
+      prox *= prox;
+      tp = prox;
+      T.x = home.x + dx * prox * 0.28;
+      T.y = home.y + dy * prox * 0.28;
+      S.vr += (ms.x - S.x) * 0.0015 * k;
+      const tg = 0.35 + prox * 0.65;
+      if (glow < tg) glow += (tg - glow) * 0.35 * k;
+
+      if (dist < hr) {
+        T.s = 1.12;
+        th = 1;
+        nx = cl((ms.x - S.x) / hr, -1, 1);
+        ny = cl((ms.y - S.y) / hr, -1, 1);
+        if (!isHov) {
+          isHov = true;
+          const n = performance.now();
+          if (n - hovT > 400) {
+            hovT = n;
+            tone(987, 0.12, 0.025, 'sine');
+            sparks(S.x, S.y, 2 + (Math.random() < 0.5 ? 1 : 0));
+          }
+        }
+      } else {
+        T.s = 1;
+        isHov = false;
+      }
+    } else {
+      T.x = home.x;
+      T.y = home.y;
+      T.s = 1;
+      isHov = false;
+    }
+  } else {
+    isHov = false;
+    if (!drag) {
+      T.s = 1;
+      if (mode === 'float') {
+        T.x = home.x;
+        T.y = home.y;
+      }
+    }
+  }
+
+  const a = Math.min(1, 0.18 * k);
+  PX.x += (nx - PX.x) * a;
+  PX.y += (ny - PX.y) * a;
+  PX.p += (tp - PX.p) * a;
+  PX.h += (th - PX.h) * Math.min(1, (th ? 0.18 : 0.3) * k);
+
+  if (prefersReduce) {
+    if (spec) spec.style.opacity = '0';
+    return;
+  }
+}
+
+/* -------------------------------------------------------------
+   Nav Bar Physics & Tab Interaction (§9.1)
+   ------------------------------------------------------------- */
+const sel = $('sel'), tabs = [...nav.querySelectorAll('.nb')];
+window.tabsList = tabs;
+const NX = [0.23, 0.5, 0.77];
+const N = { a: 0, x: 0.23, v: 0, rx: 0, ry: 0, tx: 0, ps: 1, tps: 1, sx: 50, sy: 26, hp: 0 };
+
+tabs.forEach((b, i) => {
+  b.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    N.tps = 0.95;
+    N.a = i;
+    tabs.forEach((o, j) => o.classList.toggle('on', j === i));
+    const bg = nav.firstElementChild;
+    const r = bg.getBoundingClientRect();
+    const s = r.height * 1.6;
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    const d = document.createElement('div');
+    d.className = 'rip';
+    d.style.cssText = `left:${x - s/2}px;top:${y - s/2}px;width:${s}px;height:${s}px`;
+    bg.appendChild(d);
+    d.animate(
+      [{ transform: 'scale(.2)', opacity: 0.9 }, { transform: 'scale(1.6)', opacity: 0 }],
+      { duration: 650, easing: 'cubic-bezier(.15,.7,.2,1)' }
+    ).onfinish = () => d.remove();
+    tone([523, 659, 784][i], 0.35, 0.1, 'triangle');
+    buzz(10);
+
+    // Nav wiring (§9.1)
+    if (i === 0) {
+      // Home -> History Screen
+      state.screen = 'history';
+      saveState();
+      restoreCurrentScreen();
+    } else if (i === 1) {
+      // Chat -> New conversation in Full Chat
+      const newConv = {
+        id: 'c_' + Date.now(),
+        title: 'New Conversation',
+        updatedAt: Date.now(),
+        messages: []
+      };
+      state.conversations.unshift(newConv);
+      state.activeId = newConv.id;
+      saveState();
+      toFullChat();
+    } else if (i === 2) {
+      // Profile -> Settings Screen
+      state.screen = 'settings';
+      saveState();
+      restoreCurrentScreen();
+    }
+  });
+  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, () => { N.tps = 1; }));
+});
+
+function navTick(k) {
+  const r = nav.getBoundingClientRect();
+  const cx = r.left + r.width / 2, cy = r.top + r.height / 2, hw = r.width / 2;
+  let prox = 0, dx = 0, dy = 0;
+  if (ms.on && state.settings.mouseFx) {
+    dx = ms.x - cx;
+    dy = ms.y - cy;
+    prox = Math.max(0, 1 - Math.hypot(dx / (hw * 1.7), dy / (U * 22)));
+    prox *= prox;
+  }
+  const a = Math.min(1, 0.16 * k), nx = cl(dx / hw, -1, 1), ny = cl(dy / (U * 8), -1, 1), on = prox > 0 ? 1 : 0;
+  N.ry += (nx * 9 * prox - N.ry) * a;
+  N.rx += (-ny * 7 * prox - N.rx) * a;
+  N.tx += (dx * 0.035 * prox - N.tx) * a;
+  N.hp += (prox - N.hp) * a;
+  N.sx += ((50 + nx * 38 * on) - N.sx) * a;
+  N.sy += ((26 + ny * 18 * on) - N.sy) * a;
+  N.ps += (N.tps - N.ps) * Math.min(1, 0.28 * k);
+  N.v += (NX[N.a] - N.x) * 0.16 * k;
+  N.v *= Math.pow(0.8, k);
+  N.x += N.v * k;
+
+  nav.style.transform = `perspective(${U * 80}px) translateX(${N.tx.toFixed(2)}px) rotateX(${N.rx.toFixed(2)}deg) rotateY(${N.ry.toFixed(2)}deg) scale(${(N.ps * (1 + N.hp * 0.03)).toFixed(4)})`;
+  nav.style.setProperty('--sx', N.sx.toFixed(1) + '%');
+  nav.style.setProperty('--sy', N.sy.toFixed(1) + '%');
+  nav.style.setProperty('--hp', N.hp.toFixed(3));
+  sel.style.left = (N.x * 100).toFixed(2) + '%';
+  sel.style.transform = `translate(-50%,-50%) scale(${(1 + Math.min(0.6, Math.abs(N.v) * 14)).toFixed(3)},${(1 - Math.min(0.25, Math.abs(N.v) * 4)).toFixed(3)})`;
+}
+
+/* -------------------------------------------------------------
+   Interactive Liquid Neon Orb Engine (§6.2)
+   ------------------------------------------------------------- */
+const NEON_PARTICLES = [];
+const NUM_NEON_PARTICLES = 40;
+for (let i = 0; i < NUM_NEON_PARTICLES; i++) {
+  const ang = Math.random() * Math.PI * 2;
+  const dst = Math.random() * 88;
+  NEON_PARTICLES.push({
+    x: Math.cos(ang) * dst,
+    y: Math.sin(ang) * dst,
+    vx: (Math.random() - 0.5) * 0.45,
+    vy: (Math.random() - 0.5) * 0.45,
+    size: 0.9 + Math.random() * 2.4,
+    alpha: 0.35 + Math.random() * 0.65,
+    twinkle: Math.random() * Math.PI * 2,
+    speed: 0.02 + Math.random() * 0.045
+  });
+}
+
+// Authentic Blue Orb Image & 7 gyroscopic 3D orbital filament rings
+const blueOrbImg = new Image();
+blueOrbImg.src = 'orb.png';
+
+const NEON_RINGS = [
+  { r: 124, tiltX: 0.38, tiltY: 0.52, speed: 0.024, width: 2.2, color: 'rgba(255,255,255,0.98)', glow: 'rgba(0,229,255,0.9)' },
+  { r: 130, tiltX: -0.42, tiltY: 0.28, speed: -0.019, width: 2.0, color: 'rgba(235,250,255,0.92)', glow: 'rgba(60,180,255,0.85)' },
+  { r: 120, tiltX: 0.62, tiltY: -0.38, speed: 0.028, width: 1.8, color: 'rgba(240,255,255,0.92)', glow: 'rgba(0,240,255,0.8)' },
+  { r: 136, tiltX: -0.28, tiltY: -0.62, speed: -0.025, width: 2.0, color: 'rgba(255,255,255,0.95)', glow: 'rgba(80,210,255,0.85)' },
+  { r: 116, tiltX: 0.82, tiltY: 0.18, speed: 0.032, width: 1.6, color: 'rgba(255,255,255,0.88)', glow: 'rgba(120,230,255,0.75)' },
+  { r: 126, tiltX: -0.58, tiltY: 0.72, speed: -0.016, width: 1.8, color: 'rgba(240,248,255,0.88)', glow: 'rgba(0,210,255,0.75)' },
+  { r: 132, tiltX: 0.15, tiltY: 0.88, speed: 0.022, width: 1.6, color: 'rgba(255,255,255,0.9)', glow: 'rgba(0,229,255,0.8)' }
+];
+
+function drawNeonRing(ctx, cx, cy, ring, pass, time, speedMult, tiltShiftX, tiltShiftY, audioMid) {
+  const steps = 96;
+  const angleOffset = time * ring.speed * 60 * speedMult;
+  const midBoost = audioMid || 0;
+  const reactiveR = ring.r * (1 + midBoost * 0.16);
+  
+  ctx.save();
+  ctx.shadowColor = ring.glow;
+  ctx.shadowBlur = 12 + midBoost * 24;
+  ctx.lineWidth = ring.width * (1 + midBoost * 0.45);
+  ctx.strokeStyle = ring.color;
+
+  let drawing = false;
+  
+  for (let i = 0; i <= steps; i++) {
+    const a = (i / steps) * Math.PI * 2;
+    const x0 = Math.cos(a) * reactiveR;
+    const y0 = Math.sin(a) * reactiveR;
+    const z0 = 0;
+
+    const cosX = Math.cos(ring.tiltX + tiltShiftY);
+    const sinX = Math.sin(ring.tiltX + tiltShiftY);
+    const cosY = Math.cos(ring.tiltY + tiltShiftX + angleOffset);
+    const sinY = Math.sin(ring.tiltY + tiltShiftX + angleOffset);
+
+    // Rotate around Y
+    const x1 = x0 * cosY + z0 * sinY;
+    const z1 = -x0 * sinY + z0 * cosY;
+
+    // Rotate around X
+    const y2 = y0 * cosX - z1 * sinX;
+    const z2 = y0 * sinX + z1 * cosX;
+
+    const isFront = z2 >= -15;
+    const shouldDraw = (pass === 0 && !isFront) || (pass === 1 && isFront);
+
+    const px = cx + x1;
+    const py = cy + y2;
+
+    if (shouldDraw) {
+      if (!drawing) {
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        drawing = true;
+      } else {
+        ctx.lineTo(px, py);
+      }
+    } else {
+      if (drawing) {
+        ctx.stroke();
+        drawing = false;
+      }
+    }
+  }
+  if (drawing) {
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawNeonLiquidCore(ctx, cx, cy, time, deformMult, tiltShiftX, tiltShiftY, audioBass) {
+  ctx.save();
+  
+  const bassBoost = audioBass || 0;
+  const baseR = 95 * (1 + bassBoost * 0.14);
+  const numPoints = 28;
+  const points = [];
+
+  for (let i = 0; i < numPoints; i++) {
+    const angle = (i / numPoints) * Math.PI * 2;
+    const wave1 = Math.sin(angle * 2 + time * 2.4) * (5.5 * deformMult);
+    const wave2 = Math.cos(angle * 3 - time * 1.9) * (4.2 * deformMult);
+    const wave3 = Math.sin(angle * 4 + time * 3.2) * (2.8 * deformMult);
+    const r = baseR + wave1 + wave2 + wave3;
+    
+    points.push({
+      x: cx + Math.cos(angle) * r,
+      y: cy + Math.sin(angle) * r
+    });
+  }
+
+  // Smooth liquid blob path
+  ctx.beginPath();
+  const firstMidX = (points[0].x + points[numPoints - 1].x) / 2;
+  const firstMidY = (points[0].y + points[numPoints - 1].y) / 2;
+  ctx.moveTo(firstMidX, firstMidY);
+
+  for (let i = 0; i < numPoints; i++) {
+    const nextIdx = (i + 1) % numPoints;
+    const midX = (points[i].x + points[nextIdx].x) / 2;
+    const midY = (points[i].y + points[nextIdx].y) / 2;
+    ctx.quadraticCurveTo(points[i].x, points[i].y, midX, midY);
+  }
+  ctx.closePath();
+
+  // Multi-stop liquid blue gradient (Aura's Signature Blue Palette)
+  const lightShiftX = cx + Math.sin(time * 1.6) * 12 + tiltShiftX * 25;
+  const lightShiftY = cy + Math.cos(time * 1.4) * 10 + tiltShiftY * 25;
+  
+  const grad = ctx.createRadialGradient(lightShiftX, lightShiftY, 6, cx, cy, baseR + 14);
+  grad.addColorStop(0.0, '#ffffff');
+  grad.addColorStop(0.16, '#9beaff');
+  grad.addColorStop(0.36, '#00c3ff');
+  grad.addColorStop(0.62, '#0052ff');
+  grad.addColorStop(0.84, '#061a7a');
+  grad.addColorStop(1.0, 'rgba(3, 10, 48, 0.7)');
+
+  ctx.fillStyle = grad;
+  ctx.shadowColor = 'rgba(0, 180, 255, 0.8)';
+  ctx.shadowBlur = 32;
+  ctx.fill();
+
+  // Draw the authentic 3D Blue Orb texture if loaded
+  if (blueOrbImg.complete && blueOrbImg.naturalWidth > 0) {
+    ctx.save();
+    ctx.clip();
+    const orbW = baseR * 2.22;
+    const orbH = orbW * (blueOrbImg.naturalHeight / blueOrbImg.naturalWidth);
+    const imgX = cx - orbW / 2 + tiltShiftX * 10;
+    const imgY = cy - orbH / 2 + tiltShiftY * 10;
+    ctx.globalAlpha = 0.85;
+    ctx.drawImage(blueOrbImg, imgX, imgY, orbW, orbH);
+    ctx.restore();
+  }
+
+  // Specular rim
+  ctx.strokeStyle = 'rgba(210, 245, 255, 0.6)';
+  ctx.lineWidth = 1.6;
+  ctx.shadowBlur = 10;
+  ctx.shadowColor = 'rgba(0, 229, 255, 0.9)';
+  ctx.stroke();
+
+  ctx.restore();
+}
+
+function drawNeonParticles(ctx, cx, cy, time, speedMult) {
+  ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
+
+  for (let p of NEON_PARTICLES) {
+    p.x += p.vx * speedMult;
+    p.y += p.vy * speedMult;
+    p.twinkle += p.speed * speedMult;
+
+    const dist = Math.hypot(p.x, p.y);
+    if (dist > 92) {
+      p.vx -= (p.x / dist) * 0.12;
+      p.vy -= (p.y / dist) * 0.12;
+    }
+
+    const currentAlpha = Math.max(0.12, p.alpha * (0.6 + Math.sin(p.twinkle) * 0.4));
+    
+    ctx.beginPath();
+    ctx.arc(cx + p.x, cy + p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(255, 255, 255, ${currentAlpha})`;
+    ctx.shadowColor = 'rgba(0, 229, 255, 0.85)';
+    ctx.shadowBlur = 6;
+    ctx.fill();
+  }
+
+  ctx.restore();
+}
+
+function drawNeonCentralHotspot(ctx, cx, cy, time, tiltShiftX, tiltShiftY) {
+  ctx.save();
+  const pulse = 1.0 + Math.sin(time * 3.6) * 0.14;
+  const spotX = cx + Math.sin(time * 1.6) * 9 + tiltShiftX * 20;
+  const spotY = cy + Math.cos(time * 1.4) * 8 + tiltShiftY * 20;
+  
+  const grad = ctx.createRadialGradient(spotX, spotY, 0, spotX, spotY, 42 * pulse);
+  grad.addColorStop(0.0, 'rgba(255, 255, 255, 0.98)');
+  grad.addColorStop(0.30, 'rgba(215, 248, 255, 0.75)');
+  grad.addColorStop(0.65, 'rgba(0, 229, 255, 0.35)');
+  grad.addColorStop(1.0, 'rgba(0, 110, 255, 0.0)');
+
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(spotX, spotY, 42 * pulse, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function renderNeonOrb(time, dt) {
+  if (!orbCtx || !orbCanvas) return;
+  const cw = orbCanvas.width, ch = orbCanvas.height;
+  const cx = cw / 2, cy = ch / 2;
+
+  const audio = (state.settings && state.settings.audioReactive !== false && typeof AudioEngine !== 'undefined')
+    ? AudioEngine.getFrequencyData()
+    : { level: 0, bass: 0, mid: 0, high: 0 };
+
+  const isAudioActive = isLiveMode || isStreaming || isSpeaking || (typeof AudioEngine !== 'undefined' && AudioEngine.isListening) || audio.level > 0.05;
+  const speedMult = isAudioActive ? (1.5 + audio.high * 1.8) : (isHov ? 1.25 : 1.0);
+  const deformMult = isAudioActive ? (1.3 + audio.bass * 1.1) : 1.0;
+  const tiltShiftX = (PX.x || 0) * 0.008;
+  const tiltShiftY = (PX.y || 0) * 0.008;
+
+  orbCtx.clearRect(0, 0, cw, ch);
+
+  // 1. Back pass for 3D orbital rings (behind liquid core)
+  for (let r of NEON_RINGS) {
+    drawNeonRing(orbCtx, cx, cy, r, 0, time, speedMult, tiltShiftX, tiltShiftY, audio.mid);
+  }
+
+  // 2. Liquid morphing plasma core
+  drawNeonLiquidCore(orbCtx, cx, cy, time, deformMult, tiltShiftX, tiltShiftY, audio.bass);
+
+  // 3. Floating stardust particles
+  drawNeonParticles(orbCtx, cx, cy, time, speedMult);
+
+  // 4. Central radiant light hotspot
+  drawNeonCentralHotspot(orbCtx, cx, cy, time, tiltShiftX, tiltShiftY);
+
+  // 5. Front pass for 3D orbital rings (wrapping in front of liquid core!)
+  for (let r of NEON_RINGS) {
+    drawNeonRing(orbCtx, cx, cy, r, 1, time, speedMult, tiltShiftX, tiltShiftY, audio.mid);
+  }
+}
+
+/* -------------------------------------------------------------
+   Main Animation & Physics Loop (§4)
+   ------------------------------------------------------------- */
+const ease = q => q < 0.5 ? 4 * q * q * q : 1 - Math.pow(-2 * q + 2, 3) / 2;
+
+function loop(t) {
+  const dt = Math.min(0.05, (t - last) / 1000 || 0.016);
+  const k = dt * 60;
+  const time = (t - t0) / 1000;
+  last = t;
+  hover(k);
+  navTick(k);
+  let x = S.x, y = S.y, sc = 1, rot = 0;
+  const prefersReduce = state.settings.reduceMotion || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (mode === 'fly') {
+    fl.t += dt;
+    const q = Math.min(1, fl.t / fl.dur);
+    const p = ease(q), u = 1 - p;
+    x = u * u * fl.a.x + 2 * u * p * fl.c.x + p * p * fl.b.x;
+    y = u * u * fl.a.y + 2 * u * p * fl.c.y + p * p * fl.b.y;
+    sc = fl.sa + (fl.sb - fl.sa) * p;
+    rot = fl.r0 + (fl.r1 - fl.r0) * p;
+    S.x = x;
+    S.y = y;
+    S.vx = S.vy = 0;
+    fl.pr = p;
+    if (fl.onp && q > 0.7) {
+      fl.onp();
+      fl.onp = null;
+    }
+    if (q >= 1) {
+      const c = fl.cb;
+      mode = fl.end;
+      fl = null;
+      c && c();
+    }
+  } else if (mode === 'float') {
+    S.vx += (T.x - S.x) * 0.14 * k;
+    S.vy += (T.y - S.y) * 0.14 * k;
+    const m = Math.pow(0.84, k);
+    S.vx *= m;
+    S.vy *= m;
+    S.x += S.vx * k;
+    S.y += S.vy * k;
+    x = S.x;
+    const bob = prefersReduce ? 0 : Math.sin(time * 1.5) * D * 0.05;
+    y = S.y + bob;
+
+    // Idle ambient breathing (§6.2)
+    idleAmb += dt;
+    if (idleAmb > 7.5 && !prefersReduce) {
+      idleAmb = 0;
+      ring(S.x, S.y, 2.2, 'rgba(0, 229, 255, 0.22)', 2200);
+    }
+  } else if (mode === 'dock' || mode === 'island') {
+    const bob = prefersReduce ? 0 : Math.sin(time * 1.5) * D * 0.04;
+    x = S.x;
+    y = S.y + bob;
+    sc = DS;
+    amb += dt;
+    const ringInterval = isLiveMode ? 0.9 : 2.0;
+    if (amb > ringInterval) {
+      amb = 0;
+      ring(S.x, S.y, isLiveMode ? 3.0 : 2.6, 'rgba(70,130,255,.4)', 1800);
+    }
+  }
+
+  S.vs += (T.s - S.s) * 0.16 * k;
+  S.vr += (0 - S.r) * 0.12 * k;
+  const m2 = Math.pow(0.84, k);
+  S.vs *= m2;
+  S.vr *= m2;
+  S.s += S.vs * k;
+  S.r += S.vr * k;
+  glow *= Math.pow(0.95, k);
+
+  orb.style.transform = `translate(${x.toFixed(1)}px,${y.toFixed(1)}px) translate(-50%,-48%) scale(${(sc * S.s).toFixed(4)}) rotate(${(rot + S.r).toFixed(1)}deg)`;
+  hit.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%) scale(${(mode === 'dock' || mode === 'island') ? DS : 1})`;
+  hit.style.pointerEvents = (mode === 'float' || mode === 'dock' || mode === 'island') ? 'auto' : 'none';
+
+  const isDocked = (mode === 'dock' || mode === 'island');
+  if (mode !== 'full') {
+    orb.style.opacity = isDocked ? Math.min(1, 0.8 + glow * 0.2).toFixed(2) : (mode === 'fly' ? (1 - 0.2 * (fl.end === 'dock' || fl.end === 'island' ? fl.pr : 1 - fl.pr)).toFixed(2) : 1);
+  }
+
+  spec.style.opacity = (PX.h * 0.75).toFixed(2);
+  spec.style.transform = `translate(${(x - D * 0.2 - PX.x * 4).toFixed(1)}px,${(y - D * 0.24 - PX.y * 4).toFixed(1)}px) translate(-50%,-50%) scale(${(sc * S.s).toFixed(3)})`;
+
+  const pulseSpeed = isLiveMode ? 4.5 : 2.2;
+  const hb = isDocked ? (0.55 + 0.12 * Math.sin(time * pulseSpeed)) : 0.18;
+  halo.style.opacity = (mode === 'full') ? '0' : Math.min(1, hb + glow * 0.5).toFixed(2);
+  halo.style.transform = `translate(${x}px,${y}px) translate(-50%,-50%) scale(${((0.8 + glow * 0.25) * (isDocked ? DS * 1.1 : 1)).toFixed(2)})`;
+
+  // Draw Interactive Liquid Neon Orb (§6.2)
+  renderNeonOrb(time, dt);
+
+  requestAnimationFrame(loop);
+}
+
+/* -------------------------------------------------------------
+   PWA Service Worker & Offline Management (§11.1, §12)
+   ------------------------------------------------------------- */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      console.log('[PWA] Service Worker registered with scope:', reg.scope);
+      reg.update();
+      if (reg.waiting) {
+        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+      }
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              newWorker.postMessage({ type: 'SKIP_WAITING' });
+            }
+          });
+        }
+      });
+    }).catch(err => {
+      console.warn('[PWA] Service Worker registration failed:', err);
+    });
+  });
+}
+
+function updateNetworkBadge() {
+  const isOnline = navigator.onLine;
+  const badge = document.getElementById('offline-status-badge');
+  const text = document.getElementById('offline-status-text');
+  if (badge && text) {
+    if (isOnline) {
+      badge.style.background = '#10b981';
+      text.textContent = 'Connected (Online)';
+    } else {
+      badge.style.background = '#ef4444';
+      text.textContent = 'Disconnected (Offline Mode)';
+    }
+  }
+}
+window.addEventListener('online', updateNetworkBadge);
+window.addEventListener('offline', updateNetworkBadge);
+updateNetworkBadge();
+
+let deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', e => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  const installBtn = document.getElementById('btn-install-pwa');
+  if (installBtn) installBtn.style.display = 'block';
+});
+
+const pwaInstallBtn = document.getElementById('btn-install-pwa');
+if (pwaInstallBtn) {
+  pwaInstallBtn.addEventListener('click', async () => {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      const choice = await deferredInstallPrompt.userChoice;
+      console.log('[PWA] User choice:', choice.outcome);
+      deferredInstallPrompt = null;
+    } else {
+      alert('To install Aura Pro on iOS: tap the Share button in Safari, then tap "Add to Home Screen". On desktop: click the Install icon in the browser address bar.');
+    }
+  });
+}
+
+// Native Desktop Global Shortcut Hook
+if (window.AuraDesktop) {
+  AuraDesktop.onShortcutTriggered(() => {
+    if (mode === 'float') {
+      toDock();
+    } else {
+      minimise();
+    }
+  });
+}
+
+// Initial history & screen state
+if (!window.AuraDesktop && urlParams.get('host') !== 'desktop' && urlParams.get('host') !== 'overlay') {
+  renderHistory();
+  restoreCurrentScreen();
+} else {
+  nav.classList.add('hidden');
+  hideScreens();
+}
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

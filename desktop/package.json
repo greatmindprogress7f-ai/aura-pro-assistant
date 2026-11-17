@@ -1,0 +1,23 @@
+{
+  "name": "aura-pro-desktop",
+  "version": "2.0.0",
+  "description": "Aura Pro 2.0 - System-Wide Floating Liquid-Glass AI Assistant",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "keywords": [
+    "ai",
+    "assistant",
+    "floating-orb",
+    "overlay",
+    "liquid-glass"
+  ],
+  "author": "Richard Nyarko",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.2.1"
+  }
+}

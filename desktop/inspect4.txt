@@ -1,0 +1,11 @@
+TypeError: process.activateUvLoop is not a function
+    at process.nextTick (node:electron/js2c/browser_init:2:122930)
+    at emitReadable (node:internal/streams/readable:826:13)
+    at onEofChunk (node:internal/streams/readable:805:5)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:466:5)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at ./lib/common/init.ts (node:electron/js2c/browser_init:2:123430)
+    at __webpack_require__ (node:electron/js2c/browser_init:2:126200)
+    at node:electron/js2c/browser_init:2:126557
+    at node:electron/js2c/browser_init:2:129963
+    at node:electron/js2c/browser_init:2:129967
