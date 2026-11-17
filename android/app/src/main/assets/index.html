@@ -1638,13 +1638,10 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
           <div class="setting-desc">Select or auto-detect working model</div>
         </div>
         <select id="set-gemini-model" style="background:var(--surface);color:var(--text-primary);border:1px solid var(--hairline);padding:6px 12px;border-radius:99px;font:inherit;">
-          <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (Ultra-Fast ⚡ Sub-Second)</option>
-          <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (Ultra-Fast ⚡ 1.5s)</option>
-          <option value="gemini-3-flash-preview">gemini-3-flash-preview (Fast ⚡ 1.4s)</option>
-          <option value="gemini-3.5-flash">gemini-3.5-flash (Standard)</option>
+          <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (Ultra-Fast ⚡ Sub-Second)</option>
+          <option value="gemini-3-flash-preview">gemini-3-flash-preview (Fast ⚡ Sub-Second)</option>
+          <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite</option>
           <option value="gemini-flash-latest">gemini-flash-latest</option>
-          <option value="gemini-2.0-flash">gemini-2.0-flash</option>
-          <option value="gemini-1.5-flash">gemini-1.5-flash</option>
         </select>
       </div>
 
@@ -2013,7 +2010,7 @@ const defaultState = {
     autoSpeak: false,
     audioReactive: true,
     geminiApiKey: EMBEDDED_API_KEY,
-    geminiModel: 'gemini-3.5-flash-lite',
+    geminiModel: 'gemini-3.1-flash-lite',
     systemPrompt: 'You are Aura, an advanced and elegant AI assistant. You provide concise, insightful, natural, and helpful answers. Format your replies with clean markdown.'
   }
 };
@@ -2026,6 +2023,14 @@ try {
     state = Object.assign({}, defaultState, parsed, {
       settings: Object.assign({}, defaultState.settings, parsed.settings || {})
     });
+    // Auto-migrate away from retired/legacy models
+    if (state.settings && state.settings.geminiModel && (
+      state.settings.geminiModel.includes('2.0') ||
+      state.settings.geminiModel.includes('1.5') ||
+      state.settings.geminiModel.includes('2.5')
+    )) {
+      state.settings.geminiModel = 'gemini-3.1-flash-lite';
+    }
     if (!state.conversations || state.conversations.length === 0) {
       state.conversations = seededDemo;
       state.activeId = 'c_demo_thermo';
@@ -2539,16 +2544,14 @@ window.AuraAI = {
 
       contents.push({ role: 'user', parts: [{ text: userPartText }] });
 
-      // Candidate models in speed & availability priority (prioritizing ultra-fast flash-lite)
+      // Candidate models in speed & availability priority (prioritizing ultra-fast tested models)
       const candidateList = Array.from(new Set([
-        (cleanModel && cleanModel !== 'gemini-3.5-flash' && !cleanModel.includes('2.5')) ? cleanModel : 'gemini-3.5-flash-lite',
-        'gemini-3.5-flash-lite',
+        (cleanModel && !cleanModel.includes('2.0') && !cleanModel.includes('1.5') && !cleanModel.includes('2.5')) ? cleanModel : 'gemini-3.1-flash-lite',
         'gemini-3.1-flash-lite',
         'gemini-3-flash-preview',
-        'gemini-flash-latest',
-        'gemini-3.5-flash',
-        'gemini-2.0-flash'
-      ])).filter(m => m && !m.includes('2.5-flash'));
+        'gemini-3.5-flash-lite',
+        'gemini-flash-latest'
+      ])).filter(m => m && !m.includes('2.0-flash') && !m.includes('2.5-flash') && !m.includes('1.5-flash'));
 
       let res = null;
       let usedVer = 'v1beta';
@@ -2702,8 +2705,11 @@ window.AuraAI = {
     const apiKey = (state && state.settings && state.settings.geminiApiKey ? state.settings.geminiApiKey : '').trim();
     if (!apiKey) return null;
     try {
-      const rawModel = (state.settings && state.settings.geminiModel) || 'gemini-1.5-flash';
-      const cleanModel = rawModel.trim().replace(/^models\//, '');
+      const rawModel = (state.settings && state.settings.geminiModel) || 'gemini-3.1-flash-lite';
+      let cleanModel = rawModel.trim().replace(/^models\//, '');
+      if (cleanModel.includes('2.0') || cleanModel.includes('1.5') || cleanModel.includes('2.5')) {
+        cleanModel = 'gemini-3.1-flash-lite';
+      }
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${cleanModel}:generateContent?key=${apiKey}`;
       const res = await fetch(url, {
         method: 'POST',
@@ -4144,7 +4150,7 @@ if (btnToggleKeyVis && setGeminiKey) {
 }
 
 if (setGeminiModel) {
-  setGeminiModel.value = state.settings.geminiModel || 'gemini-3.5-flash-lite';
+  setGeminiModel.value = (state.settings.geminiModel && !state.settings.geminiModel.includes('2.0')) ? state.settings.geminiModel : 'gemini-3.1-flash-lite';
   setGeminiModel.addEventListener('change', e => {
     state.settings.geminiModel = e.target.value;
     saveState();
@@ -4213,9 +4219,14 @@ if (btnTestGemini && geminiStatusPill) {
             setGeminiModel.appendChild(opt);
           });
 
-          // Pick best match (prioritize ultra-fast flash-lite)
-          const flashModel = available.find(m => m.name.includes('gemini-3.5-flash-lite') || m.name.includes('gemini-3.1-flash-lite') || m.name.includes('flash-lite')) || available.find(m => m.name.includes('gemini-3') || m.name.includes('flash'));
-          const chosen = flashModel ? flashModel.name.replace(/^models\//, '') : available[0].name.replace(/^models\//, '');
+          // Filter out retired/deprecated models (gemini-2.0, gemini-1.5, gemini-2.5)
+          const validModels = available.filter(m => !m.name.includes('2.0') && !m.name.includes('1.5') && !m.name.includes('2.5'));
+          const flashModel = validModels.find(m => m.name.includes('gemini-3.1-flash-lite')) || 
+                             validModels.find(m => m.name.includes('gemini-3-flash-preview')) ||
+                             validModels.find(m => m.name.includes('gemini-3.5-flash-lite')) ||
+                             validModels.find(m => m.name.includes('gemini-flash-latest')) ||
+                             validModels[0];
+          const chosen = flashModel ? flashModel.name.replace(/^models\//, '') : 'gemini-3.1-flash-lite';
           
           setGeminiModel.value = chosen;
           state.settings.geminiModel = chosen;
