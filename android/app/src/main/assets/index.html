@@ -13,6 +13,21 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="apple-mobile-web-app-title" content="Aura Pro" />
 <meta name="description" content="Aura Pro 2.0 — Floating Liquid Glass AI Assistant" />
+<!-- Open Graph & Social Link Preview Metadata (§LinkPreview) -->
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://aura-pro-ai.netlify.app/" />
+<meta property="og:title" content="Aura Pro 2.0 — Liquid Glass AI Assistant" />
+<meta property="og:description" content="Next-generation multimodal AI assistant with liquid glass physics, continuous hands-free voice, live web grounding, and floating system overlays." />
+<meta property="og:image" content="https://aura-pro-ai.netlify.app/icon-512.png" />
+<meta property="og:image:width" content="512" />
+<meta property="og:image:height" content="512" />
+<meta property="og:site_name" content="Aura Pro 2.0" />
+<!-- Twitter / X Card Metadata -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content="https://aura-pro-ai.netlify.app/" />
+<meta name="twitter:title" content="Aura Pro 2.0 — Liquid Glass AI Assistant" />
+<meta name="twitter:description" content="Next-generation multimodal AI assistant with liquid glass physics, continuous hands-free voice, live web grounding, and floating system overlays." />
+<meta name="twitter:image" content="https://aura-pro-ai.netlify.app/icon-512.png" />
 <script>
   if (location.search.includes('host=desktop') || window.AuraDesktop) {
     document.documentElement.setAttribute('data-host', 'desktop');
@@ -943,6 +958,104 @@ html, body {
   stroke-width: 2;
   fill: none;
   flex-shrink: 0;
+}
+
+/* Rich Link Preview Cards (§LinkPreview) */
+.link-previews-container {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 2);
+  margin-top: calc(var(--u) * 2);
+  width: 100%;
+}
+.link-preview-card {
+  display: flex;
+  background: var(--surface-solid);
+  border: 1px solid var(--hairline);
+  border-radius: calc(var(--u) * 2.5);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  box-shadow: 0 calc(var(--u) * 1) calc(var(--u) * 3) rgba(0, 0, 0, 0.05);
+  transition: all 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  max-width: 540px;
+  min-height: 84px;
+}
+.link-preview-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  box-shadow: 0 calc(var(--u) * 2) calc(var(--u) * 5) var(--accent-glow);
+}
+.link-preview-thumb {
+  width: 110px;
+  min-width: 110px;
+  background: var(--bg-row);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.link-preview-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.link-preview-thumb-fallback {
+  width: 36px;
+  height: 36px;
+  opacity: 0.7;
+}
+.link-preview-body {
+  padding: calc(var(--u) * 2) calc(var(--u) * 3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: calc(var(--u) * 0.8);
+  flex: 1;
+  min-width: 0;
+}
+.link-preview-domain {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--u) * 1);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: lowercase;
+}
+.link-preview-favicon {
+  width: 13px;
+  height: 13px;
+  border-radius: 2px;
+}
+.link-preview-title {
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.link-preview-desc {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+[data-theme="dark"] .link-preview-card {
+  background: #181A22;
+  border-color: rgba(255, 255, 255, 0.09);
+  color: #F3F4F6;
+}
+[data-theme="dark"] .link-preview-thumb {
+  background: #12141a;
 }
 
 /* Syntax Badged Code Blocks & 1-Click Copy (§8.3) */
@@ -2410,6 +2523,134 @@ const WebSearchEngine = {
 };
 
 /* -------------------------------------------------------------
+   Link Preview Engine (§LinkPreview)
+   Fetches rich Open Graph metadata and unfurls interactive cards
+   ------------------------------------------------------------- */
+const LinkPreviewEngine = {
+  cache: (function() {
+    try {
+      const stored = localStorage.getItem('aura_link_previews');
+      return stored ? JSON.parse(stored) : {};
+    } catch(e) { return {}; }
+  })(),
+
+  saveCache() {
+    try {
+      const keys = Object.keys(this.cache);
+      if (keys.length > 60) {
+        keys.slice(0, keys.length - 60).forEach(k => delete this.cache[k]);
+      }
+      localStorage.setItem('aura_link_previews', JSON.stringify(this.cache));
+    } catch(e) {}
+  },
+
+  extractUrls(text) {
+    if (!text || typeof text !== 'string') return [];
+    const urlRegex = /(https?:\/\/[^\s<>"'()]+)/gi;
+    const matches = text.match(urlRegex) || [];
+    const cleanMatches = matches.map(u => u.replace(/[.,;:!?)\]]+$/, ''));
+    return [...new Set(cleanMatches)];
+  },
+
+  async fetchPreview(url) {
+    if (this.cache[url]) return this.cache[url];
+
+    let domain = '';
+    try { domain = new URL(url).hostname.replace(/^www\./, ''); } catch(e) { domain = url; }
+    const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=64`;
+
+    const fallbackData = {
+      url,
+      domain,
+      title: domain,
+      description: url,
+      image: '',
+      favicon
+    };
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 4500);
+
+      const apiUrl = `https://api.microlink.io?url=${encodeURIComponent(url)}`;
+      const res = await fetch(apiUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json.status === 'success' && json.data) {
+          const d = json.data;
+          const preview = {
+            url,
+            domain: d.publisher || domain,
+            title: d.title || domain,
+            description: d.description || '',
+            image: d.image?.url || '',
+            favicon: d.logo?.url || favicon
+          };
+          this.cache[url] = preview;
+          this.saveCache();
+          return preview;
+        }
+      }
+    } catch (e) {
+      // Fallback gracefully on timeout/offline
+    }
+
+    this.cache[url] = fallbackData;
+    this.saveCache();
+    return fallbackData;
+  },
+
+  renderCard(data) {
+    const card = document.createElement('a');
+    card.className = 'link-preview-card';
+    card.href = data.url;
+    card.target = '_blank';
+    card.rel = 'noopener noreferrer';
+
+    const thumbHtml = data.image
+      ? `<div class="link-preview-thumb"><img src="${data.image}" alt="${data.title}" loading="lazy" onerror="this.parentElement.style.display='none'"/></div>`
+      : `<div class="link-preview-thumb"><img src="${data.favicon}" class="link-preview-thumb-fallback" alt="${data.domain}"/></div>`;
+
+    card.innerHTML = `
+      ${thumbHtml}
+      <div class="link-preview-body">
+        <div class="link-preview-domain">
+          <img src="${data.favicon}" class="link-preview-favicon" alt="" onerror="this.style.display='none'"/>
+          <span>${data.domain}</span>
+        </div>
+        <div class="link-preview-title">${data.title}</div>
+        ${data.description ? `<div class="link-preview-desc">${data.description}</div>` : ''}
+      </div>
+    `;
+    return card;
+  },
+
+  async scanAndUnfurl(containerEl, text) {
+    if (!containerEl) return;
+    const urls = this.extractUrls(text);
+    if (!urls || urls.length === 0) return;
+
+    let previewsBox = containerEl.querySelector('.link-previews-container');
+    if (!previewsBox) {
+      previewsBox = document.createElement('div');
+      previewsBox.className = 'link-previews-container';
+      containerEl.appendChild(previewsBox);
+    }
+
+    const targetUrls = urls.slice(0, 2);
+    for (const url of targetUrls) {
+      if (previewsBox.querySelector(`[href="${url}"]`)) continue;
+      const data = await this.fetchPreview(url);
+      if (data && previewsBox) {
+        previewsBox.appendChild(this.renderCard(data));
+      }
+    }
+  }
+};
+
+/* -------------------------------------------------------------
    Continuous Duplex Hands-Free Voice Conversation Engine
    ------------------------------------------------------------- */
 const DuplexVoiceEngine = {
@@ -3423,6 +3664,9 @@ function renderFullChatThread() {
       uEl.className = 'msg-user';
       uEl.textContent = msg.content;
       chatThread.appendChild(uEl);
+      if (typeof LinkPreviewEngine !== 'undefined') {
+        LinkPreviewEngine.scanAndUnfurl(uEl, msg.content);
+      }
     } else {
       const aEl = document.createElement('div');
       aEl.className = 'msg-assistant';
@@ -3461,6 +3705,9 @@ function renderFullChatThread() {
         </div>
       `;
       chatThread.appendChild(aEl);
+      if (typeof LinkPreviewEngine !== 'undefined') {
+        LinkPreviewEngine.scanAndUnfurl(aEl, msg.content);
+      }
     }
   });
 
@@ -3657,6 +3904,9 @@ function submitPrompt(promptText) {
           `;
         }
         txt.innerHTML = sheetContent;
+        if (typeof LinkPreviewEngine !== 'undefined') {
+          LinkPreviewEngine.scanAndUnfurl(txt, fullText);
+        }
       }
       renderHistory();
 
