@@ -2705,6 +2705,7 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
   cursor: default;
   flex-shrink: 0;
   opacity: 0.5;
+  pointer-events: auto !important;
   transition: all 0.2s cubic-bezier(0.2, 1, 0.3, 1);
 }
 .btn-send svg {
@@ -3519,8 +3520,11 @@ function applyTheme(theme) {
   state.theme = theme;
   saveState();
   document.body.setAttribute('data-theme', theme);
+  document.documentElement.setAttribute('data-theme', theme);
   const selEl = document.getElementById('setting-theme-select');
   if (selEl) selEl.value = theme;
+  const themeBtnIcon = document.getElementById('theme-btn-icon');
+  if (themeBtnIcon) themeBtnIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
   ['btn-theme-sky', 'btn-theme-dark', 'btn-theme-sys'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.remove('active');
@@ -5830,16 +5834,21 @@ async function submitPrompt(promptText) {
 window.submitPrompt = submitPrompt;
 
 function autoResizeInput() {
-  chatInput.style.height = 'auto';
-  chatInput.style.height = Math.min(chatInput.scrollHeight, U * 18) + 'px';
+  const inputEl = document.getElementById('chat-input') || chatInput;
+  if (!inputEl) return;
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, (typeof U !== 'undefined' ? U : 8) * 18) + 'px';
   updateSendButtonState();
 }
-chatInput.addEventListener('input', autoResizeInput);
+['input', 'change', 'keyup', 'paste'].forEach(ev => {
+  if (chatInput) chatInput.addEventListener(ev, autoResizeInput);
+});
 
 function updateSendButtonState() {
   const btnSend = document.getElementById('btn-send');
+  const inputEl = document.getElementById('chat-input') || chatInput;
   if (!btnSend) return;
-  const hasText = chatInput && chatInput.value.trim().length > 0;
+  const hasText = Boolean(inputEl && inputEl.value.trim().length > 0);
   const hasVision = typeof VisionEngine !== 'undefined' && Boolean(VisionEngine.hasAttachment());
   if (hasText || hasVision) {
     btnSend.classList.add('active');
