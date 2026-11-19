@@ -4490,6 +4490,10 @@ const VisionEngine = {
   pendingAttachment: null, // { data: base64, mimeType: 'image/jpeg', previewUrl: dataUrl }
   isCapturing: false,
 
+  hasAttachment() {
+    return Boolean(this.pendingAttachment && this.pendingAttachment.data);
+  },
+
   async captureScreen() {
     if (this.isCapturing) return false;
     this.isCapturing = true;
@@ -5849,7 +5853,7 @@ function updateSendButtonState() {
   const inputEl = document.getElementById('chat-input') || chatInput;
   if (!btnSend) return;
   const hasText = Boolean(inputEl && inputEl.value.trim().length > 0);
-  const hasVision = typeof VisionEngine !== 'undefined' && Boolean(VisionEngine.hasAttachment());
+  const hasVision = Boolean(typeof VisionEngine !== 'undefined' && VisionEngine.pendingAttachment && VisionEngine.pendingAttachment.data);
   if (hasText || hasVision) {
     btnSend.classList.add('active');
   } else {
@@ -7592,7 +7596,9 @@ function loop(t) {
 const btnSend = document.getElementById('btn-send');
 if (btnSend) {
   btnSend.addEventListener('click', () => {
-    if (btnSend.classList.contains('active') || (chatInput && chatInput.value.trim().length > 0)) {
+    const hasTxt = chatInput && chatInput.value.trim().length > 0;
+    const hasVis = typeof VisionEngine !== 'undefined' && Boolean(VisionEngine.pendingAttachment);
+    if (btnSend.classList.contains('active') || hasTxt || hasVis) {
       submitPrompt();
       if (typeof updateSendButtonState === 'function') updateSendButtonState();
     }
