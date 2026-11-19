@@ -3260,6 +3260,85 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
       </div>
     </div>
   </div>
+
+  <!-- Glass Nav Bar (§9.1) -->
+  <nav class="nav" id="nav" aria-label="Main">
+    <div class="nbg">
+      <div class="nbl a"></div>
+      <div class="nbl b"></div>
+      <div class="nbl c"></div>
+      <div class="gloss"></div>
+      <div class="sel" id="sel"></div>
+    </div>
+    <button class="nb on" id="nav-home" style="left:23%" aria-label="History">
+      <svg viewBox="0 0 24 24"><path fill-rule="evenodd" stroke="#fff" stroke-width="1.4" stroke-linejoin="round" d="M12 3.6 3.8 10.8v8.6a1 1 0 0 0 1 1h14.4a1 1 0 0 0 1-1v-8.6zM9.8 20.4v-4.2a2.2 2.2 0 0 1 4.4 0v4.2z"/></svg>
+      <span class="nb-label">History</span>
+    </button>
+    <button class="nb" id="nav-chat" style="left:50%" aria-label="Chat">
+      <svg viewBox="0 0 24 24"><path stroke="#fff" stroke-width="1.2" stroke-linejoin="round" d="M12.6 3.4a7.4 7.4 0 0 0-6.4 11.1l-1.4 3.9 4.1-1.1A7.4 7.4 0 1 0 12.6 3.4z"/><path fill="none" stroke="#2f7bff" stroke-width="1.6" stroke-linecap="round" d="M9.6 9.4h6M9.6 12.4h4"/></svg>
+      <span class="nb-label">Chat</span>
+      <span class="nav-pulse-dot" id="nav-chat-dot"></span>
+    </button>
+    <button class="nb" id="nav-profile" style="left:77%" aria-label="Settings">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="7.8" r="4"/><path d="M4.4 20.4c0-3.9 3.3-6.4 7.6-6.4s7.6 2.5 7.6 6.4c0 .6-.4 1-1 1H5.4c-.6 0-1-.4-1-1z"/></svg>
+      <span class="nb-label">Settings</span>
+    </button>
+  </nav>
+
+  <div class="halo" id="halo"></div>
+
+  <!-- Interactive Liquid Neon Orb (§6.2) -->
+  <div class="orb" id="orb">
+    <canvas id="orb-canvas" width="400" height="400"></canvas>
+  </div>
+
+  <div class="spec" id="spec"></div>
+  <div class="hit" id="hit" role="button" aria-label="Assistant orb" tabindex="0"></div>
+  <div class="hint" id="hint">Say <strong style="color:var(--accent);">"Hey Aura"</strong> or tap to wake</div>
+
+  <!-- Compact Sheet (§7.2) -->
+  <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Compact Assistant Sheet">
+    <button class="chip" id="min" aria-label="Minimise to orb"><span class="sp"></span>Minimise</button>
+    <div class="card">
+      <div class="handle" id="handle" role="button" aria-label="Swipe up or tap to expand to full chat" tabindex="0"></div>
+      <div class="txt" id="txt" aria-live="polite"></div>
+      
+      <!-- Action Row (§7.2) -->
+      <div class="acts">
+        <button class="ic t" id="act-like" aria-label="Like response">
+          <svg viewBox="0 0 24 24"><path d="M7 11v9H4v-9h3zm0 0l4-8c1.5 0 2.5 1 2 2.5L12.5 9H19a2 2 0 011.9 2.6l-1.7 6.5A2 2 0 0117.3 19H7"/></svg>
+        </button>
+        <button class="ic t" id="act-dislike" aria-label="Dislike response">
+          <svg viewBox="0 0 24 24" style="transform:rotate(180deg)"><path d="M7 11v9H4v-9h3zm0 0l4-8c1.5 0 2.5 1 2 2.5L12.5 9H19a2 2 0 011.9 2.6l-1.7 6.5A2 2 0 0117.3 19H7"/></svg>
+        </button>
+        <button class="ic" id="act-share" aria-label="Share response">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="12" r="2.2"/><circle cx="17" cy="6" r="2.2"/><circle cx="17" cy="18" r="2.2"/><path d="M8 11l7-4M8 13l7 4"/></svg>
+        </button>
+        <button class="ic" id="act-copy" aria-label="Copy text">
+          <svg viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M5 16V6a2 2 0 012-2h8"/></svg>
+        </button>
+        <button class="ic" id="act-more" aria-label="More options">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="12" cy="19" r="1.3"/></svg>
+        </button>
+        <button class="ic t" id="act-speak" aria-label="Read aloud">
+          <svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/></svg>
+        </button>
+
+        <!-- More Menu Dropdown -->
+        <div class="more-menu" id="more-menu" role="menu">
+          <button id="menu-regen" role="menuitem">
+            <svg viewBox="0 0 24 24"><path d="M21 2v6h-6M3 12a9 9 0 0 1 15.5-6.4L21 8M3 22v-6h6M21 12a9 9 0 0 1-15.5 6.4L3 16"/></svg>
+            <span>Regenerate reply</span>
+          </button>
+          <button id="menu-report" role="menuitem">
+            <svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1zM4 22v-7"/></svg>
+            <span>Report issue</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </main>
 
 <script>
@@ -3371,12 +3450,12 @@ function saveState() {
       localStorage.setItem('aura_gemini_api_key', state.settings.geminiApiKey);
     }
     // Mirror to IndexedDB
-    if (typeof AuraDB !== 'undefined' && AuraDB.db && Array.isArray(state.conversations)) {
-      state.conversations.forEach(c => AuraDB.saveConversation(c));
+    if (typeof window !== 'undefined' && window.AuraDB && window.AuraDB.db && Array.isArray(state.conversations)) {
+      state.conversations.forEach(c => window.AuraDB.saveConversation(c));
     }
     // Auto-sync to 5TB Google Drive Vault
-    if (typeof GoogleDriveEngine !== 'undefined' && state.settings && state.settings.googleAccount && state.settings.googleDriveSync) {
-      GoogleDriveEngine.debouncedSync();
+    if (typeof window !== 'undefined' && window.GoogleDriveEngine && state.settings && state.settings.googleAccount && state.settings.googleDriveSync) {
+      window.GoogleDriveEngine.debouncedSync();
     }
   } catch (e) {
     console.warn('Could not persist state', e);
@@ -3817,6 +3896,7 @@ const AuraDB = {
     });
   }
 };
+window.AuraDB = AuraDB;
 // Boot IndexedDB on load
 AuraDB.init();
 
@@ -3826,6 +3906,14 @@ AuraDB.init();
 const GoogleAuthEngine = {
   tokenClient: null,
   
+  isSignedIn() {
+    return Boolean(state.settings && state.settings.googleAccount && state.settings.googleAccount.accessToken);
+  },
+  
+  get currentUser() {
+    return state.settings ? state.settings.googleAccount : null;
+  },
+
   getClientId() {
     return (state.settings && state.settings.googleClientId ? state.settings.googleClientId.trim() : '') ||
            (window.AURA_CONFIG && window.AURA_CONFIG.GOOGLE_CLIENT_ID ? window.AURA_CONFIG.GOOGLE_CLIENT_ID.trim() : '') ||
@@ -3971,6 +4059,7 @@ const GoogleAuthEngine = {
     if (typeof updateSidebarUserUI === 'function') updateSidebarUserUI();
   }
 };
+window.GoogleAuthEngine = GoogleAuthEngine;
 
 /* -------------------------------------------------------------
    Google Drive 5TB Cloud Data Vault Engine (GoogleDriveEngine)
@@ -4265,6 +4354,7 @@ const GoogleWorkspaceEngine = {
     }));
   }
 };
+window.GoogleDriveEngine = GoogleDriveEngine;
 
 /* -------------------------------------------------------------
    Continuous Duplex Hands-Free Voice Conversation Engine
@@ -5197,7 +5287,7 @@ function toFullChat() {
   // Show full workspace and anchor input dock
   fullWs.classList.add('open');
   inputDock.classList.add('visible');
-  chatInput.focus();
+  if (chatInput && typeof chatInput.focus === 'function') chatInput.focus();
 
   // Orb is hidden in Full chat (PRD §8.1 default)
   orb.style.opacity = '0';
@@ -5342,7 +5432,8 @@ function toCompactView() {
 
   loadLatestMessageOrIntro();
 }
-$('btn-compact-view').addEventListener('click', toCompactView);
+const btnCompact = $('btn-compact-view');
+if (btnCompact) btnCompact.addEventListener('click', toCompactView);
 window.toCompactView = toCompactView;
 
 /* -------------------------------------------------------------
