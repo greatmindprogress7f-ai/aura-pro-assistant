@@ -678,12 +678,12 @@ html, body {
   position: absolute;
   left: 50%;
   transform: translateX(-50%) translateY(calc(var(--u) * 25));
-  width: min(calc(var(--u) * 88), 720px);
+  width: min(calc(100% - calc(var(--u) * 4)), 720px);
   bottom: max(calc(var(--u) * 6.5), calc(var(--u) * 2 + env(safe-area-inset-bottom, 0px)));
   z-index: 8;
   display: flex;
   align-items: center;
-  gap: calc(var(--u) * 2);
+  gap: calc(var(--u) * 1.5);
   padding: calc(var(--u) * 1.6) calc(var(--u) * 2.5);
   border-radius: 999px;
   background: var(--surface);
@@ -2918,7 +2918,7 @@ const VisionEngine = {
   isCapturing: false,
 
   async captureScreen() {
-    if (this.isCapturing) return;
+    if (this.isCapturing) return false;
     this.isCapturing = true;
     const btn = document.getElementById('btn-screen-vision');
     if (btn) btn.classList.add('active');
@@ -2934,7 +2934,7 @@ const VisionEngine = {
             previewUrl: `data:${res.mimeType || 'image/jpeg'};base64,${res.data}`
           });
           this.playShutterChime();
-          return;
+          return true;
         } else {
           console.warn('[VisionEngine] Desktop capture fallback:', res?.error);
         }
@@ -2949,18 +2949,26 @@ const VisionEngine = {
           });
 
           const video = document.createElement('video');
+          video.muted = true;
+          video.playsInline = true;
           video.srcObject = stream;
-          await video.play();
+          await new Promise((resolve) => {
+            video.onloadedmetadata = () => {
+              video.play().then(resolve).catch(resolve);
+            };
+            setTimeout(resolve, 600);
+          });
+          await new Promise(r => setTimeout(r, 120));
 
           const canvas = document.createElement('canvas');
-          canvas.width = video.videoWidth || 1280;
-          canvas.height = video.videoHeight || 720;
+          canvas.width = video.videoWidth || 1920;
+          canvas.height = video.videoHeight || 1080;
           const ctx = canvas.getContext('2d');
           ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
           stream.getTracks().forEach(track => track.stop());
 
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
           const base64 = dataUrl.split(',')[1];
 
           this.setAttachment({
@@ -2969,9 +2977,10 @@ const VisionEngine = {
             previewUrl: dataUrl
           });
           this.playShutterChime();
-          return;
+          return true;
         } catch (mediaErr) {
           console.warn('[VisionEngine] Display media cancelled or denied:', mediaErr);
+          return false;
         }
       }
 
@@ -2979,9 +2988,12 @@ const VisionEngine = {
       const fileInput = document.getElementById('vision-file-input');
       if (fileInput) {
         fileInput.click();
+        return false;
       }
+      return false;
     } catch (err) {
       console.error('[VisionEngine] Capture error:', err);
+      return false;
     } finally {
       this.isCapturing = false;
       if (btn) btn.classList.remove('active');
@@ -3090,7 +3102,11 @@ window.AuraAI = {
       const rawModel = (state.settings && state.settings.geminiModel) || 'gemini-3.5-flash-lite';
       const cleanModel = rawModel.trim().replace(/^models\//, '');
       const cleanKey = apiKey.trim().replace(/^["']|["']$/g, '');
-      const systemPrompt = (state.settings && state.settings.systemPrompt) || 'You are Aura, an advanced and elegant AI assistant. You provide concise, insightful, natural, and helpful answers. Format your replies with clean markdown.';
+      const defaultSystemPrompt = 'You are Aura, an advanced multimodal AI assistant with live screen vision and multimodal perception. ' +
+        'When an image or screen capture is provided, analyze the visual contents thoroughly in detail, pointing out code, UI elements, errors, or text. ' +
+        'If the user asks you to take a screenshot or view their screen but no image is attached, guide them warmly to click the Vision Eye button (👁️) in the input dock or press Ctrl+Shift+S, or tap the (+) button to upload any screenshot image. ' +
+        'You provide concise, insightful, natural, and helpful answers. Format your replies with clean markdown.';
+      const systemPrompt = (state.settings && state.settings.systemPrompt) || defaultSystemPrompt;
 
       console.log(`[AuraAI] Sending prompt with primary model: "${cleanModel}"`);
 
@@ -4068,9 +4084,23 @@ function sayIntro() {
 /* -------------------------------------------------------------
    Unified Prompt Submission (§7.3, §8.3)
    ------------------------------------------------------------- */
-function submitPrompt(promptText) {
-  const attachment = typeof VisionEngine !== 'undefined' ? VisionEngine.pendingAttachment : null;
+async function submitPrompt(promptText) {
+  let attachment = typeof VisionEngine !== 'undefined' ? VisionEngine.pendingAttachment : null;
   const rawP = (promptText || chatInput.value).trim();
+
+  // Auto-detect if user prompt requests a screenshot or screen inspection
+  const isScreenRequest = /\b(take (a )?screenshot|take screenshot|capture (the |my )?screen|look at (the |my )?screen|what('s| is) on (the |my )?screen|see (the |my )?screen|view (the |my )?screen|read (the |my )?screen|screenshot and|what do you see on my screen)\b/i.test(rawP);
+
+  if (!attachment && isScreenRequest && typeof VisionEngine !== 'undefined') {
+    chatInput.placeholder = 'Opening screen capture...';
+    try {
+      await VisionEngine.captureScreen();
+      attachment = VisionEngine.pendingAttachment;
+    } catch (e) {
+      console.warn('[submitPrompt] Screen capture trigger error:', e);
+    }
+  }
+
   const p = rawP || (attachment ? 'Analyze what is currently on my screen in detail, highlighting key information, code, errors, or insights.' : '');
   if (!p || isStreaming) return;
 
@@ -4391,8 +4421,8 @@ speakBtn.addEventListener('click', () => {
 $('attach-btn').addEventListener('click', () => {
   tone(520, 0.1, 0.06);
   buzz(10);
-  chatInput.placeholder = "Context attached · Ask Aura";
-  setTimeout(() => { chatInput.placeholder = "Ask Aura"; }, 2500);
+  const fileInput = document.getElementById('vision-file-input');
+  if (fileInput) fileInput.click();
 });
 
 /* -------------------------------------------------------------
