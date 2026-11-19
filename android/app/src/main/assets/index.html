@@ -36,6 +36,7 @@
   }
 </script>
 <script src="config.js" onerror="this.remove()"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
   --u: 4px;
@@ -2117,6 +2118,73 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
       </div>
     </div>
 
+    <!-- Google 5TB Vault & Workspace Hub (§Google) -->
+    <div class="settings-section" id="setting-google-vault-sec">
+      <div class="settings-sec-title">Google 5TB Vault &amp; Workspace Hub</div>
+      
+      <!-- Account Connection Row -->
+      <div class="setting-row" id="google-account-row">
+        <div style="display:flex;align-items:center;gap:calc(var(--u)*2.5)">
+          <div id="google-user-avatar" style="width:36px;height:36px;border-radius:50%;background:rgba(66,133,244,0.15);display:flex;align-items:center;justify-content:center;font-weight:700;color:#4285F4;overflow:hidden;flex-shrink:0;">
+            <svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          </div>
+          <div>
+            <div class="setting-label" id="google-user-name">Google Account</div>
+            <div class="setting-desc" id="google-user-desc">Connect your 5TB Google account for Cloud Vault &amp; Workspace</div>
+          </div>
+        </div>
+        <button id="btn-google-auth" class="btn-pill-hdr" style="background:#4285F4;color:#fff;border:none;font-weight:600;padding:calc(var(--u)*1.5) calc(var(--u)*3.5);display:inline-flex;align-items:center;gap:6px;cursor:pointer;flex-shrink:0;">
+          <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg>
+          <span>Connect Google</span>
+        </button>
+      </div>
+
+      <!-- Google Drive 5TB Cloud Vault Sync -->
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">5TB Cloud Drive Vault</div>
+          <div class="setting-desc" id="google-drive-sync-desc">Auto-sync chats, memories &amp; screenshots to your 5TB Google Drive (/Aura AI Vault/)</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:calc(var(--u)*2)">
+          <button id="btn-google-sync-now" class="btn-pill-hdr" style="font-size:calc(var(--u)*2.5)">Sync Now</button>
+          <label class="switch"><input type="checkbox" id="set-google-drive-sync" checked /><span class="slider"></span></label>
+        </div>
+      </div>
+
+      <!-- Gmail Reader & Monitoring -->
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Gmail Reading &amp; Alerts</div>
+          <div class="setting-desc">Ask Aura to check, summarize, and monitor your unread emails</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-google-gmail-sync" checked /><span class="slider"></span></label>
+      </div>
+
+      <!-- Google Calendar & Tasks -->
+      <div class="setting-row">
+        <div>
+          <div class="setting-label">Google Calendar &amp; Tasks</div>
+          <div class="setting-desc">View upcoming meetings, daily schedule, and manage to-do items</div>
+        </div>
+        <label class="switch"><input type="checkbox" id="set-google-cal-sync" checked /><span class="slider"></span></label>
+      </div>
+
+      <!-- Google Client ID Configuration -->
+      <div class="setting-row" style="flex-direction:column;align-items:flex-start;gap:calc(var(--u)*1.5)">
+        <div style="width:100%">
+          <div class="setting-label">Google OAuth Client ID</div>
+          <div class="setting-desc">OAuth 2.0 Web Client ID from Google Cloud Console</div>
+        </div>
+        <div style="display:flex;width:100%;gap:calc(var(--u)*2)">
+          <input type="text" id="set-google-client-id" placeholder="your-client-id.apps.googleusercontent.com" style="flex:1;background:var(--surface);color:var(--text-primary);border:1px solid var(--hairline);border-radius:calc(var(--u)*2.5);padding:calc(var(--u)*2) calc(var(--u)*3);font:inherit;font-size:calc(var(--u)*2.8);" />
+          <button id="btn-save-google-client-id" class="btn-pill-hdr" style="padding:0 calc(var(--u)*3.5)">Save</button>
+        </div>
+        <div style="font-size:calc(var(--u)*2.3);color:var(--text-muted);line-height:1.4;">
+          💡 Tip: In <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" style="color:var(--accent)">Google Cloud Console</a>, create an <strong>OAuth 2.0 Client ID</strong> (Web Application), enable the <strong>Google Drive API</strong>, <strong>Gmail API</strong>, and <strong>Google Calendar API</strong>, and add <code>https://aura-pro-ai.netlify.app</code> to <em>Authorized JavaScript origins</em>.
+        </div>
+      </div>
+    </div>
+
     <!-- Data -->
     <div class="settings-section">
       <div class="settings-sec-title">Data & Privacy</div>
@@ -2356,7 +2424,13 @@ const defaultState = {
     audioReactive: true,
     geminiApiKey: EMBEDDED_API_KEY,
     geminiModel: 'gemini-3.1-flash-lite',
-    systemPrompt: 'You are Aura, an advanced and elegant AI assistant. You provide concise, insightful, natural, and helpful answers. Format your replies with clean markdown.'
+    systemPrompt: 'You are Aura, an advanced and elegant AI assistant. You provide concise, insightful, natural, and helpful answers. Format your replies with clean markdown.',
+    googleClientId: '',
+    googleAccount: null,
+    googleDriveSync: true,
+    googleGmailSync: true,
+    googleCalendarSync: true,
+    googleLastSync: null
   }
 };
 
@@ -2409,6 +2483,14 @@ function saveState() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     if (state.settings && state.settings.geminiApiKey) {
       localStorage.setItem('aura_gemini_api_key', state.settings.geminiApiKey);
+    }
+    // Mirror to IndexedDB
+    if (typeof AuraDB !== 'undefined' && AuraDB.db && Array.isArray(state.conversations)) {
+      state.conversations.forEach(c => AuraDB.saveConversation(c));
+    }
+    // Auto-sync to 5TB Google Drive Vault
+    if (typeof GoogleDriveEngine !== 'undefined' && state.settings && state.settings.googleAccount && state.settings.googleDriveSync) {
+      GoogleDriveEngine.debouncedSync();
     }
   } catch (e) {
     console.warn('Could not persist state', e);
@@ -2788,6 +2870,516 @@ const LinkPreviewEngine = {
 };
 
 /* -------------------------------------------------------------
+   Local IndexedDB Persistent Database Engine (AuraDB) (§DB)
+   ------------------------------------------------------------- */
+const AuraDB = {
+  db: null,
+  async init() {
+    if (this.db) return this.db;
+    return new Promise((resolve) => {
+      if (!('indexedDB' in window)) {
+        console.warn('[AuraDB] IndexedDB not available, continuing with localStorage.');
+        resolve(null);
+        return;
+      }
+      const req = indexedDB.open('AuraProDatabase', 1);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('conversations')) {
+          db.createObjectStore('conversations', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('media')) {
+          db.createObjectStore('media', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('vault_sync')) {
+          db.createObjectStore('vault_sync', { keyPath: 'key' });
+        }
+      };
+      req.onsuccess = async (e) => {
+        this.db = e.target.result;
+        console.log('[AuraDB] IndexedDB persistent engine initialized');
+        // Initial migration from localStorage if needed
+        if (state && Array.isArray(state.conversations) && state.conversations.length > 0) {
+          state.conversations.forEach(c => this.saveConversation(c));
+        }
+        resolve(this.db);
+      };
+      req.onerror = (e) => {
+        console.warn('[AuraDB] IndexedDB failed to open:', e);
+        resolve(null);
+      };
+    });
+  },
+  async saveConversation(conv) {
+    if (!this.db || !conv || !conv.id) return;
+    try {
+      const tx = this.db.transaction('conversations', 'readwrite');
+      tx.objectStore('conversations').put(conv);
+    } catch(e) {}
+  },
+  async getAllConversations() {
+    if (!this.db) return [];
+    return new Promise((resolve) => {
+      try {
+        const tx = this.db.transaction('conversations', 'readonly');
+        const req = tx.objectStore('conversations').getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => resolve([]);
+      } catch(e) {
+        resolve([]);
+      }
+    });
+  }
+};
+// Boot IndexedDB on load
+AuraDB.init();
+
+/* -------------------------------------------------------------
+   Google Identity & OAuth 2.0 Engine (GoogleAuthEngine)
+   ------------------------------------------------------------- */
+const GoogleAuthEngine = {
+  tokenClient: null,
+  
+  getClientId() {
+    return (state.settings && state.settings.googleClientId ? state.settings.googleClientId.trim() : '') ||
+           (window.AURA_CONFIG && window.AURA_CONFIG.GOOGLE_CLIENT_ID ? window.AURA_CONFIG.GOOGLE_CLIENT_ID.trim() : '') ||
+           '';
+  },
+
+  init() {
+    if (!window.google || !window.google.accounts || !window.google.accounts.oauth2) {
+      return false;
+    }
+    const clientId = this.getClientId();
+    if (!clientId) return false;
+
+    try {
+      this.tokenClient = window.google.accounts.oauth2.initTokenClient({
+        client_id: clientId,
+        scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/tasks',
+        callback: async (resp) => {
+          if (resp.error) {
+            console.error('[GoogleAuthEngine] Token error:', resp);
+            alert('Google Authorization Error: ' + (resp.error_description || resp.error));
+            return;
+          }
+          await this.onTokenReceived(resp.access_token, resp.expires_in);
+        }
+      });
+      return true;
+    } catch (e) {
+      console.error('[GoogleAuthEngine] Init error:', e);
+      return false;
+    }
+  },
+
+  async requestLogin() {
+    const clientId = this.getClientId();
+    if (!clientId) {
+      const entered = prompt('Please enter your Google OAuth 2.0 Web Client ID from Google Cloud Console:\n(e.g. 123456789-abc.apps.googleusercontent.com)', '');
+      if (entered && entered.trim()) {
+        state.settings.googleClientId = entered.trim();
+        saveState();
+        const inp = document.getElementById('set-google-client-id');
+        if (inp) inp.value = entered.trim();
+        this.init();
+      } else {
+        return;
+      }
+    }
+    if (!this.tokenClient) {
+      this.init();
+    }
+    if (this.tokenClient) {
+      this.tokenClient.requestAccessToken({ prompt: 'consent' });
+    } else {
+      alert('Google Sign-In SDK is still loading or Client ID is invalid. Please verify your Client ID.');
+    }
+  },
+
+  async onTokenReceived(accessToken, expiresIn = 3599) {
+    const expiresAt = Date.now() + (expiresIn * 1000);
+    try {
+      const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      const profile = await res.json();
+      state.settings.googleAccount = {
+        name: profile.name || 'Google User',
+        email: profile.email || '',
+        picture: profile.picture || '',
+        accessToken,
+        tokenExpiresAt: expiresAt
+      };
+      saveState();
+      this.updateUI();
+      tone(880, 0.2, 0.08, 'triangle');
+      buzz([20, 40]);
+      if (typeof GoogleDriveEngine !== 'undefined') {
+        GoogleDriveEngine.syncToDrive();
+      }
+    } catch (e) {
+      console.error('[GoogleAuthEngine] Profile fetch error:', e);
+    }
+  },
+
+  disconnect() {
+    if (state.settings.googleAccount && state.settings.googleAccount.accessToken && window.google?.accounts?.oauth2) {
+      try {
+        window.google.accounts.oauth2.revoke(state.settings.googleAccount.accessToken);
+      } catch (e) {}
+    }
+    state.settings.googleAccount = null;
+    saveState();
+    this.updateUI();
+    tone(440, 0.15, 0.08, 'sine');
+  },
+
+  getValidToken() {
+    const acc = state.settings && state.settings.googleAccount;
+    if (!acc || !acc.accessToken) return null;
+    if (acc.tokenExpiresAt && Date.now() > (acc.tokenExpiresAt - 60000)) {
+      return null;
+    }
+    return acc.accessToken;
+  },
+
+  updateUI() {
+    const acc = state.settings && state.settings.googleAccount;
+    const nameEl = document.getElementById('google-user-name');
+    const descEl = document.getElementById('google-user-desc');
+    const avatarEl = document.getElementById('google-user-avatar');
+    const authBtn = document.getElementById('btn-google-auth');
+    const syncDesc = document.getElementById('google-drive-sync-desc');
+    const cidInput = document.getElementById('set-google-client-id');
+
+    if (cidInput && state.settings && state.settings.googleClientId) {
+      cidInput.value = state.settings.googleClientId;
+    }
+
+    if (!authBtn) return;
+
+    if (acc && acc.accessToken) {
+      if (nameEl) nameEl.textContent = acc.name || acc.email;
+      if (descEl) descEl.textContent = acc.email + ' · Connected to 5TB Drive Vault';
+      if (avatarEl && acc.picture) {
+        avatarEl.innerHTML = `<img src="${acc.picture}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" />`;
+      }
+      authBtn.textContent = 'Disconnect';
+      authBtn.style.background = 'rgba(239, 68, 68, 0.15)';
+      authBtn.style.color = '#ef4444';
+      if (syncDesc) {
+        const lastSync = state.settings.googleLastSync ? new Date(state.settings.googleLastSync).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Never';
+        syncDesc.textContent = `Auto-syncing to Google Drive /Aura AI Vault/ (Last: ${lastSync})`;
+      }
+    } else {
+      if (nameEl) nameEl.textContent = 'Google Account';
+      if (descEl) descEl.textContent = 'Connect your 5TB Google account for Cloud Vault & Workspace';
+      if (avatarEl) {
+        avatarEl.innerHTML = `<svg viewBox="0 0 24 24" style="width:20px;height:20px;fill:currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>`;
+      }
+      authBtn.innerHTML = `<svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:currentColor;margin-right:6px;"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" fill="#EA4335"/></svg> Connect Google`;
+      authBtn.style.background = '#4285F4';
+      authBtn.style.color = '#fff';
+    }
+  }
+};
+
+/* -------------------------------------------------------------
+   Google Drive 5TB Cloud Data Vault Engine (GoogleDriveEngine)
+   ------------------------------------------------------------- */
+const GoogleDriveEngine = {
+  vaultFolderId: null,
+  syncTimer: null,
+
+  debouncedSync() {
+    clearTimeout(this.syncTimer);
+    this.syncTimer = setTimeout(() => {
+      this.syncToDrive();
+    }, 4500);
+  },
+
+  async getVaultFolder(token) {
+    if (this.vaultFolderId) return this.vaultFolderId;
+    try {
+      const q = encodeURIComponent("name = 'Aura AI Vault' and mimeType = 'application/vnd.google-apps.folder' and trashed = false");
+      const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (data.files && data.files.length > 0) {
+        this.vaultFolderId = data.files[0].id;
+        return this.vaultFolderId;
+      }
+      // Create folder
+      const createRes = await fetch('https://www.googleapis.com/drive/v3/files', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: 'Aura AI Vault',
+          mimeType: 'application/vnd.google-apps.folder',
+          description: 'Aura Pro 2.0 Cloud Data Vault'
+        })
+      });
+      const newFolder = await createRes.json();
+      this.vaultFolderId = newFolder.id;
+      return this.vaultFolderId;
+    } catch (e) {
+      console.error('[GoogleDriveEngine] Error getting vault folder:', e);
+      return null;
+    }
+  },
+
+  async syncToDrive() {
+    const token = GoogleAuthEngine.getValidToken();
+    if (!token) return false;
+    const folderId = await this.getVaultFolder(token);
+    if (!folderId) return false;
+
+    try {
+      const q = encodeURIComponent(`'${folderId}' in parents and name = 'conversations.json' and trashed = false`);
+      const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const searchData = await searchRes.json();
+
+      const payload = JSON.stringify({
+        version: '2.0',
+        syncedAt: new Date().toISOString(),
+        conversations: state.conversations || [],
+        userSettings: {
+          theme: state.theme,
+          systemPrompt: state.settings?.systemPrompt
+        }
+      }, null, 2);
+
+      let syncRes;
+      if (searchData.files && searchData.files.length > 0) {
+        const fileId = searchData.files[0].id;
+        syncRes = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: payload
+        });
+      } else {
+        const metadata = {
+          name: 'conversations.json',
+          parents: [folderId],
+          mimeType: 'application/json'
+        };
+        const boundary = '-------314159265358979323846';
+        const delimiter = "\r\n--" + boundary + "\r\n";
+        const close_delim = "\r\n--" + boundary + "--";
+        const multipartBody =
+          delimiter +
+          'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
+          JSON.stringify(metadata) +
+          delimiter +
+          'Content-Type: application/json\r\n\r\n' +
+          payload +
+          close_delim;
+
+        syncRes = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': `multipart/related; boundary=${boundary}`
+          },
+          body: multipartBody
+        });
+      }
+
+      if (syncRes.ok) {
+        state.settings.googleLastSync = Date.now();
+        saveState();
+        GoogleAuthEngine.updateUI();
+        console.log('[GoogleDriveEngine] 5TB Vault Sync Successful');
+        return true;
+      }
+    } catch (e) {
+      console.error('[GoogleDriveEngine] Sync error:', e);
+      return false;
+    }
+  },
+
+  async restoreFromDrive() {
+    const token = GoogleAuthEngine.getValidToken();
+    if (!token) return false;
+    const folderId = await this.getVaultFolder(token);
+    if (!folderId) return false;
+
+    try {
+      const q = encodeURIComponent(`'${folderId}' in parents and name = 'conversations.json' and trashed = false`);
+      const searchRes = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&fields=files(id,name)`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const searchData = await searchRes.json();
+      if (!searchData.files || searchData.files.length === 0) return false;
+
+      const fileId = searchData.files[0].id;
+      const downloadRes = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await downloadRes.json();
+      if (data && data.conversations && data.conversations.length > 0) {
+        state.conversations = data.conversations;
+        saveState();
+        renderHistory();
+        tone(784, 0.25, 0.08, 'triangle');
+        return true;
+      }
+    } catch (e) {
+      console.error('[GoogleDriveEngine] Restore error:', e);
+      return false;
+    }
+  }
+};
+
+/* -------------------------------------------------------------
+   Google Workspace Hub Engine (Gmail, Calendar, Tasks)
+   ------------------------------------------------------------- */
+const GoogleWorkspaceEngine = {
+  isWorkspaceQuery(prompt) {
+    if (!prompt) return false;
+    return /\b(email|emails|gmail|inbox|messages|unread|calendar|schedule|meeting|meetings|events|agenda|to-?do|tasks?)\b/i.test(prompt);
+  },
+
+  async fetchContextForPrompt(prompt) {
+    const token = GoogleAuthEngine.getValidToken();
+    if (!token) {
+      return "[User is not currently connected to their Google account. Kindly inform them they can tap 'Connect Google' in Settings to view their live Gmail and Calendar.]";
+    }
+
+    const p = prompt.toLowerCase();
+    const parts = [];
+
+    // Gmail Check
+    if (/\b(email|emails|gmail|inbox|messages|unread|mail)\b/i.test(p)) {
+      try {
+        const emails = await this.getUnreadEmails(token, 5);
+        if (emails && emails.length > 0) {
+          parts.push("=== LATEST UNREAD GMAIL MESSAGES ===\n" + emails.map((m, i) => `${i+1}. From: ${m.from}\n   Subject: ${m.subject}\n   Date: ${m.date}\n   Snippet: ${m.snippet}`).join('\n\n'));
+        } else {
+          parts.push("=== GMAIL STATUS ===\nNo unread emails found in inbox. Everything is up to date!");
+        }
+      } catch (e) {
+        parts.push(`=== GMAIL STATUS ===\nCould not fetch emails: ${e.message}`);
+      }
+    }
+
+    // Calendar Check
+    if (/\b(calendar|schedule|meeting|meetings|events|agenda|today|tomorrow|week)\b/i.test(p)) {
+      try {
+        const events = await this.getUpcomingEvents(token, 7);
+        if (events && events.length > 0) {
+          parts.push("=== UPCOMING GOOGLE CALENDAR EVENTS ===\n" + events.map((ev, i) => `${i+1}. Event: ${ev.summary}\n   When: ${ev.start} to ${ev.end}\n   ${ev.location ? 'Location: ' + ev.location : ''}`).join('\n\n'));
+        } else {
+          parts.push("=== GOOGLE CALENDAR STATUS ===\nNo upcoming meetings or events scheduled for the next 7 days.");
+        }
+      } catch (e) {
+        parts.push(`=== GOOGLE CALENDAR STATUS ===\nCould not fetch calendar: ${e.message}`);
+      }
+    }
+
+    // Tasks Check
+    if (/\b(task|tasks|to-?do|reminders?)\b/i.test(p)) {
+      try {
+        const tasks = await this.getTasks(token);
+        if (tasks && tasks.length > 0) {
+          parts.push("=== GOOGLE TASKS ===\n" + tasks.map((t, i) => `${i+1}. [${t.status === 'completed' ? '✓' : ' '}] ${t.title}${t.due ? ' (Due: ' + t.due + ')' : ''}`).join('\n'));
+        } else {
+          parts.push("=== GOOGLE TASKS STATUS ===\nNo pending tasks found.");
+        }
+      } catch (e) {
+        parts.push(`=== GOOGLE TASKS STATUS ===\nCould not fetch tasks: ${e.message}`);
+      }
+    }
+
+    return parts.join('\n\n');
+  },
+
+  async getUnreadEmails(token, max = 5) {
+    const listRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=is:unread&maxResults=${max}`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const listData = await listRes.json();
+    if (!listData.messages || listData.messages.length === 0) return [];
+
+    const emails = [];
+    for (const item of listData.messages) {
+      try {
+        const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${item.id}?format=metadata&metadataHeaders=Subject&metadataHeaders=From&metadataHeaders=Date`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const msg = await msgRes.json();
+        const headers = msg.payload?.headers || [];
+        const fromH = headers.find(h => h.name.toLowerCase() === 'from');
+        const subjH = headers.find(h => h.name.toLowerCase() === 'subject');
+        const dateH = headers.find(h => h.name.toLowerCase() === 'date');
+        emails.push({
+          id: item.id,
+          from: fromH ? fromH.value : 'Unknown',
+          subject: subjH ? subjH.value : '(No Subject)',
+          date: dateH ? dateH.value : '',
+          snippet: msg.snippet || ''
+        });
+      } catch (e) {}
+    }
+    return emails;
+  },
+
+  async getUpcomingEvents(token, days = 7) {
+    const now = new Date();
+    const future = new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
+    const url = `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${now.toISOString()}&timeMax=${future.toISOString()}&singleEvents=true&orderBy=startTime&maxResults=10`;
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (!data.items || data.items.length === 0) return [];
+
+    return data.items.map(ev => {
+      const s = ev.start?.dateTime || ev.start?.date || '';
+      const e = ev.end?.dateTime || ev.end?.date || '';
+      return {
+        summary: ev.summary || '(Untitled Event)',
+        start: s ? new Date(s).toLocaleString() : '',
+        end: e ? new Date(e).toLocaleString() : '',
+        location: ev.location || '',
+        description: ev.description || ''
+      };
+    });
+  },
+
+  async getTasks(token) {
+    const listRes = await fetch('https://tasks.googleapis.com/tasks/v1/users/@me/lists', {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const listData = await listRes.json();
+    if (!listData.items || listData.items.length === 0) return [];
+    const listId = listData.items[0].id;
+
+    const taskRes = await fetch(`https://tasks.googleapis.com/tasks/v1/lists/${listId}/tasks?showCompleted=false&maxResults=10`, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    const taskData = await taskRes.json();
+    if (!taskData.items || taskData.items.length === 0) return [];
+
+    return taskData.items.map(t => ({
+      title: t.title || '(Untitled Task)',
+      status: t.status,
+      due: t.due ? new Date(t.due).toLocaleDateString() : ''
+    }));
+  }
+};
+
+/* -------------------------------------------------------------
    Continuous Duplex Hands-Free Voice Conversation Engine
    ------------------------------------------------------------- */
 const DuplexVoiceEngine = {
@@ -3102,9 +3694,11 @@ window.AuraAI = {
       const rawModel = (state.settings && state.settings.geminiModel) || 'gemini-3.5-flash-lite';
       const cleanModel = rawModel.trim().replace(/^models\//, '');
       const cleanKey = apiKey.trim().replace(/^["']|["']$/g, '');
-      const defaultSystemPrompt = 'You are Aura, an advanced multimodal AI assistant with live screen vision and multimodal perception. ' +
+      const defaultSystemPrompt = 'You are Aura, an advanced multimodal AI assistant with live screen vision, multimodal perception, and personal Google Workspace integration (Gmail, Google Calendar, Google Tasks, and Google Drive 5TB Cloud Vault). ' +
         'When an image or screen capture is provided, analyze the visual contents thoroughly in detail, pointing out code, UI elements, errors, or text. ' +
+        'When live Google Workspace data (Gmail, Calendar, or Tasks) is provided, synthesize the emails, meetings, or tasks clearly, accurately, and politely with clean markdown. ' +
         'If the user asks you to take a screenshot or view their screen but no image is attached, guide them warmly to click the Vision Eye button (👁️) in the input dock or press Ctrl+Shift+S, or tap the (+) button to upload any screenshot image. ' +
+        'If the user asks to check their emails, calendar, or tasks but their Google account is not connected yet, politely inform them they can connect their Google account in Settings (Profile tab) under Google 5TB Vault & Workspace Hub. ' +
         'You provide concise, insightful, natural, and helpful answers. Format your replies with clean markdown.';
       const systemPrompt = (state.settings && state.settings.systemPrompt) || defaultSystemPrompt;
 
@@ -3124,9 +3718,20 @@ window.AuraAI = {
         }
       }
 
+      // Google Workspace Grounding (Gmail, Calendar, Tasks)
+      let workspaceContext = '';
+      if (typeof GoogleWorkspaceEngine !== 'undefined' && GoogleWorkspaceEngine.isWorkspaceQuery(prompt)) {
+        try {
+          if (typeof ui.onSearching === 'function') ui.onSearching('Google Workspace');
+          workspaceContext = await GoogleWorkspaceEngine.fetchContextForPrompt(prompt);
+        } catch(e) {
+          console.warn('[GoogleWorkspaceEngine] Error:', e);
+        }
+      }
+
       // Live Web Search Grounding
       let groundingSources = [];
-      if (typeof WebSearchEngine !== 'undefined' && WebSearchEngine.isSearchNeeded(prompt)) {
+      if (!workspaceContext && typeof WebSearchEngine !== 'undefined' && WebSearchEngine.isSearchNeeded(prompt)) {
         try {
           if (typeof ui.onSearching === 'function') ui.onSearching();
           groundingSources = await WebSearchEngine.search(prompt);
@@ -3136,7 +3741,10 @@ window.AuraAI = {
       }
 
       let userPartText = prompt;
-      if (groundingSources && groundingSources.length > 0) {
+      if (workspaceContext) {
+        const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        userPartText = `[LIVE GOOGLE WORKSPACE DATA (${dateStr})]:\n${workspaceContext}\n\nInstructions: Answer the user's question accurately using their live Google data above. Be direct, natural, professional, and helpful.\n\nUser Question: ${prompt}`;
+      } else if (groundingSources && groundingSources.length > 0) {
         const dateStr = new Date().toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
         const contextStr = groundingSources.map((s, i) => `[Source ${i+1}: ${s.title} (${s.source || 'Web'})]\n${s.snippet}\nURL: ${s.url}`).join('\n\n');
         userPartText = `[REAL-TIME LIVE WEB CONTEXT (${dateStr})]:\n${contextStr}\n\nInstructions: Answer the user's question accurately using the live information above. Be direct, natural, and helpful.\n\nUser Question: ${prompt}`;
@@ -5213,6 +5821,86 @@ if (setContinuousVoice) {
     state.settings.continuousVoice = e.target.checked;
     saveState();
   });
+}
+
+// Google 5TB Vault & Workspace Controls (§Google)
+const btnGoogleAuth = $('btn-google-auth');
+if (btnGoogleAuth) {
+  btnGoogleAuth.addEventListener('click', () => {
+    if (state.settings && state.settings.googleAccount) {
+      if (confirm('Disconnect your Google account from Aura Pro?')) {
+        GoogleAuthEngine.disconnect();
+      }
+    } else {
+      GoogleAuthEngine.requestLogin();
+    }
+  });
+}
+
+const btnGoogleSyncNow = $('btn-google-sync-now');
+if (btnGoogleSyncNow) {
+  btnGoogleSyncNow.addEventListener('click', async () => {
+    if (!GoogleAuthEngine.getValidToken()) {
+      alert('Please connect your Google account first to sync with your 5TB Drive Vault.');
+      return;
+    }
+    btnGoogleSyncNow.textContent = 'Syncing...';
+    btnGoogleSyncNow.disabled = true;
+    const ok = await GoogleDriveEngine.syncToDrive();
+    btnGoogleSyncNow.disabled = false;
+    btnGoogleSyncNow.textContent = ok ? 'Synced ✓' : 'Failed ✗';
+    setTimeout(() => { btnGoogleSyncNow.textContent = 'Sync Now'; }, 2200);
+  });
+}
+
+const setGoogleDriveSync = $('set-google-drive-sync');
+if (setGoogleDriveSync) {
+  setGoogleDriveSync.checked = state.settings.googleDriveSync !== false;
+  setGoogleDriveSync.addEventListener('change', e => {
+    state.settings.googleDriveSync = e.target.checked;
+    saveState();
+  });
+}
+
+const setGoogleGmailSync = $('set-google-gmail-sync');
+if (setGoogleGmailSync) {
+  setGoogleGmailSync.checked = state.settings.googleGmailSync !== false;
+  setGoogleGmailSync.addEventListener('change', e => {
+    state.settings.googleGmailSync = e.target.checked;
+    saveState();
+  });
+}
+
+const setGoogleCalSync = $('set-google-cal-sync');
+if (setGoogleCalSync) {
+  setGoogleCalSync.checked = state.settings.googleCalendarSync !== false;
+  setGoogleCalSync.addEventListener('change', e => {
+    state.settings.googleCalendarSync = e.target.checked;
+    saveState();
+  });
+}
+
+const btnSaveGoogleClientId = $('btn-save-google-client-id');
+const setGoogleClientId = $('set-google-client-id');
+if (btnSaveGoogleClientId && setGoogleClientId) {
+  if (state.settings && state.settings.googleClientId) {
+    setGoogleClientId.value = state.settings.googleClientId;
+  }
+  btnSaveGoogleClientId.addEventListener('click', () => {
+    const val = setGoogleClientId.value.trim();
+    state.settings.googleClientId = val;
+    saveState();
+    GoogleAuthEngine.init();
+    btnSaveGoogleClientId.textContent = 'Saved ✓';
+    setTimeout(() => { btnSaveGoogleClientId.textContent = 'Save'; }, 1500);
+    tone(784, 0.15, 0.08, 'triangle');
+  });
+}
+
+// Initialize Google Auth UI state
+if (typeof GoogleAuthEngine !== 'undefined') {
+  GoogleAuthEngine.init();
+  GoogleAuthEngine.updateUI();
 }
 
 $('btn-export-json').addEventListener('click', () => {
