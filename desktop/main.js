@@ -1,7 +1,7 @@
 // Remove any ambient environment variable that forces Electron to run as plain Node
 delete process.env.ELECTRON_RUN_AS_NODE;
 
-const { app, BrowserWindow, screen, ipcMain, Tray, Menu, globalShortcut } = require('electron');
+const { app, BrowserWindow, screen, ipcMain, Tray, Menu, globalShortcut, desktopCapturer } = require('electron');
 const path = require('path');
 const http = require('http');
 const fs = require('fs');
@@ -256,9 +256,45 @@ function registerShortcuts() {
     mainWindow.focus();
     mainWindow.webContents.send('aura:shortcut-toggle');
   });
+
+  // Global hotkey to trigger Live Screen View (Vision)
+  const visionShortcut = 'CommandOrControl+Shift+S';
+  globalShortcut.register(visionShortcut, () => {
+    if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
+    mainWindow.webContents.send('aura:trigger-screen-capture');
+  });
 }
 
 // IPC Handlers
+ipcMain.handle('aura:capture-screen', async () => {
+  try {
+    const primaryDisplay = screen.getPrimaryDisplay();
+    const { width, height } = primaryDisplay.size;
+    const sources = await desktopCapturer.getSources({
+      types: ['screen'],
+      thumbnailSize: { width: Math.min(width, 1920), height: Math.min(height, 1080) }
+    });
+    if (!sources || sources.length === 0) {
+      throw new Error('No active display screen source found');
+    }
+    const screenSource = sources[0];
+    const jpegBuffer = screenSource.thumbnail.toJPEG(82);
+    const base64 = jpegBuffer.toString('base64');
+    return {
+      success: true,
+      data: base64,
+      mimeType: 'image/jpeg',
+      width: screenSource.thumbnail.getSize().width,
+      height: screenSource.thumbnail.getSize().height
+    };
+  } catch (err) {
+    console.error('[AuraDesktop] Screen capture failed:', err);
+    return { success: false, error: err.message };
+  }
+});
 ipcMain.on('aura:get-env-key', (event) => {
   event.returnValue = getEnvApiKey();
 });

@@ -897,6 +897,125 @@ html, body {
   opacity: 0.9;
 }
 
+/* Live Screen Vision Button & Preview Dock (§Vision) */
+.btn-vision {
+  background: none;
+  border: 0;
+  padding: calc(var(--u) * 1) calc(var(--u) * 1.4);
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-radius: 99px;
+  min-height: 40px;
+  min-width: 40px;
+  transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  flex-shrink: 0;
+}
+.btn-vision:hover {
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.12);
+  transform: translateY(-1px);
+}
+.btn-vision.active {
+  color: #a855f7;
+  background: rgba(168, 85, 247, 0.18);
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.4);
+}
+.btn-vision svg {
+  width: calc(var(--u) * 4.4);
+  height: calc(var(--u) * 4.4);
+  stroke: currentColor;
+  stroke-width: 1.9;
+  fill: none;
+}
+.vision-dock-preview {
+  position: absolute;
+  bottom: calc(100% + calc(var(--u) * 2.5));
+  left: calc(var(--u) * 3);
+  z-index: 30;
+  display: none;
+}
+.vision-dock-preview.visible {
+  display: flex;
+  animation: slide-up-fade 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+.v-preview-card {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 2);
+  background: var(--surface-solid);
+  border: 1px solid var(--accent);
+  padding: calc(var(--u) * 1.5) calc(var(--u) * 2.5);
+  border-radius: calc(var(--u) * 3);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  backdrop-filter: var(--surface-blur);
+}
+.v-preview-card img {
+  width: 46px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: calc(var(--u) * 1.5);
+  border: 1px solid var(--hairline);
+}
+.v-preview-meta {
+  display: flex;
+  flex-direction: column;
+}
+.v-preview-badge {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+.v-preview-sub {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+.v-preview-del {
+  background: none;
+  border: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.v-preview-del:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.12);
+}
+.v-preview-del svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2.2;
+}
+
+/* Chat Thread Message Screen Thumbnails */
+.msg-screen-thumb {
+  max-width: 280px;
+  max-height: 180px;
+  border-radius: calc(var(--u) * 2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: calc(var(--u) * 1.5);
+  display: block;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.msg-screen-thumb:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+[data-theme="dark"] .v-preview-card {
+  background: #181A22;
+  border-color: #a855f7;
+}
+
 /* Grounding Sources Box & Chips */
 .grounding-box {
   margin-top: calc(var(--u) * 2);
@@ -2144,6 +2263,21 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
     </div>
   </div>
 
+  <!-- Vision Screen Preview Pill Above Input Dock -->
+  <div class="vision-dock-preview" id="vision-dock-preview">
+    <div class="v-preview-card">
+      <img id="v-preview-img" src="" alt="Captured screen" />
+      <div class="v-preview-meta">
+        <span class="v-preview-badge">🖥️ Screen Attached</span>
+        <span class="v-preview-sub">Aura will analyze this snapshot</span>
+      </div>
+      <button class="v-preview-del" id="v-preview-del" title="Remove attachment" aria-label="Remove attachment">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+  <input type="file" id="vision-file-input" accept="image/*" style="display:none" />
+
   <!-- Input Dock (§7.3) -->
   <div class="input-dock" id="input-dock" role="region" aria-label="Chat input dock">
     <button class="btn-plus" id="attach-btn" title="Add context or attachment" aria-label="Add context">
@@ -2152,6 +2286,9 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
     <button class="btn-search" id="btn-web-search" title="Live Web Search: Auto (Click to switch Always / Off)" aria-label="Toggle web search">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
       <span class="search-badge" id="search-badge">Auto</span>
+    </button>
+    <button class="btn-vision" id="btn-screen-vision" title="Look at Screen (Ctrl+Shift+S) · Multimodal Vision" aria-label="Capture and analyze screen">
+      <svg viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
     </button>
     <textarea class="chat-input" id="chat-input" placeholder="Ask Aura" aria-label="Message Aura" rows="1" autocomplete="off"></textarea>
     <div class="voice-wave" id="voice-wave" aria-hidden="true">
@@ -2748,6 +2885,13 @@ const DuplexVoiceEngine = {
       return;
     }
 
+    if (/\b(look at (my|the|this) screen|what('s| is) on (my|the) screen|analyze (my|the) screen|check (my|the) screen|see (my|the) screen|read (my|the) screen)\b/i.test(clean)) {
+      VisionEngine.captureScreen().then(() => {
+        submitPrompt(transcript);
+      });
+      return;
+    }
+
     submitPrompt(transcript);
   },
 
@@ -2767,6 +2911,110 @@ const DuplexVoiceEngine = {
 };
 
 /* -------------------------------------------------------------
+   Multimodal Live Screen View & Vision Engine (§Vision)
+   ------------------------------------------------------------- */
+const VisionEngine = {
+  pendingAttachment: null, // { data: base64, mimeType: 'image/jpeg', previewUrl: dataUrl }
+  isCapturing: false,
+
+  async captureScreen() {
+    if (this.isCapturing) return;
+    this.isCapturing = true;
+    const btn = document.getElementById('btn-screen-vision');
+    if (btn) btn.classList.add('active');
+
+    try {
+      // 1. Electron Desktop Native Capture (High-fidelity display capturer)
+      if (window.AuraDesktop && typeof window.AuraDesktop.captureScreen === 'function') {
+        const res = await window.AuraDesktop.captureScreen();
+        if (res && res.success && res.data) {
+          this.setAttachment({
+            data: res.data,
+            mimeType: res.mimeType || 'image/jpeg',
+            previewUrl: `data:${res.mimeType || 'image/jpeg'};base64,${res.data}`
+          });
+          this.playShutterChime();
+          return;
+        } else {
+          console.warn('[VisionEngine] Desktop capture fallback:', res?.error);
+        }
+      }
+
+      // 2. Web / PWA standard Screen Capture (navigator.mediaDevices.getDisplayMedia)
+      if (navigator.mediaDevices && typeof navigator.mediaDevices.getDisplayMedia === 'function') {
+        try {
+          const stream = await navigator.mediaDevices.getDisplayMedia({
+            video: { cursor: 'always' },
+            audio: false
+          });
+
+          const video = document.createElement('video');
+          video.srcObject = stream;
+          await video.play();
+
+          const canvas = document.createElement('canvas');
+          canvas.width = video.videoWidth || 1280;
+          canvas.height = video.videoHeight || 720;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+          stream.getTracks().forEach(track => track.stop());
+
+          const dataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          const base64 = dataUrl.split(',')[1];
+
+          this.setAttachment({
+            data: base64,
+            mimeType: 'image/jpeg',
+            previewUrl: dataUrl
+          });
+          this.playShutterChime();
+          return;
+        } catch (mediaErr) {
+          console.warn('[VisionEngine] Display media cancelled or denied:', mediaErr);
+        }
+      }
+
+      // 3. Fallback for mobile / Android WebView / file upload
+      const fileInput = document.getElementById('vision-file-input');
+      if (fileInput) {
+        fileInput.click();
+      }
+    } catch (err) {
+      console.error('[VisionEngine] Capture error:', err);
+    } finally {
+      this.isCapturing = false;
+      if (btn) btn.classList.remove('active');
+    }
+  },
+
+  setAttachment(att) {
+    this.pendingAttachment = att;
+    const previewDock = document.getElementById('vision-dock-preview');
+    const previewImg = document.getElementById('v-preview-img');
+    if (previewDock && previewImg) {
+      previewImg.src = att.previewUrl;
+      previewDock.classList.add('visible');
+    }
+    chatInput.placeholder = 'Ask anything about this screen (or press Enter)...';
+    chatInput.focus();
+  },
+
+  clearAttachment() {
+    this.pendingAttachment = null;
+    const previewDock = document.getElementById('vision-dock-preview');
+    if (previewDock) previewDock.classList.remove('visible');
+    chatInput.placeholder = 'Ask Aura';
+  },
+
+  playShutterChime() {
+    tone(880, 0.08, 0.06, 'triangle');
+    setTimeout(() => tone(1174, 0.12, 0.08, 'sine'), 60);
+    buzz([20, 30]);
+  }
+};
+
+/* -------------------------------------------------------------
    10. Decoupled AI Adapter (window.AuraAI) (§10)
    ------------------------------------------------------------- */
 window.AuraAI = {
@@ -2776,7 +3024,7 @@ window.AuraAI = {
   apiEndpoint: '',
   getAuthToken: async () => null,
   history: [],
-  async sendMessage(prompt, ui) {
+  async sendMessage(prompt, ui, options = {}) {
     ui.onStart();
     let apiKey = (state && state.settings && state.settings.geminiApiKey ? state.settings.geminiApiKey : '').trim();
     if (!apiKey && window.AURA_CONFIG && window.AURA_CONFIG.GEMINI_API_KEY) {
@@ -2878,7 +3126,17 @@ window.AuraAI = {
         userPartText = `[REAL-TIME LIVE WEB CONTEXT (${dateStr})]:\n${contextStr}\n\nInstructions: Answer the user's question accurately using the live information above. Be direct, natural, and helpful.\n\nUser Question: ${prompt}`;
       }
 
-      contents.push({ role: 'user', parts: [{ text: userPartText }] });
+      const userParts = [{ text: userPartText }];
+      if (options && options.image && options.image.data) {
+        userParts.push({
+          inlineData: {
+            mimeType: options.image.mimeType || 'image/jpeg',
+            data: options.image.data
+          }
+        });
+      }
+
+      contents.push({ role: 'user', parts: userParts });
 
       // Candidate models in speed & availability priority (prioritizing ultra-fast tested models)
       const candidateList = Array.from(new Set([
@@ -3662,7 +3920,21 @@ function renderFullChatThread() {
     if (msg.role === 'user') {
       const uEl = document.createElement('div');
       uEl.className = 'msg-user';
-      uEl.textContent = msg.content;
+      if (msg.image) {
+        const imgEl = document.createElement('img');
+        imgEl.className = 'msg-screen-thumb';
+        imgEl.src = msg.image;
+        imgEl.alt = 'Captured screen';
+        imgEl.title = 'Click to open in new tab';
+        imgEl.addEventListener('click', () => {
+          const w = window.open('');
+          if (w) w.document.write(`<body style="margin:0;background:#0b0f1a;display:flex;align-items:center;justify-content:center;height:100vh;"><img src="${msg.image}" style="max-width:100%;max-height:100%;object-fit:contain;"/></body>`);
+        });
+        uEl.appendChild(imgEl);
+      }
+      const txtDiv = document.createElement('div');
+      txtDiv.textContent = msg.content;
+      uEl.appendChild(txtDiv);
       chatThread.appendChild(uEl);
       if (typeof LinkPreviewEngine !== 'undefined') {
         LinkPreviewEngine.scanAndUnfurl(uEl, msg.content);
@@ -3797,8 +4069,14 @@ function sayIntro() {
    Unified Prompt Submission (§7.3, §8.3)
    ------------------------------------------------------------- */
 function submitPrompt(promptText) {
-  const p = (promptText || chatInput.value).trim();
+  const attachment = typeof VisionEngine !== 'undefined' ? VisionEngine.pendingAttachment : null;
+  const rawP = (promptText || chatInput.value).trim();
+  const p = rawP || (attachment ? 'Analyze what is currently on my screen in detail, highlighting key information, code, errors, or insights.' : '');
   if (!p || isStreaming) return;
+
+  if (typeof VisionEngine !== 'undefined' && attachment) {
+    VisionEngine.clearAttachment();
+  }
 
   lastPrompt = p;
   chatInput.value = '';
@@ -3820,7 +4098,11 @@ function submitPrompt(promptText) {
   }
   const conv = getActiveConversation();
   conv.updatedAt = Date.now();
-  conv.messages.push({ role: 'user', content: p });
+  const userMsgObj = { role: 'user', content: p };
+  if (attachment && attachment.previewUrl) {
+    userMsgObj.image = attachment.previewUrl;
+  }
+  conv.messages.push(userMsgObj);
 
   // Check turn count for auto-expand (§7.3)
   const userTurns = conv.messages.filter(m => m.role === 'user').length;
@@ -3931,7 +4213,7 @@ function submitPrompt(promptText) {
       if (mode === 'full') renderFullChatThread();
       else txt.innerHTML = `<span style="color:#ef4444">${renderMarkdown(errMsg)}</span>`;
     }
-  });
+  }, { image: attachment });
 }
 window.submitPrompt = submitPrompt;
 
@@ -4248,6 +4530,15 @@ const VoiceWakeEngine = {
       }
     }
 
+    if (command && /\b(look at (my|the|this) screen|what('s| is) on (my|the) screen|analyze (my|the) screen)\b/i.test(command)) {
+      if (typeof VisionEngine !== 'undefined') {
+        VisionEngine.captureScreen().then(() => {
+          submitPrompt(command);
+        });
+        return;
+      }
+    }
+
     if (command && command.length > 2 && isFinal) {
       chatInput.value = command;
       submitPrompt(command);
@@ -4364,6 +4655,50 @@ if (btnWebSearch) {
     setTimeout(() => { if (!isLiveMode) chatInput.placeholder = 'Ask Aura'; }, 2200);
   });
   WebSearchEngine.updateUI();
+}
+
+// Multimodal Screen Vision UI bindings
+const btnScreenVision = $('btn-screen-vision');
+if (btnScreenVision) {
+  btnScreenVision.addEventListener('click', () => {
+    VisionEngine.captureScreen();
+  });
+}
+
+const vPreviewDel = $('v-preview-del');
+if (vPreviewDel) {
+  vPreviewDel.addEventListener('click', () => {
+    VisionEngine.clearAttachment();
+    tone(440, 0.1, 0.05, 'triangle');
+  });
+}
+
+const visionFileInput = $('vision-file-input');
+if (visionFileInput) {
+  visionFileInput.addEventListener('change', e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const dataUrl = ev.target.result;
+      const base64 = dataUrl.split(',')[1];
+      VisionEngine.setAttachment({
+        data: base64,
+        mimeType: file.type || 'image/jpeg',
+        previewUrl: dataUrl
+      });
+      VisionEngine.playShutterChime();
+    };
+    reader.readAsDataURL(file);
+    visionFileInput.value = '';
+  });
+}
+
+// Electron Desktop Global Shortcut / IPC listener
+if (window.AuraDesktop && typeof window.AuraDesktop.onScreenCaptureTriggered === 'function') {
+  window.AuraDesktop.onScreenCaptureTriggered(() => {
+    VisionEngine.captureScreen();
+  });
 }
 
 /* -------------------------------------------------------------
@@ -5012,6 +5347,11 @@ window.addEventListener('keydown', e => {
       closeDrawer();
     } else if (mode === 'dock' || mode === 'island' || mode === 'full') {
       minimise();
+    }
+  } else if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'S' || e.key === 's')) {
+    e.preventDefault();
+    if (typeof VisionEngine !== 'undefined') {
+      VisionEngine.captureScreen();
     }
   }
 });
