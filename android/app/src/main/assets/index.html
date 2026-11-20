@@ -1428,6 +1428,24 @@ html, body {
 .btn-pill-hdr:hover { background: var(--user-bubble); }
 .btn-pill-hdr:active { transform: scale(0.96); }
 
+#theme-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+}
+#theme-btn-icon svg {
+  width: 14px;
+  height: 14px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 /* Thread (#chat-thread) (§8.3) */
 .chat-thread {
   flex: 1;
@@ -2395,9 +2413,22 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
   border-color: rgba(0, 229, 255, 0.25);
 }
 .model-opt-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
   font-size: 13px;
   font-weight: 600;
   color: var(--text-primary);
+}
+.model-opt-svg {
+  width: 15px;
+  height: 15px;
+  stroke: var(--accent);
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
 }
 .model-opt-desc {
   font-size: 11px;
@@ -2485,8 +2516,21 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
   transform: translateY(-2px);
 }
 .hero-card-icon {
-  font-size: 18px;
-  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 8px;
+  color: var(--accent);
+}
+.hero-card-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 6px rgba(0, 229, 255, 0.4));
 }
 .hero-card-title {
   font-size: 13px;
@@ -2815,8 +2859,8 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
           <div class="setting-desc">Select or auto-detect working model</div>
         </div>
         <select id="set-gemini-model" style="background:var(--surface);color:var(--text-primary);border:1px solid var(--hairline);padding:6px 12px;border-radius:99px;font:inherit;">
-          <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (Ultra-Fast ⚡ Sub-Second)</option>
-          <option value="gemini-3-flash-preview">gemini-3-flash-preview (Fast ⚡ Sub-Second)</option>
+          <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite (Ultra-Fast · Sub-Second)</option>
+          <option value="gemini-3-flash-preview">gemini-3-flash-preview (Fast · Sub-Second)</option>
           <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite</option>
           <option value="gemini-flash-latest">gemini-flash-latest</option>
         </select>
@@ -2831,8 +2875,14 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
       </div>
 
       <div class="setting-row" style="gap:calc(var(--u)*2);justify-content:flex-start;flex-wrap:wrap;padding-top:calc(var(--u)*1)">
-        <button id="btn-fresh-chat" class="btn-pill-hdr" style="background:var(--surface);border:1px solid var(--hairline);padding:calc(var(--u)*1.5) calc(var(--u)*3)">✨ Start Fresh Live Chat</button>
-        <button id="btn-force-refresh" class="btn-pill-hdr" style="background:var(--surface);border:1px solid var(--hairline);padding:calc(var(--u)*1.5) calc(var(--u)*3)">🔄 Clear Cache &amp; Reload</button>
+        <button id="btn-fresh-chat" class="btn-pill-hdr" style="background:var(--surface);border:1px solid var(--hairline);padding:calc(var(--u)*1.5) calc(var(--u)*3)">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px;"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+          <span>Start Fresh Live Chat</span>
+        </button>
+        <button id="btn-force-refresh" class="btn-pill-hdr" style="background:var(--surface);border:1px solid var(--hairline);padding:calc(var(--u)*1.5) calc(var(--u)*3)">
+          <svg viewBox="0 0 24 24" style="width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px;"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span>Clear Cache &amp; Reload</span>
+        </button>
       </div>
     </div>
 
@@ -3033,8 +3083,9 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
           <input type="text" id="set-google-client-id" placeholder="your-client-id.apps.googleusercontent.com" style="flex:1;background:var(--surface);color:var(--text-primary);border:1px solid var(--hairline);border-radius:calc(var(--u)*2.5);padding:calc(var(--u)*2) calc(var(--u)*3);font:inherit;font-size:calc(var(--u)*2.8);" />
           <button id="btn-save-google-client-id" class="btn-pill-hdr" style="padding:0 calc(var(--u)*3.5)">Save</button>
         </div>
-        <div style="font-size:calc(var(--u)*2.3);color:var(--text-muted);line-height:1.4;">
-          💡 Tip: In <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" style="color:var(--accent)">Google Cloud Console</a>, create an <strong>OAuth 2.0 Client ID</strong> (Web Application), enable the <strong>Google Drive API</strong>, <strong>Gmail API</strong>, and <strong>Google Calendar API</strong>, and add <code>https://aura-pro-ai.netlify.app</code> to <em>Authorized JavaScript origins</em>.
+        <div style="font-size:calc(var(--u)*2.3);color:var(--text-muted);line-height:1.4;display:flex;align-items:flex-start;gap:6px;">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--accent);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:2px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <div><strong>Tip:</strong> In <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener" style="color:var(--accent)">Google Cloud Console</a>, create an <strong>OAuth 2.0 Client ID</strong> (Web Application), enable the <strong>Google Drive API</strong>, <strong>Gmail API</strong>, and <strong>Google Calendar API</strong>, and add <code>https://aura-pro-ai.netlify.app</code> to <em>Authorized JavaScript origins</em>.</div>
         </div>
       </div>
     </div>
@@ -3144,25 +3195,37 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
           <!-- Model Selector Pill (ChatGPT 4o style) -->
           <div class="hdr-model-selector" id="hdr-model-selector" title="Switch Gemini Model Brain">
             <button class="hdr-model-pill" id="hdr-model-pill">
-              <span class="hdr-model-sparkle">✦</span>
+              <svg viewBox="0 0 24 24" class="hdr-model-sparkle-svg" style="width:12px;height:12px;fill:currentColor;flex-shrink:0;margin-right:4px;"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
               <span class="hdr-model-label" id="hdr-model-label">Gemini 3.1 Flash Lite</span>
               <svg class="hdr-model-arrow" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
             </button>
             <div class="hdr-model-dropdown" id="hdr-model-dropdown">
               <div class="model-opt active" data-model="gemini-3.1-flash-lite">
-                <div class="model-opt-title">Gemini 3.1 Flash Lite ⚡</div>
+                <div class="model-opt-title">
+                  <svg viewBox="0 0 24 24" class="model-opt-svg"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  <span>Gemini 3.1 Flash Lite</span>
+                </div>
                 <div class="model-opt-desc">Frontier ultra-low latency multimodal model</div>
               </div>
               <div class="model-opt" data-model="gemini-3-flash-preview">
-                <div class="model-opt-title">Gemini 3 Flash (Preview) 🧠</div>
+                <div class="model-opt-title">
+                  <svg viewBox="0 0 24 24" class="model-opt-svg"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>
+                  <span>Gemini 3 Flash (Preview)</span>
+                </div>
                 <div class="model-opt-desc">Next-generation reasoning, math & code intelligence</div>
               </div>
               <div class="model-opt" data-model="gemini-3.5-flash-lite">
-                <div class="model-opt-title">Gemini 3.5 Flash Lite 🚀</div>
+                <div class="model-opt-title">
+                  <svg viewBox="0 0 24 24" class="model-opt-svg"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
+                  <span>Gemini 3.5 Flash Lite</span>
+                </div>
                 <div class="model-opt-desc">High-efficiency experimental reasoning tier</div>
               </div>
               <div class="model-opt" data-model="gemini-flash-latest">
-                <div class="model-opt-title">Gemini Flash Latest 🌐</div>
+                <div class="model-opt-title">
+                  <svg viewBox="0 0 24 24" class="model-opt-svg"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                  <span>Gemini Flash Latest</span>
+                </div>
                 <div class="model-opt-desc">Standard balanced production model</div>
               </div>
             </div>
@@ -3175,7 +3238,7 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
             <span>New</span>
           </button>
           <button class="btn-pill-hdr" id="btn-theme-toggle" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
-            <span id="theme-btn-icon">🌙</span>
+            <span id="theme-btn-icon"><svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span>
           </button>
           <button class="btn-pill-hdr" id="btn-min-orb" title="Minimize to Floating Liquid Orb" aria-label="Minimize to Orb">
             <span>Orb</span>
@@ -3196,7 +3259,10 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
           <div class="v-preview-card">
             <img id="v-preview-img" src="" alt="Captured screen" />
             <div class="v-preview-meta">
-              <span class="v-preview-badge">🖥️ Screen Attached</span>
+              <span class="v-preview-badge">
+                <svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;margin-right:4px;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Screen Attached
+              </span>
               <span class="v-preview-sub">Aura will analyze this snapshot</span>
             </div>
             <button class="v-preview-del" id="v-preview-del" title="Remove attachment" aria-label="Remove attachment">
@@ -3493,7 +3559,7 @@ if (location.protocol.startsWith('http')) {
           pill.style.display = 'inline-block';
           pill.style.background = 'rgba(16, 185, 129, 0.15)';
           pill.style.color = '#10b981';
-          pill.textContent = '✓ API Key active from .env';
+          pill.innerHTML = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;vertical-align:middle;margin-right:4px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg>API Key active from .env';
         }
         if (state.activeId === 'c_demo_thermo') {
           state.activeId = null;
@@ -3524,7 +3590,13 @@ function applyTheme(theme) {
   const selEl = document.getElementById('setting-theme-select');
   if (selEl) selEl.value = theme;
   const themeBtnIcon = document.getElementById('theme-btn-icon');
-  if (themeBtnIcon) themeBtnIcon.textContent = theme === 'dark' ? '☀️' : '🌙';
+  if (themeBtnIcon) {
+    if (theme === 'dark') {
+      themeBtnIcon.innerHTML = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+    } else {
+      themeBtnIcon.innerHTML = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+    }
+  }
   ['btn-theme-sky', 'btn-theme-dark', 'btn-theme-sys'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.remove('active');
@@ -4684,7 +4756,7 @@ window.AuraAI = {
       const defaultSystemPrompt = 'You are Aura, an advanced multimodal AI assistant with live screen vision, multimodal perception, and personal Google Workspace integration (Gmail, Google Calendar, Google Tasks, and Google Drive 5TB Cloud Vault). ' +
         'When an image or screen capture is provided, analyze the visual contents thoroughly in detail, pointing out code, UI elements, errors, or text. ' +
         'When live Google Workspace data (Gmail, Calendar, or Tasks) is provided, synthesize the emails, meetings, or tasks clearly, accurately, and politely with clean markdown. ' +
-        'If the user asks you to take a screenshot or view their screen but no image is attached, guide them warmly to click the Vision Eye button (👁️) in the input dock or press Ctrl+Shift+S, or tap the (+) button to upload any screenshot image. ' +
+        'If the user asks you to take a screenshot or view their screen but no image is attached, guide them warmly to click the Vision Eye button in the input dock or press Ctrl+Shift+S, or tap the (+) button to upload any screenshot image. ' +
         'If the user asks to check their emails, calendar, or tasks but their Google account is not connected yet, politely inform them they can connect their Google account in Settings (Profile tab) under Google 5TB Vault & Workspace Hub. ' +
         'You provide concise, insightful, natural, and helpful answers. Format your replies with clean markdown.';
       const systemPrompt = (state.settings && state.settings.systemPrompt) || defaultSystemPrompt;
@@ -5467,22 +5539,30 @@ function renderFullChatThread() {
         <div class="thread-hero-sub">Aura Pro 2.0 · Multimodal Vision · Google 5TB Vault · Live Web Grounding</div>
         <div class="hero-cards-grid">
           <div class="hero-card" id="card-action-vision">
-            <div class="hero-card-icon">🖥️</div>
+            <div class="hero-card-icon">
+              <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
             <div class="hero-card-title">Look at Screen</div>
             <div class="hero-card-desc">Analyze your current window, document, or app with multimodal vision</div>
           </div>
           <div class="hero-card" id="card-action-gmail">
-            <div class="hero-card-icon">📧</div>
+            <div class="hero-card-icon">
+              <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
             <div class="hero-card-title">Check Gmail</div>
             <div class="hero-card-desc">Summarize today's urgent unread emails from your Google 5TB Vault</div>
           </div>
           <div class="hero-card" id="card-action-calendar">
-            <div class="hero-card-icon">📅</div>
+            <div class="hero-card-icon">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+            </div>
             <div class="hero-card-title">Schedule & Tasks</div>
             <div class="hero-card-desc">Review upcoming Google Calendar agenda and active to-do list</div>
           </div>
           <div class="hero-card" id="card-action-search">
-            <div class="hero-card-icon">🌐</div>
+            <div class="hero-card-icon">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </div>
             <div class="hero-card-title">Deep Web Search</div>
             <div class="hero-card-desc">Research latest artificial intelligence breakthroughs and world news</div>
           </div>
@@ -5759,7 +5839,7 @@ async function submitPrompt(promptText) {
       tone(587, 0.2, 0.08, 'triangle');
     },
     onSearching() {
-      const searchingMsg = '<span class="sp"></span> <span style="color:#38bdf8">🌐 Searching the web for live facts...</span>';
+      const searchingMsg = '<span class="sp"></span> <span style="color:#38bdf8;display:inline-flex;align-items:center;gap:5px;"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;vertical-align:middle;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Searching the web for live facts...</span>';
       if (mode === 'full') {
         const lastCard = chatThread.querySelector('.msg-assistant:last-child .card-bubble');
         if (lastCard) lastCard.innerHTML = searchingMsg;
@@ -6526,7 +6606,7 @@ if (btnSaveKey && setGeminiKey && geminiStatusPill) {
     geminiStatusPill.style.display = 'inline-block';
     geminiStatusPill.style.background = 'rgba(16, 185, 129, 0.15)';
     geminiStatusPill.style.color = '#10b981';
-    geminiStatusPill.textContent = '✓ API Key Saved Permanently!';
+    geminiStatusPill.innerHTML = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;vertical-align:middle;margin-right:4px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg>API Key Saved Permanently!';
     tone(659, 0.2, 0.08);
     buzz(15);
   });
@@ -6634,7 +6714,7 @@ if (btnTestGemini && geminiStatusPill) {
 
           geminiStatusPill.style.background = 'rgba(16, 185, 129, 0.15)';
           geminiStatusPill.style.color = '#10b981';
-          geminiStatusPill.textContent = `✓ Connected! Found ${available.length} models on ${usedVer}. Active: ${chosen}`;
+          geminiStatusPill.innerHTML = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;vertical-align:middle;margin-right:4px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg>' + `Connected! Found ${available.length} models on ${usedVer}. Active: ${chosen}`;
         } else {
           state.settings.geminiApiKey = cleanKey;
           if (state.activeId === 'c_demo_thermo') {
@@ -6644,7 +6724,7 @@ if (btnTestGemini && geminiStatusPill) {
           sayIntro();
           geminiStatusPill.style.background = 'rgba(16, 185, 129, 0.15)';
           geminiStatusPill.style.color = '#10b981';
-          geminiStatusPill.textContent = `✓ Connected to Google Gemini (${usedVer})`;
+          geminiStatusPill.innerHTML = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;vertical-align:middle;margin-right:4px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg>' + `Connected to Google Gemini (${usedVer})`;
         }
         tone(880, 0.2, 0.08);
         buzz(15);
@@ -6745,7 +6825,7 @@ function populateVoiceList() {
     const opt = document.createElement('option');
     opt.value = v.voiceURI;
     const isNatural = /natural|neural|online|google|samantha|karen|serena|jenny|guy/i.test(v.name);
-    opt.textContent = `${v.name} (${v.lang})${isNatural ? ' ✨ High-Def' : ''}`;
+    opt.textContent = `${v.name} (${v.lang})${isNatural ? ' [HD]' : ''}`;
     if (currentVal === v.voiceURI) {
       opt.selected = true;
     }
@@ -6849,7 +6929,7 @@ if (btnGoogleSyncNow) {
     btnGoogleSyncNow.disabled = true;
     const ok = await GoogleDriveEngine.syncToDrive();
     btnGoogleSyncNow.disabled = false;
-    btnGoogleSyncNow.textContent = ok ? 'Synced ✓' : 'Failed ✗';
+    btnGoogleSyncNow.innerHTML = ok ? '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;vertical-align:middle;margin-right:4px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg>Synced' : 'Failed';
     setTimeout(() => { btnGoogleSyncNow.textContent = 'Sync Now'; }, 2200);
   });
 }
@@ -6892,7 +6972,7 @@ if (btnSaveGoogleClientId && setGoogleClientId) {
     state.settings.googleClientId = val;
     saveState();
     GoogleAuthEngine.init();
-    btnSaveGoogleClientId.textContent = 'Saved ✓';
+    btnSaveGoogleClientId.innerHTML = '<svg viewBox="0 0 24 24" style="width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;vertical-align:middle;margin-right:4px;display:inline-block;"><polyline points="20 6 9 17 4 12"/></svg>Saved';
     setTimeout(() => { btnSaveGoogleClientId.textContent = 'Save'; }, 1500);
     tone(784, 0.15, 0.08, 'triangle');
   });
@@ -7641,8 +7721,9 @@ function updateModelPillUI() {
   if (hdrModelDropdown) {
     const opt = hdrModelDropdown.querySelector('.model-opt[data-model="' + currentModel + '"]');
     if (opt && hdrModelLabel) {
-      const titleText = opt.querySelector('.model-opt-title')?.textContent || currentModel;
-      hdrModelLabel.textContent = titleText.replace(/[^a-zA-Z0-9\s\.\-]/g, '').trim();
+      const titleSpan = opt.querySelector('.model-opt-title span') || opt.querySelector('.model-opt-title');
+      const titleText = titleSpan?.textContent || currentModel;
+      hdrModelLabel.textContent = titleText.replace(/[^a-zA-Z0-9\s\.\(\)\-]/g, '').trim();
     }
     hdrModelDropdown.querySelectorAll('.model-opt').forEach(el => {
       if (el.getAttribute('data-model') === currentModel) el.classList.add('active');
@@ -7690,7 +7771,6 @@ if (btnThemeToggle) {
   btnThemeToggle.addEventListener('click', () => {
     const nextTheme = state.theme === 'dark' ? 'sky' : 'dark';
     applyTheme(nextTheme);
-    if (themeBtnIcon) themeBtnIcon.textContent = nextTheme === 'dark' ? '☀️' : '🌙';
     tone(587, 0.2, 0.08);
   });
 }
