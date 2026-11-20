@@ -3328,30 +3328,6 @@ input:checked + .slider:before { transform: translateX(calc(var(--u) * 4.5)); }
     </div>
   </div>
 
-  <!-- Glass Nav Bar (§9.1) -->
-  <nav class="nav" id="nav" aria-label="Main">
-    <div class="nbg">
-      <div class="nbl a"></div>
-      <div class="nbl b"></div>
-      <div class="nbl c"></div>
-      <div class="gloss"></div>
-      <div class="sel" id="sel"></div>
-    </div>
-    <button class="nb on" id="nav-home" style="left:23%" aria-label="History">
-      <svg viewBox="0 0 24 24"><path fill-rule="evenodd" stroke="#fff" stroke-width="1.4" stroke-linejoin="round" d="M12 3.6 3.8 10.8v8.6a1 1 0 0 0 1 1h14.4a1 1 0 0 0 1-1v-8.6zM9.8 20.4v-4.2a2.2 2.2 0 0 1 4.4 0v4.2z"/></svg>
-      <span class="nb-label">History</span>
-    </button>
-    <button class="nb" id="nav-chat" style="left:50%" aria-label="Chat">
-      <svg viewBox="0 0 24 24"><path stroke="#fff" stroke-width="1.2" stroke-linejoin="round" d="M12.6 3.4a7.4 7.4 0 0 0-6.4 11.1l-1.4 3.9 4.1-1.1A7.4 7.4 0 1 0 12.6 3.4z"/><path fill="none" stroke="#2f7bff" stroke-width="1.6" stroke-linecap="round" d="M9.6 9.4h6M9.6 12.4h4"/></svg>
-      <span class="nb-label">Chat</span>
-      <span class="nav-pulse-dot" id="nav-chat-dot"></span>
-    </button>
-    <button class="nb" id="nav-profile" style="left:77%" aria-label="Settings">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="7.8" r="4"/><path d="M4.4 20.4c0-3.9 3.3-6.4 7.6-6.4s7.6 2.5 7.6 6.4c0 .6-.4 1-1 1H5.4c-.6 0-1-.4-1-1z"/></svg>
-      <span class="nb-label">Settings</span>
-    </button>
-  </nav>
-
   <div class="halo" id="halo"></div>
 
   <!-- Interactive Liquid Neon Orb (§6.2) -->
@@ -5280,7 +5256,7 @@ function toDock() {
   }
 
   // Slide nav bar down (§3.3)
-  nav.classList.add('hidden');
+  if (nav) nav.classList.add('hidden');
   hideScreens();
 
   fly({ x: S.x, y: S.y }, DOCK, 0.9, 1, DS, 0, 360, 'dock', () => {
@@ -5332,7 +5308,7 @@ function minimise() {
       S.vs += 0.12;
       // Slide nav bar back in only if NOT on desktop/overlay
       if (!window.AuraDesktop && urlParams.get('host') !== 'desktop' && urlParams.get('host') !== 'overlay') {
-        nav.classList.remove('hidden');
+        if (nav) nav.classList.remove('hidden');
         restoreCurrentScreen();
       }
       ring(home.x, home.y, 2.4, 'rgba(60,120,255,.7)', 900);
@@ -5364,7 +5340,7 @@ function toFullChat() {
   saveState();
 
   // Hide nav, hide compact sheet, hide background screens
-  nav.classList.add('hidden');
+  if (nav) nav.classList.add('hidden');
   sheet.classList.remove('open');
   hideScreens();
 
@@ -5408,7 +5384,7 @@ function toHomeScreen() {
   inputDock.classList.remove('visible');
 
   // Restore navigation and show history home screen
-  nav.classList.remove('hidden');
+  if (nav) nav.classList.remove('hidden');
   restoreCurrentScreen();
   if (typeof renderHistory === 'function') renderHistory();
 
@@ -5444,7 +5420,7 @@ function toSettingsScreen() {
   inputDock.classList.remove('visible');
 
   // Restore navigation and show settings screen
-  nav.classList.remove('hidden');
+  if (nav) nav.classList.remove('hidden');
   restoreCurrentScreen();
 
   orb.style.opacity = '0';
@@ -7046,7 +7022,7 @@ function hideScreens() {
 }
 
 function syncNavToScreen() {
-  if (typeof N === 'undefined' || !window.tabsList) return;
+  if (!nav || typeof N === 'undefined' || !window.tabsList) return;
   if (state.screen === 'settings') {
     N.a = 2;
     window.tabsList.forEach((t, idx) => t.classList.toggle('on', idx === 2));
@@ -7235,61 +7211,62 @@ function hover(k) {
 /* -------------------------------------------------------------
    Nav Bar Physics & Tab Interaction (§9.1)
    ------------------------------------------------------------- */
-const sel = $('sel'), tabs = [...nav.querySelectorAll('.nb')];
+const sel = $('sel'), tabs = (nav && typeof nav.querySelectorAll === 'function') ? [...nav.querySelectorAll('.nb')] : [];
 window.tabsList = tabs;
 const NX = [0.23, 0.5, 0.77];
 const N = { a: 0, x: 0.23, v: 0, rx: 0, ry: 0, tx: 0, ps: 1, tps: 1, sx: 50, sy: 26, hp: 0 };
 
-tabs.forEach((b, i) => {
-  b.addEventListener('pointerdown', e => {
-    e.preventDefault();
-    N.tps = 0.95;
-    N.a = i;
-    tabs.forEach((o, j) => o.classList.toggle('on', j === i));
-    const bg = nav.firstElementChild;
-    const r = bg.getBoundingClientRect();
-    const s = r.height * 1.6;
-    const x = e.clientX - r.left, y = e.clientY - r.top;
-    const d = document.createElement('div');
-    d.className = 'rip';
-    d.style.cssText = `left:${x - s/2}px;top:${y - s/2}px;width:${s}px;height:${s}px`;
-    bg.appendChild(d);
-    d.animate(
-      [{ transform: 'scale(.2)', opacity: 0.9 }, { transform: 'scale(1.6)', opacity: 0 }],
-      { duration: 650, easing: 'cubic-bezier(.15,.7,.2,1)' }
-    ).onfinish = () => d.remove();
-    tone([523, 659, 784][i], 0.35, 0.1, 'triangle');
-    buzz(10);
+if (nav && tabs.length > 0) {
+  tabs.forEach((b, i) => {
+    b.addEventListener('pointerdown', e => {
+      e.preventDefault();
+      N.tps = 0.95;
+      N.a = i;
+      tabs.forEach((o, j) => o.classList.toggle('on', j === i));
+      const bg = nav.firstElementChild;
+      if (!bg) return;
+      const r = bg.getBoundingClientRect();
+      const s = r.height * 1.6;
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const d = document.createElement('div');
+      d.className = 'rip';
+      d.style.cssText = `left:${x - s/2}px;top:${y - s/2}px;width:${s}px;height:${s}px`;
+      bg.appendChild(d);
+      d.animate(
+        [{ transform: 'scale(.2)', opacity: 0.9 }, { transform: 'scale(1.6)', opacity: 0 }],
+        { duration: 650, easing: 'cubic-bezier(.15,.7,.2,1)' }
+      ).onfinish = () => d.remove();
+      tone([523, 659, 784][i], 0.35, 0.1, 'triangle');
+      buzz(10);
 
-    // Nav wiring (§9.1)
-    if (i === 0) {
-      // Home -> History Screen
-      state.screen = 'history';
-      saveState();
-      restoreCurrentScreen();
-    } else if (i === 1) {
-      // Chat -> New conversation in Full Chat
-      const newConv = {
-        id: 'c_' + Date.now(),
-        title: 'New Conversation',
-        updatedAt: Date.now(),
-        messages: []
-      };
-      state.conversations.unshift(newConv);
-      state.activeId = newConv.id;
-      saveState();
-      toFullChat();
-    } else if (i === 2) {
-      // Profile -> Settings Screen
-      state.screen = 'settings';
-      saveState();
-      restoreCurrentScreen();
-    }
+      // Nav wiring (§9.1)
+      if (i === 0) {
+        state.screen = 'history';
+        saveState();
+        restoreCurrentScreen();
+      } else if (i === 1) {
+        const newConv = {
+          id: 'c_' + Date.now(),
+          title: 'New Conversation',
+          updatedAt: Date.now(),
+          messages: []
+        };
+        state.conversations.unshift(newConv);
+        state.activeId = newConv.id;
+        saveState();
+        toFullChat();
+      } else if (i === 2) {
+        state.screen = 'settings';
+        saveState();
+        restoreCurrentScreen();
+      }
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, () => { N.tps = 1; }));
   });
-  ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => b.addEventListener(ev, () => { N.tps = 1; }));
-});
+}
 
 function navTick(k) {
+  if (!nav || !sel) return;
   const r = nav.getBoundingClientRect();
   const cx = r.left + r.width / 2, cy = r.top + r.height / 2, hw = r.width / 2;
   let prox = 0, dx = 0, dy = 0;
@@ -7927,7 +7904,7 @@ if (!window.AuraDesktop && urlParams.get('host') !== 'desktop' && urlParams.get(
   saveState();
   toFullChat();
 } else {
-  nav.classList.add('hidden');
+  if (nav) nav.classList.add('hidden');
   hideScreens();
   if (urlParams.get('host') === 'desktop' || window.AuraDesktop) {
     toFullChat();
