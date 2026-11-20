@@ -3486,6 +3486,10 @@ try {
       state.conversations = seededDemo;
       state.activeId = 'c_demo_thermo';
     }
+    // Auto-migrate legacy web sessions directly to ChatGPT agent UI
+    if (!urlParams.get('host')) {
+      state.mode = 'full';
+    }
   }
 } catch (e) {
   console.warn('Could not read state from localStorage', e);
@@ -7833,6 +7837,14 @@ window.addEventListener('keydown', e => {
    PWA Service Worker & Offline Management (§11.1, §12)
    ------------------------------------------------------------- */
 if ('serviceWorker' in navigator) {
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
+  });
+
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('./sw.js').then(reg => {
       console.log('[PWA] Service Worker registered with scope:', reg.scope);
@@ -7907,14 +7919,13 @@ if (window.AuraDesktop) {
   });
 }
 
-// Initial history & screen state: Boot into ChatGPT/Gemini full conversational workspace
+// Initial history & screen state: Always boot directly into ChatGPT full conversational workspace
 if (!window.AuraDesktop && urlParams.get('host') !== 'desktop' && urlParams.get('host') !== 'overlay') {
   renderHistory();
-  if (state.mode === 'full') {
-    toFullChat();
-  } else {
-    restoreCurrentScreen();
-  }
+  mode = 'full';
+  state.mode = 'full';
+  saveState();
+  toFullChat();
 } else {
   nav.classList.add('hidden');
   hideScreens();
